@@ -1,0 +1,44 @@
+$KCODE = 'u'
+require 'config/boot.rb'
+require 'config/environment.rb'
+require "aws_sdb"
+
+log = Logger.new(STDOUT)
+log.level = Logger::ERROR
+
+devpay_config = YAML.load(File.open("#{RAILS_ROOT}/config/devpay.yml"))
+
+dev_config = devpay_config['development']
+test_config = devpay_config['testing']
+prod_config = devpay_config['production']
+
+  def delete_domain(domain_name)
+   
+        $sdb.delete_domain(domain_name)
+        
+        
+   end
+  
+   [
+    'User',
+    'StorageFile',
+    'StorageItem',
+    'Tag',
+    'Feedback'
+    
+  ].each do |model_name|
+    delete_domain(dev_config['sdb_domain']+"_"+model_name)
+    delete_domain(test_config['sdb_domain']+"_"+model_name)
+   # delete_domain(prod_config['sdb_domain']+"_"+model_name)
+  end
+  
+#  delete_domain(dev_config['sdb_domain']+"_Image")
+#   delete_domain(dev_config['sdb_domain']+"_User")
+#   delete_domain(dev_config['sdb_domain']+"_ImageFile")
+#    
+#  
+#  delete_domain(prod_config['sdb_domain']+"_Image")
+#   delete_domain(prod_config['sdb_domain']+"_User")
+#   delete_domain(prod_config['sdb_domain']+"_ImageFile")
+    
+  
