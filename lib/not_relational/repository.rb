@@ -1,4 +1,6 @@
-module NotRelational
+# THis class implements access to SDB 222.
+# =I am the walrus=
+  module NotRelational
   $KCODE = 'u'
   require "aws_sdb"
   require "not_relational/storage.rb"
@@ -6,6 +8,7 @@ module NotRelational
   require File.dirname(__FILE__) +"/domain_model_cache_item.rb"
 
   require File.dirname(__FILE__) +"/sdb_monkey_patch.rb"
+  # THis class implements access to SDB.
   class Repository
     attr_accessor :use_cache
     attr_accessor :storage
@@ -40,7 +43,7 @@ module NotRelational
     
       # #create_domain()
     end
-    
+    #can you guess what this does?
     def clear_session_cache
       @session_cache.clear
     end
@@ -362,7 +365,7 @@ module NotRelational
     def sdb_query_with_attributes(table_name,query,max,token=nil)
 
       @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
-#      puts "#{table_name}  #{query}   (#{max}) #{token}"
+      #      puts "#{table_name}  #{query}   (#{max}) #{token}"
       20.times do |i|
         begin
           return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
@@ -388,7 +391,7 @@ module NotRelational
         if !value
           value=attributes[attribute_name]
         end
-        #sdb attributes are often array of one
+        # #sdb attributes are often array of one
         if !attribute_description.is_collection && value.respond_to?(:flatten) && value.length==1
           value=value[0]
         end
@@ -403,7 +406,7 @@ module NotRelational
       #      @storage.delete(@clob_bucket,make_cache_key(table_name,primary_key))
       #    end
     end
-    #parse date in yyyy-mm-dd format
+    # #parse date in yyyy-mm-dd format
 
     def pause
       sleep(2)

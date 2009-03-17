@@ -66,6 +66,9 @@ module NotRelational
     def self.index(index_name,columns,options={})
       @index_descriptions||={}
       return if self.index_descriptions[index_name]
+      is_index_encrypted=@is_encrypted
+      is_index_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)
+
       $columns_xxx=columns
       class_eval <<-GETTERDONE
 
@@ -78,7 +81,7 @@ module NotRelational
     end
 
     attribute_description=NotRelational::PropertyDescription.new(:#{index_name},:string,{})
-    @index_descriptions[:#{index_name}]=NotRelational::IndexDescription.new(:#{index_name},$columns_xxx,@is_encrypted)
+    @index_descriptions[:#{index_name}]=NotRelational::IndexDescription.new(:#{index_name},$columns_xxx,#{is_index_encrypted.to_s})
    end
       GETTERDONE
      
@@ -170,9 +173,11 @@ module NotRelational
     end
       GETTERDONE
       @is_encrypted||=false
+      is_prop_encrypted=@is_encrypted
+      is_prop_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)
       return if self.attribute_descriptions.has_key?(name)
   
-      attribute_description=PropertyDescription.new(name,type,@is_encrypted,options)
+      attribute_description=PropertyDescription.new(name,type,is_prop_encrypted,options)
       self.attribute_descriptions[name] = attribute_description
       @primary_key_attribute_names||=[]
       if attribute_description.is_primary_key 

@@ -1,9 +1,0 @@
-
---This line, and those below, will be ignored--
-
-M    sdb_dal/crypto.rb
-M    sdb_dal/domain_object.rb
-M    sdb_dal/domain_attribute_description.rb
-M    sdb_dal/repository_factory.rb
-A    sdb_dal/configuration.rb
-M    sdb_dal/index_description.rb

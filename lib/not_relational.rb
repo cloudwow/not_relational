@@ -1,6 +1,13 @@
+# not_relational is a really cool new thing.  This is the gem you are looking
+# for.
+# Author::    David Knight  (mailto:david@cloudwow.com)
+# Copyright:: Copyright (c) 2009 David Knight
+# License::   Distributes under the same terms as Ruby
+
+
 require "#{File.dirname(__FILE__)}/not_relational/repository.rb"
 require "#{File.dirname(__FILE__)}/not_relational/repository_factory.rb"
-require "#{File.dirname(__FILE__)}/not_relational/acts_as_sdb_application.rb"
+require "#{File.dirname(__FILE__)}/not_relational/acts_as_not_relational_application.rb"
 require "#{File.dirname(__FILE__)}/not_relational/memory_repository.rb"
 require "#{File.dirname(__FILE__)}/not_relational/domain_model.rb"
 require "#{File.dirname(__FILE__)}/not_relational/storage.rb"

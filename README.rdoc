@@ -1,6 +1,6 @@
 = not_relational
 
-Description goes here.
+not relational is a really good thing that you really want.
 
 == Copyright
 
