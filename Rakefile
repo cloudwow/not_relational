@@ -7,8 +7,8 @@ begin
     gem.name = "not_relational"
     gem.summary = %Q{TODO}
     gem.email = "david@cloudwow.com"
-    gem.homepage = "http://github.com/daviddisco/not_relational"
-    gem.authors = ["David Knight"]
+    gem.homepage = "http://github.com/cloudwow/not_relational"
+    gem.authors = ["cloudwow"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
