@@ -16,7 +16,7 @@ class User  < NotRelational::DomainModel
     property :remember_token_expires_at ,:date
     property :last_login,:date
     property :profile_mediaitem_guid,:string
-    property :blurb,:clob
+    property :blurb,:text
     property :album_guid,:string
     property :email,:string
     property :is_translater,:boolean

@@ -72,7 +72,7 @@ class Storage
     if self.memory_only
       return nil
     end
-    20.times do |i|
+    4.times do |i|
       begin
         response=real_s3.get(bucket,key)
         if response and response.http_response.code=='404'
@@ -103,7 +103,7 @@ class Storage
 
     return if self.memory_only
 x=nil
-    20.times do |i|
+    4.times do |i|
       begin
       x= real_s3.put(bucket,key,S3::S3Object.new(object),attributes)
       

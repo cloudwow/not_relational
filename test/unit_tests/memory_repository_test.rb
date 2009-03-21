@@ -8,7 +8,7 @@ $:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
 
 require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
 require File.dirname(__FILE__) +'/../../test/models/node.rb'
-ENV['not_relational_ENV']='testing'
+ENV['NOT_RELATIONAL_ENV']='testing'
 
 class MemoryRepositoryTest < Test::Unit::TestCase
 

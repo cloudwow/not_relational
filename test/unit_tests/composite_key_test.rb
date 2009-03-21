@@ -9,7 +9,7 @@ $:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
 
 require File.dirname(__FILE__) +'/../../test/models/page_view_summary.rb'
 require File.dirname(__FILE__) +'/../../test/models/page_view_detail.rb'
-ENV['not_relational_ENV']='testing'
+ENV['NOT_RELATIONAL_ENV']='testing'
 class CompositeKeyTest < Test::Unit::TestCase
   def CompositeKeyTest.set_up
 

@@ -39,13 +39,13 @@ module NotRelational
       @aws_key_id = aws_key_id
       @aws_secret_key = aws_secret_key
       @use_seperate_domain_per_model=use_seperate_domain_per_model
-      @blob_storage=blob_storage
+      @storage=blob_storage
 
       @use_cache=true
       @use_cache=options[:use_cache] if options.has_key?(:use_cache)
 
 
-      @blob_storage||=Storage.new(aws_key_id,aws_secret_key,memcache_servers)
+      @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
       @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger=>@logger)
       @session_cache=MemoryRepository.new
 
@@ -59,7 +59,7 @@ module NotRelational
       attributes.each do |description,value|
         if value || description.value_type==:boolean
           if description.is_text?
-            @blob_storage.put(
+            @storage.put(
               @storage_bucket,
               make_storage_key(table_name,primary_key,description.name),
               value.to_s,
@@ -156,12 +156,17 @@ module NotRelational
       end
       return result
     end
+def get_text(table_name,primary_key,clob_name)
+      return @storage.get(@storage_bucket,make_storage_key(table_name,primary_key,clob_name))
+
+    end
+
 
     def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
       session_cache_result=@session_cache.find_one(table_name, make_cache_key(table_name,primary_key),attribute_descriptions)
       return session_cache_result if session_cache_result
       #    if @use_cache
-      #      yaml=@blob_storage.get(@storage_bucket,make_cache_key(table_name,primary_key))
+      #      yaml=@storage.get(@storage_bucket,make_cache_key(table_name,primary_key))
       #      if yaml
       #        result=YAML::load( yaml)
       #        if result.respond_to?(:non_clob_attributes) && result.non_clob_attributes!=nil
@@ -394,7 +399,7 @@ module NotRelational
     #
     #      yaml=cacheItem.ya2yaml(:syck_compatible => true)
     #
-    #      @blob_storage.put(
+    #      @storage.put(
     #        @storage_bucket,
     #        make_cache_key(table_name,primary_key),
     #        yaml ,
@@ -403,11 +408,7 @@ module NotRelational
     #  end
 
 
-    def get_text(table_name,primary_key,clob_name)
-      return @blob_storage.get(@storage_bucket,make_storage_key(table_name,primary_key,clob_name))
-
-    end
-
+    
     def parse_attributes(attribute_descriptions,attributes)
       if !attributes || attributes.length==0
         return nil

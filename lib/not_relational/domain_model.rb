@@ -165,7 +165,7 @@ module NotRelational
     end
     def is_dirty(attribute_name)
              if @attribute_values[attribute_name]!= nil && 
-                @attribute_values[attribute_name].respond_to?(:value)
+                @attribute_values[attribute_name].is_a?(LazyLoadingText)
                 return @attribute_values[attribute_name].is_dirty
             else
                 return true
@@ -193,7 +193,7 @@ module NotRelational
         
         GETTERDONE
       end
-      if attribute_description.value_type==:clob
+      if attribute_description.value_type==:text
         clob_attribute_names<<attribute_description.name
       else
         non_clob_attribute_names<<attribute_description.name
@@ -228,7 +228,7 @@ module NotRelational
         
         GETTERDONE
     
-      elsif type==:clob
+      elsif type==:text
         class_eval <<-GETTERDONE
          
         def #{attribute_description.name}
@@ -338,7 +338,9 @@ module NotRelational
     #{module_name+domain_class.to_s}.find(self.#{foreign_key_attribute})
 	end
         GETTERDONE
-        index("#{foreign_key_attribute}_index".to_sym,[foreign_key_attribute])
+        if foreign_key_attribute.is_a?(Array)
+          index("#{foreign_key_attribute}_index".to_sym,[foreign_key_attribute])
+        end
       end
 
     end
@@ -629,7 +631,7 @@ module NotRelational
       result={}
       # #todo refactor to avoid this copy
       self.class.attribute_descriptions.values.each do |description|
-        if !description.is_clob || is_dirty(description.name)
+        if !description.is_text? || is_dirty(description.name)
           result[description.name]=@attribute_values[description.name]
         end
       end
@@ -679,7 +681,7 @@ module NotRelational
         attributes={}
         # #todo refactor to avoid this copy
         self.class.attribute_descriptions.values.each do |description|
-          if !description.is_clob || is_dirty(description.name)
+          if !description.is_text? || is_dirty(description.name)
             value=@attribute_values[description.name]
             attributes[description]=value
           end
@@ -788,13 +790,13 @@ module NotRelational
       end
       def istantiate(sdb_attributes,repository)
         this_result=new(sdb_attributes||{})
-        get_clob_proc=nil
+        get_text_proc=nil
         clob_attribute_names.each do |clob_attribute_name|
-          get_clob_proc= proc {
-            repository.get_clob(self.table_name,this_result.primary_key,clob_attribute_name)
+          get_text_proc= proc {
+            repository.get_text(self.table_name,this_result.primary_key,clob_attribute_name)
           }
                   
-          this_result.set_attribute(clob_attribute_name, LazyLoadingText.new(get_clob_proc))
+          this_result.set_attribute(clob_attribute_name, LazyLoadingText.new(get_text_proc))
         end
         this_result
       end

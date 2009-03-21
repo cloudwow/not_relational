@@ -26,13 +26,13 @@ module NotRelational
       
       options[:fail_fast]=config.fail_fast
       @repository= config.repository_class.new(
-        config.domain_prefix,
-        config.clob_bucket,
+        config.base_domain_name,
+        config.blob_bucket,
         config.aws_key_id,
         config.aws_secret_key,
         config.memcache_servers,
         nil,
-        config.append_table_to_domain,
+        config.use_seperate_domain_per_model,
         options)
       
     end

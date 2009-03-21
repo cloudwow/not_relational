@@ -15,7 +15,7 @@ class Mediaitem < NotRelational::DomainModel
   property :group_id , :string
   property :title , :string
   property :user_login , :string
-  property :description , :clob  
+  property :description , :text  
   property :latitude        ,         :float                                                                                                                 
   property :longitude       ,         :float                                                                                                                 
                                                                                                         

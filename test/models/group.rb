@@ -15,7 +15,7 @@ class Group < NotRelational::DomainModel
   property :short_description , :string
   property :icon_guid , :string
   property :tags , :string
-  property :layout , :clob
+  property :layout , :text
   property :domain , :string,:unique=>true
   
   property :devpay_user_token , :string

@@ -13,7 +13,7 @@ module NotRelational
         aws_secret_key= nil,
         memcache_servers = nil ,
         dummy=nil,
-        append_table_to_domain=nil,
+        use_seperate_domain_per_model=nil,
         options={}
       )
       clear
@@ -43,8 +43,8 @@ module NotRelational
       end
     
       attributes.each do |description,value|
-        if description.is_clob
-          @storage.put("",make_clob_key(table_name,primary_key,description.name),value)
+        if description.is_text?
+          @storage.put("",make_storage_key(table_name,primary_key,description.name),value)
         else
           record[description.name]=value
         end
@@ -211,8 +211,8 @@ module NotRelational
       return @records[make_cache_key(table_name,primary_key)]
     end
 
-    def get_clob(table_name,primary_key,clob_name)
-      return @storage.get("",make_clob_key(table_name,primary_key,clob_name))
+    def get_text(table_name,primary_key,clob_name)
+      return @storage.get("",make_storage_key(table_name,primary_key,clob_name))
         
     end
 
@@ -264,7 +264,7 @@ module NotRelational
       return "cached_objects/#{table_name}/#{primary_key}"
     end
 
-    def make_clob_key(table_name,primary_key,clob_name)
+    def make_storage_key(table_name,primary_key,clob_name)
       return "clobs/#{table_name}/#{flatten_key(primary_key)}/#{clob_name}"
     end
 

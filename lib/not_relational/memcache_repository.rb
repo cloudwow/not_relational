@@ -12,13 +12,13 @@ module NotRelational
         aws_secret_key= nil,
         memcache_servers = nil ,
         a_storage=nil,
-        append_table_to_domain=nil,
+        use_seperate_domain_per_model=nil,
         options={}
       )
       options[:memory_only] ||=(aws_key_id==nil)
       @storage||=Storage.new(aws_key_id,aws_secret_key,memcache_servers,[],options)
       @domain_name=domain_name
-      @clob_bucket=clob_bucket
+      @storage_bucket=clob_bucket
     end
 
     def pause
@@ -42,7 +42,7 @@ module NotRelational
       end
       record["metadata%table_name"]=table_name
       record["metadata%primary_key"]=key
-      @storage.put(@clob_bucket,key,record)
+      @storage.put(@storage_bucket,key,record)
     end
     def query_ids(table_name,attribute_descriptions,options)
       raise " not supported for memcache repo"
@@ -55,17 +55,17 @@ module NotRelational
     def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
 
       key=make_cache_key(table_name,primary_key)
-      @storage.get(@clob_bucket,key)
+      @storage.get(@storage_bucket,key)
 
 
     end
-    def get_clob(table_name,primary_key,clob_name)
+    def get_text(table_name,primary_key,clob_name)
       raise " not supported for memcache repo"
 
     end
     def destroy(table_name, primary_key)
       key=make_cache_key(table_name,primary_key);
-      @storage.put(@clob_bucket,key,nil)
+      @storage.put(@storage_bucket,key,nil)
 
     end
     private

@@ -6,7 +6,7 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 require 'test/unit'
 
 require File.dirname(__FILE__) +'/../../lib/not_relational/repository_factory.rb'
-ENV['not_relational_ENV']='testing'
+ENV['NOT_RELATIONAL_ENV']='testing'
 
 class RepositoryFactoryTest < Test::Unit::TestCase
   def test_foo

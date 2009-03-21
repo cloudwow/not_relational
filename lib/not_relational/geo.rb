@@ -1,3 +1,4 @@
+require "not_relational/starts_with_condition.rb"
 module NotRelational
 
 module Geo

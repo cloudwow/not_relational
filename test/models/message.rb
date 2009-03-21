@@ -5,7 +5,7 @@ class Message < NotRelational::DomainModel
     
   property :id,:string,:is_primary_key=>true
   property :title  , :string
-  property :content  , :clob
+  property :content  , :text
   property :created_time_utc , :date
   property :from_user_name , :string
   property :to_user_name  , :string

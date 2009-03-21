@@ -23,10 +23,17 @@ class MemoryStorage
     return @attributes[bucket+"sdsdw555"+key]['Content-Type'] if @attributes.has_key?(bucket+"sdsdw555"+key)
     return nil
   end
+def copy(from_bucket,from_key,to_bucket,to_key,attributes=nil)
+  o=get(from_bucket,from_key)
+  put(to_bucket,to_key,o,attributes)
 
+end
   def clear()
     @stuff={}
     @attributes={}
+  end
+  def real_s3
+    return self
   end
 end
 

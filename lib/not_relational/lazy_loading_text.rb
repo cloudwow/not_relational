@@ -6,8 +6,8 @@ module NotRelational
 class LazyLoadingText
   attr_reader :is_dirty
    attr_reader :has_loaded
-  def initialize(get_clob_proc)
-    @get_clob_proc=get_clob_proc
+  def initialize(get_text_proc)
+    @get_text_proc=get_text_proc
     @has_loaded=false
     @is_dirty=false
   end
@@ -19,7 +19,7 @@ class LazyLoadingText
   end
   def value
     if !@did_load
-        @value= @get_clob_proc.call      
+        @value= @get_text_proc.call      
         @has_loaded=true          
     end
     return @value

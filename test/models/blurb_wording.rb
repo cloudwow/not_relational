@@ -7,7 +7,7 @@ class BlurbWording < NotRelational::DomainModel
   property :blurb_name,:string,:is_primary_key=>true
   property :blurb_namespace,:string,:is_primary_key=>true
   property :language_id , :string  ,:is_primary_key=>true
-  property :text,:clob
+  property :text,:text
   property :title , :string  
   property :version , :string  
   property :author , :string  

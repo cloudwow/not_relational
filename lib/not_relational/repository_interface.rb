@@ -10,7 +10,7 @@ module NotRelational
         aws_secret_key= nil,
         memcache_servers = nil ,
         dummy=nil,
-        append_table_to_domain=nil,
+        use_seperate_domain_per_model=nil,
         options={}
       )
 
@@ -38,7 +38,7 @@ end
      end
      def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
     end
-    def get_clob(table_name,primary_key,clob_name)
+    def get_text(table_name,primary_key,clob_name)
     end
     def destroy(table_name, primary_key)
     end

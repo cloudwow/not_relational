@@ -3,10 +3,6 @@ require 'rubygems'
 require 'test/unit'
 $:.push(File.dirname(__FILE__) +'/../../test/models')
 $:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
-require File.dirname(__FILE__) +'/../../lib/not_relational/domain_model.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/attribute_range.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/repository.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
 require File.dirname(__FILE__) +'/../../test/models/node.rb'
 require File.dirname(__FILE__) +'/../../test/models/user.rb'
 require File.dirname(__FILE__) +'/../../test/models/place.rb'
@@ -17,7 +13,7 @@ require File.dirname(__FILE__) +'/../../test/models/tag.rb'
 require File.dirname(__FILE__) +'/../../test/models/rating.rb'
 require File.dirname(__FILE__) +'/../../test/models/comment.rb'
 $repository=nil
-ENV['not_relational_ENV']='testing'
+ENV['NOT_RELATIONAL_ENV']='testing'
 class AlbumTest < Test::Unit::TestCase
   def AlbumTest.set_up
     Album.find(:all).each do |node|

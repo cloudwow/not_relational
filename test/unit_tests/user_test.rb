@@ -5,7 +5,7 @@ $:.push(File.dirname(__FILE__) +'/../../test/models')
 $:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
 require File.dirname(__FILE__) +'/../../lib/not_relational/domain_model.rb'
 require File.dirname(__FILE__) +'/../../lib/not_relational/attribute_range.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/repository.rb'
+
 require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
 require File.dirname(__FILE__) +'/../../test/models/node.rb'
 require File.dirname(__FILE__) +'/../../test/models/user.rb'
@@ -18,7 +18,7 @@ require File.dirname(__FILE__) +'/../../test/models/rating.rb'
 require File.dirname(__FILE__) +'/../../test/models/comment.rb'
 require File.dirname(__FILE__) +'/../../test/models/blurb.rb'
 
-ENV['not_relational_ENV']='testing'
+ENV['NOT_RELATIONAL_ENV']='testing'
 
  class UserTest < Test::Unit::TestCase
   def test_range

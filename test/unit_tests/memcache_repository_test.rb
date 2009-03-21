@@ -13,7 +13,7 @@ class MemcacheRepositoryTest < Test::Unit::TestCase
 
   def test_foo
 #    NotRelational::RepositoryFactory.clear
-#    ENV['not_relational_ENV']='memcache_s3_testing'
+#    ENV['NOT_RELATIONAL_ENV']='memcache_s3_testing'
 #    begin
 #    nodes=[]
 #    #500 nodes: with s3 =138 secs without s3 99 secs
@@ -32,7 +32,7 @@ class MemcacheRepositoryTest < Test::Unit::TestCase
 #    end
 #    ensure
 #NotRelational::RepositoryFactory.clear
-#    ENV['not_relational_ENV']='testing'
+#    ENV['NOT_RELATIONAL_ENV']='testing'
 #    end
 
 

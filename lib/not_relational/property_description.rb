@@ -24,8 +24,8 @@ class PropertyDescription
     self.is_encrypted=is_encrypted 
     self.is_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)  
   end
-  def is_clob
-    return self.value_type==:clob
+  def is_text?
+  return self.value_type==:text
   end
   def format_for_sdb(value)
       return format_for_sdb_single( value) unless self.is_collection==true

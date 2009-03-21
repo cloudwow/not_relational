@@ -8,7 +8,7 @@ class FriendRequest < DomainModel
   property :id,:string,:is_primary_key=>true
    property :user_name,:string
    property :friend_user_name,:string
-   property :message,:clob
+   property :message,:text
    property :answer,:boolean
    property :created_time_utc,:date
  belongs_to :User,:user_name,:user

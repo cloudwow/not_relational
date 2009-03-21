@@ -17,7 +17,7 @@ class OutgoingEmail < DomainModel
   property :sent_time      ,        :date       
   property :send_attempt_count  , :unsigned_integer             
   property :last_send_attempt_time ,        :date                      
- property :blurb_parameters_yaml ,  :clob           
+ property :blurb_parameters_yaml ,  :text           
      belongs_to :GroupInvite,:group_invite_id
    def OutgoingEmail.convert_arg_to_outgoing_email(email_arg)
      return email_arg if email_arg.respond_to?(:group_invite_id)       

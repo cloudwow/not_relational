@@ -9,7 +9,7 @@ class Album < NotRelational::DomainModel
   property :guid , :string,:unique=>true
   property :user_name , :string
   property :title , :string
-  property :description , :clob 
+  property :description , :text 
   property :created_time_utc ,:date  
   property :last_update_time_utc ,:date  
   property :is_private, :boolean

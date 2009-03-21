@@ -6,7 +6,7 @@ development_not_relational:
   s3_bucket: test_test
   sqs_work_queue: test_work_queue_test
   domain_name_prefix: NotRelational_testing
-  repository_class: NotRelational::Repository
+  repository_class: NotRelational::SdbRepository
 
 testing_not_relational:
   aws_key_id: your_access_key
@@ -14,9 +14,9 @@ testing_not_relational:
   domain_name_prefix: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
-  append_table_to_domain: false
+  use_seperate_domain_per_model: false
   fail_fast: true
-  repository_class: NotRelational::Repository
+  repository_class: NotRelational::SdbRepository
   cipher_key_file: /tmp/cipher_key
   cipher_iv_file: /tmp/cipher_iv
 
@@ -27,7 +27,7 @@ memcache_testing_not_relational:
   domain_name_prefix: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
-  append_table_to_domain: false
+  use_seperate_domain_per_model: false
   memcache_servers: ec2-75-101-213-239.compute-1.amazonaws.com:11211
   repository_class: NotRelational::MemcacheRepository
   
@@ -37,7 +37,7 @@ memcache_s3_testing_not_relational:
   domain_name_prefix: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
-  append_table_to_domain: false
+  use_seperate_domain_per_model: false
   memcache_servers: ec2-75-101-213-239.compute-1.amazonaws.com:11211
   fail_fast: true
   repository_class: NotRelational::MemcacheRepository
@@ -48,5 +48,5 @@ production_not_relational:
   domain_name: test_test
   s3_bucket: test_test
   sqs_work_queue: devpay_app_work_queue
-  repository_class: NotRelational::Repository
+  repository_class: NotRelational::SdbRepository
   

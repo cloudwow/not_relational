@@ -27,7 +27,7 @@ class Node < NotRelational::DomainModel
   property :isRss           ,         :boolean                                                                                                            
   property :isNews          ,         :boolean                                                                                                            
   property :latestTitle     ,         :string                                                                                                          
-  property :latestContent   ,         :clob                                                                                                                  
+  property :latestContent   ,         :text                                                                                                                  
   property :latestVersion   ,         :unsigned_integer                                                                                                               
   property :geo             ,         :string            
   property :place_id        ,        :string                                                                                                            

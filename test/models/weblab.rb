@@ -10,8 +10,8 @@ class Weblab < DomainModel
  property :is_active ,:boolean                             
  property :adsense_channel,:string
  property :score,:integer
- property :layout,:clob
- property :stylesheet,:clob
+ property :layout,:text
+ property :stylesheet,:text
  property :created_date,:date
 
 end
