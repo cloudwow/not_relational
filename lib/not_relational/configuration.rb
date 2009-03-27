@@ -46,8 +46,8 @@ module NotRelational
            @cipher_key=File.open(@cipher_key_file).read
         end
 
-        @cipher_iv_file ||= "./cipher_iv"
         @cipher_iv_file=not_relational_config['cipher_iv_file']
+        @cipher_iv_file ||= "./cipher_iv"
         if @cipher_iv_file and File.exists?(@cipher_iv_file)
           @cipher_iv=File.open(@cipher_iv_file).read
         end

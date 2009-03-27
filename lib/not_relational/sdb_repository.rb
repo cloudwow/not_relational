@@ -376,7 +376,7 @@ def get_text(table_name,primary_key,clob_name)
         end
         if options.has_key?(:order_by) && options[:order_by]
           clause=" ['#{options[:order_by]}' starts-with ''] sort '#{options[:order_by]}' "
-          if options.has_key?(:order) and options[:order]==:descending
+          if options.has_key?(:order) and ( options[:order]==:descending or options[:order]==:desc)
             clause<<" desc "
           end
           extend_query(query,clause)

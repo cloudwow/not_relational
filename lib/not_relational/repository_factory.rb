@@ -1,4 +1,4 @@
-require "not_relational/repository.rb"
+require "not_relational/sdb_repository.rb"
 require "not_relational/configuration.rb"
 require "not_relational/memory_repository.rb"
     
