@@ -762,11 +762,11 @@ module NotRelational
         else             return find_single(scope, options)
         end
       end
-      def find_one(options)
+      def find_one(options={})
         options[:limit]=1
         find_every(options).first
       end
-      def find_every(options)
+      def find_every(options={})
 
         results=[]
         untyped_results=self.repository.query(self.table_name,attribute_descriptions,options)
@@ -846,7 +846,10 @@ module NotRelational
         return found
           
       end
-    
+
+    def all(options={})
+      return find_every(options)
+    end
     end
     def self.module_name
       result=""

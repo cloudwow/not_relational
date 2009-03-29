@@ -28,5 +28,5 @@ $sdb=AwsSdb::Service.new(
 
 
    end
-    delete_domain(test_config['domain_name_prefix'])
-  create_domain(test_config['domain_name_prefix'])
+    delete_domain(test_config['base_domain_name'])
+  create_domain(test_config['base_domain_name'])

@@ -5,13 +5,13 @@ development_not_relational:
   domain_name: test
   s3_bucket: test_test
   sqs_work_queue: test_work_queue_test
-  domain_name_prefix: NotRelational_testing
+  base_domain_name: NotRelational_testing
   repository_class: NotRelational::SdbRepository
 
 testing_not_relational:
   aws_key_id: your_access_key
   aws_secret_key: your_secret_key
-  domain_name_prefix: test_test
+  base_domain_name: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
   use_seperate_domain_per_model: false
@@ -24,7 +24,7 @@ memcache_testing_not_relational:
   aws_key_id:
   aws_secret_key: a
   fail_fast: true
-  domain_name_prefix: test_test
+  base_domain_name: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
   use_seperate_domain_per_model: false
@@ -34,7 +34,7 @@ memcache_testing_not_relational:
 memcache_s3_testing_not_relational:
   aws_key_id: your_access_key
   aws_secret_key: your_secret_key
-  domain_name_prefix: test_test
+  base_domain_name: test_test
   s3_clob_bucket: alnitakTest
   sqs_work_queue: test_work_queue_test
   use_seperate_domain_per_model: false

@@ -27,7 +27,8 @@ class Mediaitem < NotRelational::DomainModel
   property :HasImage , :boolean
   property :is_private , :boolean
   property :created_time ,:date  
-    
+  property :metadata, :string ,:is_collection=>true
+
   has_many :Mediafile,nil,nil,:dependent=>:destroy
   has_many :Tag,nil,nil,:dependent=>:destroy
   has_many :Comment,nil,nil,:dependent=>:destroy

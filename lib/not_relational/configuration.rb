@@ -30,7 +30,7 @@ module NotRelational
         else
           @repository_class=NotRelational::MemoryRepository
         end
-        @base_domain_name= not_relational_config["domain_name_prefix"] || ""
+        @base_domain_name= not_relational_config["base_domain_name"] || ""
         @blob_bucket= not_relational_config["blob_bucket"]
         @aws_key_id = not_relational_config["aws_key_id"]
         @aws_secret_key = not_relational_config["aws_secret_key"]
