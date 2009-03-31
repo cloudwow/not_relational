@@ -1,7 +1,64 @@
 = not_relational
+== Domain model persistance on non relational databases.
+Not Relational is a really good thing that you really want.  It is in fact a ruby library for declaring and persisting domain models.  It is similiar in some ways to Active Record but is oriented towards non-relational databases such as Amazon's Simple DB service.  In version 1.x only SDBRepository and the MemoryRepository (a self contained repository for tests and small apps) are implemented.
 
-not relational is a really good thing that you really want.
+=== Configuration
+Add a section such as this to your yaml configuration file.
+=== Rails configuration
+1. NonRelational will look for it's configuration in config/database.yml .
+2. If you will not be using ActiveREcord, turn it off.
+3. Add the following to application.rb (or application_controller.rb)
+=== Non-rails configuration
+NonRelational will first check for ./database.yml  and then ./config/database.yml for configuration.
+=== Declare your models
+#You domain model classes must inherit from NonRelational::DomainModel
+class Thingee
+      # declare a primary key.
+      # NonRelational will set the id to a guid if you try to save it 
+      # without an id.
+      property :id, :string, :primary_key=true
+      
+      property :name,     :string
+      property :title,     :string
+      property :the_time, :date
+      property :index,    :int
 
+      # Declare a text field if the string may be too large for SDB.
+      # text properties will be stored in large object storage which
+      # usually means Amazon's S3.
+      property :index,    :text
+
+      #declare an index
+      index :name_and_index,[:name,index]
+
+      #declare a one-to-many relationship
+      has_many :Widget
+
+      #declare a many-to-one relationship
+      belongs_to :Person
+end
+	
+=== Create and Save
+thingee=Thingee.new()
+thingee2=Thingee.new(:name='my thingee',:index =>1,:the_time => TIme.now)
+thingee2.save
+=== Query
+thingee1=Thingee.find('thingee_id_1')
+thingee1=Thingee.find(:first,:conditions => {:name => 'david')
+thingee1=Thingee.find(:all,
+	              :limit=>3,:
+		      order_by => :index,
+		      order => :descending,
+		      :conditions => {:name => 'david',:title=>'boss'})
+thingees=Thingee.find_by_name('david')
+thingees=Thingee.find_by_name_and_index('david',3)
+
+=== Encryption
+1. Encrypt the whole model
+2. Encrypt individual property
+3. Remove encryption form individual property.
+=== Unit tests
+1. MemoryRepository for fast or offline tests.
 == Copyright
 
 Copyright (c) 2009 David Knight. See LICENSE for details.
