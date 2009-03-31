@@ -1,4 +1,3 @@
-require 'sqs'
 require 'memcache'
 require File.dirname(__FILE__) +"/s3.rb"
 require File.dirname(__FILE__) +"/query_string_auth_generator.rb"

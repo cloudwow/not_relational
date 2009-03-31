@@ -43,7 +43,7 @@ module NotRelational
         @cipher_key_file = not_relational_config['cipher_key_file']
         @cipher_key_file ||= "./.cipher_key"
         if @cipher_key_file and File.exists?(@cipher_key_file)
-           @cipher_key=File.open(@cipher_key_file).read
+          @cipher_key=File.open(@cipher_key_file).read
         end
 
         @cipher_iv_file=not_relational_config['cipher_iv_file']
@@ -54,19 +54,19 @@ module NotRelational
 
       end
     end
-def  crypto
-  return @crypto if @crypto
-  options={}
-  if cipher_key
-    options[:cipher_key=]= cipher_key
-    options[:cipher_iv  ]= cipher_iv
-    @crypto=Crypto.new()
-  else
-    @crypto=Crypto.new
-    File.open(self.cipher_key_file,'w').write(@crypto.key)
-    File.open(self.cipher_iv_file,'w').write(@crypto.iv)
-  end
-end
+    def  crypto
+      return @crypto if @crypto
+      options={}
+      if cipher_key
+        options[:cipher_key=]= cipher_key
+        options[:cipher_iv  ]= cipher_iv
+        @crypto=Crypto.new()
+      else
+        @crypto=Crypto.new
+        File.open(self.cipher_key_file,'w').write(@crypto.key)
+        File.open(self.cipher_iv_file,'w').write(@crypto.iv)
+      end
+    end
     def cipher_key
       return @cipher_key
     end
@@ -80,7 +80,7 @@ end
       config_file_path=nil
       config_section=nil
 
-      #when using rails use config/database.yml
+      # #when using rails use config/database.yml
       if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
         config_file_path =  File.join("#{RAILS_ROOT}","config","database.yml")
 
@@ -89,7 +89,8 @@ end
 
 
       else
-        #when not using rails use try database.yml then try config/database.yml
+        # #when not using rails use try database.yml then try
+        # config/database.yml
 
         if File.exists?("database.yml")
 

@@ -33,16 +33,23 @@ module SdbFormatter
       
     end
      def parse_float(value)
-      return nil if value==nil 
+      return nil if value==nil
       return value.to_f
     end
+
+     def parse_property_bag(value)
+      return {} if value==nil
+      return YAML::load(value)
+
+    end
+
       def parse_unsigned_integer(value)
           return nil if value==nil 
        return value.to_i
     end
    
    def format_reference_set(value)
-        value.to_yaml
+        value.to_yaml#ya2yaml(:syck_compatible => true)
         
     end
     
@@ -91,8 +98,15 @@ module SdbFormatter
            end
        return zero_pad_integer(value)
     end
-    
-    
+
+      def format_property_bag(value)
+           if !value
+                return nil
+           end
+       return value.to_yaml#(:syck_compatible => true)
+    end
+
+
     
     def zero_pad_integer(value)
       value=value.to_i

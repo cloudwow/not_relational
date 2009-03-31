@@ -174,4 +174,22 @@ class AlbumTest < Test::Unit::TestCase
         assert(found!=nil)         
         assert_equal(1,found.length)
   end
+  def test_metadata
+        a =Album.new
+        a.user_name='david'
+        a.metadata['x']='x1'
+        a.metadata['y']='y1'
+        a.save
+
+        assert_equal(a.metadata['x'],'x1')
+        assert_equal(a.metadata['y'],'y1')
+
+NotRelational::RepositoryFactory.instance.clear_session_cache
+found=Album.find(a.id)
+        assert_not_nil(found.metadata)
+        assert_equal(2,found.metadata.length)
+         assert_equal(found.metadata['x'],'x1')
+        assert_equal(found.metadata['y'],'y1')
+
+  end
 end

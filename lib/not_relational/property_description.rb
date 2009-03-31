@@ -1,4 +1,6 @@
 module NotRelational
+
+require 'ya2yaml'
 require File.dirname(__FILE__) +'/sdb_formatter.rb'
 require File.dirname(__FILE__) +'/crypto.rb'
 require File.dirname(__FILE__) +'/configuration.rb'
@@ -49,7 +51,10 @@ class PropertyDescription
         result= format_unsigned_integer(value)    
       elsif self.value_type==:float
         result= format_float(value)
-      
+
+      elsif self.value_type==:property_bag
+        result= format_property_bag(value)
+
       else
         result= format_string(value.to_s)
       end
@@ -93,7 +98,9 @@ class PropertyDescription
              return parse_unsigned_integer(value)    
       elsif self.value_type==:float
             return parse_float(value)
-       else 
+      elsif self.value_type==:property_bag
+            return parse_property_bag(value)
+       else
             return value.to_s
       end
       return value

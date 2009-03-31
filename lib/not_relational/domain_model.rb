@@ -33,6 +33,8 @@ module NotRelational
             unless @attribute_values.has_key?(attribute_name)
               if description.is_collection
                 @attribute_values[attribute_name]=[]
+              elsif description.value_type==:property_bag
+                @attribute_values[attribute_name]={}
               else
                 @attribute_values[attribute_name]=nil unless @attribute_values.has_key?(attribute_name)
               end
