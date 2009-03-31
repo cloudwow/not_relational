@@ -48,7 +48,7 @@ module SdbFormatter
     
     def format_date(value)
         return nil if value==nil 
-        return value.to_f.to_s
+        return format("%.4f",value.to_f)
     end
      def format_boolean(value)
         

@@ -30,7 +30,13 @@ module NotRelational
             end
             @attribute_values[attribute_name]=value
           else
-            @attribute_values[attribute_name]=nil unless @attribute_values.has_key?(attribute_name)
+            unless @attribute_values.has_key?(attribute_name)
+              if description.is_collection
+                @attribute_values[attribute_name]=[]
+              else
+                @attribute_values[attribute_name]=nil unless @attribute_values.has_key?(attribute_name)
+              end
+            end 
           end
 
 
@@ -522,16 +528,17 @@ module NotRelational
       class_eval <<-XXDONE
 	def #{accesser_attribute_name}
 
-            if !@accessor_cache.has_key? :#{accesser_attribute_name}
+            #{}if !@accessor_cache.has_key? :#{accesser_attribute_name}
               h={}
               pkey=DomainModel::arrayify(self.primary_key)
               #{reflecting_array_code}.each do |key|
                 h[key]=pkey.shift
               end
               result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
-                @accessor_cache[:#{accesser_attribute_name}]=result || []
-            end
-            return @accessor_cache[:#{accesser_attribute_name}] 
+              return result
+             #{}   @accessor_cache[:#{accesser_attribute_name}]=result || []
+            #{}end
+            #return @accessor_cache[:#{accesser_attribute_name}]
 	end
       XXDONE
       # end

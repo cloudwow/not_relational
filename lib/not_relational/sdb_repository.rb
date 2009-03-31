@@ -112,12 +112,14 @@ module NotRelational
         page_size=max- sdb_result.length
         page_size=page_size> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : page_size
         partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
-        sdb_result.merge!( partial_results)
+        sdb_result.concat( partial_results)
       end
 
       result=[]
-      sdb_result.each{|primary_key,sdb_row|
-        attributes =parse_attributes(attribute_descriptions,sdb_row)
+      sdb_result.each{|sdb_row|
+        primary_key=sdb_row[0]
+        sdb_attributes =sdb_row[1]
+        attributes =parse_attributes(attribute_descriptions,sdb_attributes)
         if attributes
           result<<attributes
         end
@@ -201,7 +203,7 @@ def get_text(table_name,primary_key,clob_name)
     end
 
     def pause
-      sleep(2)
+      sleep(3)
     end
 
     def  clear

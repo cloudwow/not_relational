@@ -1,4 +1,3 @@
-
 require 'rubygems'
 require 'test/unit'
 $:.push(File.dirname(__FILE__) +'/../../test/models')
@@ -373,12 +372,12 @@ class MediaItemTest < Test::Unit::TestCase
 
       assert(!item.rated_by_user?('david'))
 
-      tag=Rating.new
-      tag.rating=3
-      tag.user_name='david'
-      tag.mediaitem_id=item.id
-      tag.save
-      NotRelational::RepositoryFactory.instance.pause(3)
+        r = Rating.new
+      r.rating=3
+      r.user_name='david'
+      r.mediaitem_id=item.id
+      r.save
+      NotRelational::RepositoryFactory.instance.pause
       assert(item.rated_by_user?('david'))
 
     end

@@ -21,7 +21,7 @@ module AwsSdb
       params['MaxNumberOfItems'] =
         max.to_s unless max.nil? || max.to_i == 0
       doc = call(:get, params)
-      results = {}
+      results = []
       REXML::XPath.each(doc, '//Item') do |item|
         item_attributes={}
          item_name = REXML::XPath.first(item, './Name/text()').to_s
@@ -33,7 +33,7 @@ module AwsSdb
             value = REXML::XPath.first(attr, './Value/text()').to_s
             item_attributes[key]= value
         end
-         results[item_name]=item_attributes
+         results<<[item_name,item_attributes]
        
       end
       return results, REXML::XPath.first(doc, '//NextToken/text()').to_s

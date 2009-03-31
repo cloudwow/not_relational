@@ -58,8 +58,11 @@ class NodeTest < Test::Unit::TestCase
       node= Node.fill_new_node('david', "#{i}", 'hello world')
       node.clicks=i
       node.save
-    end  
-    found=Node.find(:all,:conditions=>{:clicks=>NotRelational::AttributeRange.new(:greater_than=>3)})
+    end
+    NotRelational::RepositoryFactory.instance.pause();
+    found=Node.find(
+        :all,
+        :conditions=>{:clicks=>NotRelational::AttributeRange.new(:greater_than=>3)})
     assert_equal(2,found.length)
   end
   def test_recent
@@ -73,9 +76,9 @@ class NodeTest < Test::Unit::TestCase
       node.save
             
       nodes<<node
-      NotRelational::RepositoryFactory.instance.pause()
+      
     end
-          
+          NotRelational::RepositoryFactory.instance.pause()
             
     recent=Node.recent('en',2)    
     assert_equal(2,recent.length)

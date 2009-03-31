@@ -60,16 +60,18 @@ class GroupTest < Test::Unit::TestCase
   end
 
   def test_members
-    NotRelational::RepositoryFactory.instance.pause()
     GroupTest.set_up
     
-   
+      NotRelational::RepositoryFactory.instance.pause()
+ 
      joe=User.new()
     joe.login='joe'
     joe.save
    
     group=Group.create_group("tkuuhestgroup", "my group short desc", "description long desc", "tags my test", true, 'joe')
-found=group.members
+      NotRelational::RepositoryFactory.instance.pause()
+
+    found=group.members
      assert(found!=nil)
     assert_equal(1,found.length)
     assert_equal('joe',found[0].login)
@@ -200,10 +202,12 @@ found=group.members
     GroupTest.set_up
     group=Group.create_group("tqweqwrestgroup", "my group short desc", "description long desc", "tags my my test", true, 'joe')
     album1=Album.create_group_album('joe',group.id,'title','description',false)
+    album1.created_time_utc=Time.now.gmtime-50
+    album1.save!
     album2=Album.create_group_album('dave',group.id,'title2','description2',false)
     album2.created_time_utc=Time.now.gmtime+50
     album2.save
-         
+    NotRelational::RepositoryFactory::instance.pause
     albums=group.albums
     
       assert_equal(2,albums.length)

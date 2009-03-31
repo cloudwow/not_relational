@@ -149,7 +149,7 @@ class PlaceTest < Test::Unit::TestCase
        
         node_album.connect_mediaitem(mediaitem2)
         node_album2.connect_mediaitem(mediaitem3)
-        
+        NotRelational::RepositoryFactory.instance.pause()
         found=node.mediaitems
         assert(found!=nil)         
         assert_equal(2,found.length)
