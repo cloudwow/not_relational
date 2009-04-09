@@ -31,7 +31,7 @@ module AwsSdb
            
             key = REXML::XPath.first(attr, './Name/text()').to_s
             value = REXML::XPath.first(attr, './Value/text()').to_s
-            item_attributes[key]= value
+            ( item_attributes[key] ||= [] ) << value
         end
          results<<[item_name,item_attributes]
        
