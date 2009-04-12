@@ -32,7 +32,9 @@ class Storage
       @tokens=tokens
 
     end
-
+    @logger=options[:logger] if options.has_key?(:logger)
+    @logger ||= Logger.new(STDOUT)
+    @logger.level = Logger::WARN
 
     if @memcache_servers and @memcache_servers.length>0
      @cache= MemCache.new @memcache_servers, :namespace => 'my_namespace'
@@ -87,8 +89,8 @@ class Storage
       rescue=> e
 
                  s= "#{e.message}\n#{e.backtrace}"
-        puts(s)
-        puts "retrying s3 get #{i.to_s}"
+        @logger.warn(s)
+        @logger.info "retrying s3 get #{i.to_s}"
         raise e if self.fail_fast
         sleep(i*i)
       end
@@ -111,14 +113,14 @@ x=nil
       rescue =>e
         raise e if self.fail_fast
                  s= "#{e.message}\n#{e.backtrace}"
-        puts(s)
-        puts "retrying s3 put #{i.to_s}"
+        @logger.warn(s)
+        @logger.info "retrying s3 put #{i.to_s}"
         sleep(i*i)
         #try again
       end
     end
     if x.http_response.code!="200"
-
+        @logger.error(x.inspect)
          raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
       end
   end
