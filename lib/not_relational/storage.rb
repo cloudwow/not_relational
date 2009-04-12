@@ -89,7 +89,7 @@ class Storage
       rescue=> e
 
                  s= "#{e.message}\n#{e.backtrace}"
-        @logger.warn(s)
+        @logger.error(s)
         @logger.info "retrying s3 get #{i.to_s}"
         raise e if self.fail_fast
         sleep(i*i)
@@ -113,14 +113,14 @@ x=nil
       rescue =>e
         raise e if self.fail_fast
                  s= "#{e.message}\n#{e.backtrace}"
-        @logger.warn(s)
+        @logger.error(s)
         @logger.info "retrying s3 put #{i.to_s}"
         sleep(i*i)
         #try again
       end
     end
     if x.http_response.code!="200"
-        @logger.error(x.inspect)
+        @logger.error(x.inspect.http_reponse)
          raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
       end
   end
