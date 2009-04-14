@@ -6,6 +6,14 @@ class MemoryStorage
   def initialize
     clear
   end
+  def real_s3_get(bucket,key)
+    get(bucket,key)
+  end
+  def real_s3_put(bucket,key,object,attributes=nil)
+    put(bucket,key,object,attributes)
+
+  end
+
   def get(bucket,key)
     return @stuff[bucket+"sdsdw555"+key]
         

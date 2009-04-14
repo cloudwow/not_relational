@@ -12,6 +12,7 @@ module NotRelational
     attr_reader :memcache_servers
     attr_reader :use_seperate_domain_per_model
     attr_reader :fail_fast
+    attr_reader :log_level
 
     attr_reader :cipher_key_file
     attr_reader :cipher_iv_file
@@ -51,7 +52,8 @@ module NotRelational
         if @cipher_iv_file and File.exists?(@cipher_iv_file)
           @cipher_iv=File.open(@cipher_iv_file).read
         end
-
+      @log_level = not_relational_config["log_level"] || Logger::INFO
+        
       end
     end
     def  crypto
