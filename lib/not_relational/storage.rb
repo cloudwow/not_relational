@@ -34,7 +34,7 @@ class Storage
     end
     @logger=options[:logger] if options.has_key?(:logger)
     @logger ||= Logger.new(STDOUT)
-    @logger.level = Logger::WARN
+    @logger.level = Logger::DEBUG
 
     if @memcache_servers and @memcache_servers.length>0
      @cache= MemCache.new @memcache_servers, :namespace => 'my_namespace'
@@ -103,6 +103,8 @@ class Storage
   def real_s3_put(bucket,key,object,attributes)
 
     return if self.memory_only
+    @logger.info "real s3 put into #{bucket}/#{key}"
+
 x=nil
     4.times do |i|
       begin
@@ -113,16 +115,18 @@ x=nil
       rescue =>e
         raise e if self.fail_fast
                  s= "#{e.message}\n#{e.backtrace}"
-        @logger.error(s)
+        @logger.warn(s)
         @logger.info "retrying s3 put #{i.to_s}"
         sleep(i*i)
         #try again
       end
     end
+    
     if x.http_response.code!="200"
-        @logger.error(x.inspect.http_reponse)
-         raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
-      end
+      @logger.error(x.http_reponse.inspect)
+      raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
+    end
+    
   end
   def delete(bucket,key)
     if @cache
