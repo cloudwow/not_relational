@@ -28,7 +28,7 @@ module NotRelational
       @logger = options[:logger]
       if !@logger
         @logger = Logger.new(STDOUT)
-        @logger.level = options[:log_level] || Logger::ERROR
+        @logger.level = options[:log_level] || Logger::WARN
       end
 
 
@@ -46,7 +46,7 @@ module NotRelational
 
 
       @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
-      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger=>@logger)
+      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com")
       @session_cache=MemoryRepository.new
 
     end
@@ -88,7 +88,7 @@ module NotRelational
     # result will be an array of hashes. each hash is a set of attributes
     def query(table_name,attribute_descriptions,options)
 
-      @logger.debug "query on table: #{table_name}"
+     @logger.debug "query on table: #{table_name} : #{options.inspect}"
 
       if options.has_key?(:limit) and !options.has_key?(:order_by)
         session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)

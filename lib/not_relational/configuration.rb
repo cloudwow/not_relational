@@ -52,7 +52,7 @@ module NotRelational
         if @cipher_iv_file and File.exists?(@cipher_iv_file)
           @cipher_iv=File.open(@cipher_iv_file).read
         end
-      @log_level = not_relational_config["log_level"] || Logger::INFO
+      @log_level = not_relational_config["log_level"] || Logger::DEBUG
         
       end
     end

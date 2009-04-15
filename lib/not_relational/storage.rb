@@ -141,26 +141,28 @@ x=nil
   end
   def get(bucket,key)
     value   =nil
-    if@cache
+    if @cache
       begin
         value=@cache[encode_key(bucket,key)]
       rescue=>e
-                   s= "#{e.message}"
+        s= "#{e.message}"
 
-        puts("error on  /#{bucket}/#{key} from cache.\n#{s}\n")
+        @logger.error("error on  getting /#{bucket}/#{key} from cache.\n#{s}\n")
       end
     end
        
-    if !value
+    unless value
      value=real_s3_get(bucket,key)
-      if @cache
         begin
-          @cache[encode_key(bucket,key)]=value
-        rescue
-          #might be too large or memcache might be down
+          @cache[encode_key(bucket,key)]=value if @cache
+        rescue=>e
+            s= "#{e.message}"
+
+          @logger.error("error on  putting /#{bucket}/#{key} into cache.\n#{s}\n")
+
         end
             
-      end
+     
     
     end
     return value 
