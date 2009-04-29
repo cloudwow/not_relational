@@ -210,3 +210,13 @@ namespace :metrics do
     system('rake metrics:make_index')
   end
 end
+    task :emacs  do
+ 	 files = FileList['**/*.rb'].exclude("vendor")
+
+	 puts "Making Emacs TAGS file"
+
+	 puts "ctags -f #{files}"
+         sh "ctags -e #{files}", :verbose => false
+
+    end
+

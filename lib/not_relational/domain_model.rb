@@ -560,6 +560,16 @@ module NotRelational
       return result[0] if result.length==1
       return result
     end
+    def flat_primary_key()
+      result=""
+      self.class.primary_key_attribute_names.each do | key_part|
+        result << "/" if result.length>0
+        result << CGI.escape(@attribute_values[key_part ])
+      end
+      return result
+
+    end
+
     def primary_key_hash
 
       result={}

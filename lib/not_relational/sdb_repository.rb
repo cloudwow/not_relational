@@ -121,7 +121,7 @@ module NotRelational
         sdb_attributes =sdb_row[1]
         attributes =parse_attributes(attribute_descriptions,sdb_attributes)
         if attributes
-          result<<attributes
+          result << attributes
         end
       }
 
@@ -379,7 +379,7 @@ def get_text(table_name,primary_key,clob_name)
         if options.has_key?(:order_by) && options[:order_by]
           clause=" ['#{options[:order_by]}' starts-with ''] sort '#{options[:order_by]}' "
           if options.has_key?(:order) and ( options[:order]==:descending or options[:order]==:desc)
-            clause<<" desc "
+            clause << " desc "
           end
           extend_query(query,clause)
         end
@@ -435,7 +435,7 @@ def get_text(table_name,primary_key,clob_name)
       if key.is_a?( Array)
         flattened_key=""
         key.each do |key_part|
-          flattened_key<<CGI.escape(key_part.to_s)+"/"
+          flattened_key << CGI.escape(key_part.to_s)+"/"
         end
         return flattened_key[0..-2]
       else
