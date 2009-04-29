@@ -828,6 +828,7 @@ module NotRelational
       end
       def find_single(id, options)
         return nil if id==nil
+        return nil if id.is_a?(String) && id.length==0
         if id.is_a?(Hash)
           id_as_array=[]
           @primary_key_attribute_names.each do |key_name|
