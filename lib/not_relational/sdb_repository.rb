@@ -27,7 +27,7 @@ module NotRelational
 
       @logger = options[:logger]
       if !@logger
-        @logger = Logger.new(STDOUT)
+        @logger = Logger.new(nil)
         @logger.level = options[:log_level] || Logger::WARN
       end
 
@@ -83,10 +83,13 @@ module NotRelational
       @sdb.delete_attributes(make_domain_name(table_name),make_cache_key(table_name, primary_key) )
       #TODO destroy text
     end
-
+    def query(table_name,attribute_descriptions,options)
+      result,token=query_with_token(table_name,attribute_descriptions,nil,options)
+      result
+    end
    
     # result will be an array of hashes. each hash is a set of attributes
-    def query(table_name,attribute_descriptions,options)
+    def query_with_token(table_name,attribute_descriptions,token,options)
 
      @logger.debug "query on table: #{table_name} : #{options.inspect}"
 
@@ -106,7 +109,8 @@ module NotRelational
       end
 
       page_size=max> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : max
-      sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size)
+      token=options[:token]
+      sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
 
       while !(token.nil? || token.empty? || sdb_result.length>=max)
         page_size=max- sdb_result.length
@@ -156,7 +160,7 @@ module NotRelational
       if options[:limit] && result.length>options[:limit]
         result=result[0..(options[:limit]-1)]
       end
-      return result
+      return result,token
     end
 def get_text(table_name,primary_key,clob_name)
       return @storage.get(@storage_bucket,make_storage_key(table_name,primary_key,clob_name))
@@ -216,7 +220,7 @@ def get_text(table_name,primary_key,clob_name)
     end
 
     
-    private
+#    private
 
     def make_domain_name(table_name)
       if @use_seperate_domain_per_model

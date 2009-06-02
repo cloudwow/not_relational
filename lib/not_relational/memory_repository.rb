@@ -5,7 +5,7 @@ module NotRelational
   class MemoryRepository
     attr_accessor :use_cache #this here just so interface matches sdb repo
     attr_accessor :storage
-   
+    attr_reader :query_count   
     def initialize(
         domain_name= nil,
         clob_bucket= nil,
@@ -22,10 +22,12 @@ module NotRelational
     end
 
     def clear_session_cache
-    
+      @query_count=0
+      @storage.clear_counts if  @storage.respond_to?(:clear_counts)
     end
 
     def clear
+      clear_session_cache
       @records={}
       @indexes={}
       @reverse_indexes={}
@@ -105,7 +107,8 @@ module NotRelational
     end
   
     def query(table_name,attribute_descriptions,options)
-      
+
+      @query_count+=1
       if options[:query]
         raise 'query not supported yet'
       end
@@ -207,7 +210,10 @@ module NotRelational
       return result
     end
 
-    def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
+    def find_one(table_name, primary_key,attribute_descriptions)#,
+      #non_clob_attribute_names, clob_attribute_names)
+      @query_count+=1
+
       return @records[make_cache_key(table_name,primary_key)]
     end
 
@@ -217,6 +223,8 @@ module NotRelational
     end
 
     def destroy(table_name, primary_key)
+      @query_count+=1
+
       key=make_cache_key(table_name,primary_key);
     
       if @records.has_key?(key)

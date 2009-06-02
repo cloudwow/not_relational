@@ -33,7 +33,7 @@ class Storage
 
     end
     @logger=options[:logger] if options.has_key?(:logger)
-    @logger ||= Logger.new(STDOUT)
+    @logger ||= Logger.new(nil)
     @logger.level = Logger::DEBUG
 
     if @memcache_servers and @memcache_servers.length>0
@@ -162,9 +162,12 @@ x=nil
 
         end
             
-     
-    
+      puts "------- missed memcached: #{key}"
+
+    else
+      puts "+++++++ got from memcached: #{key}"
     end
+    
     return value 
     
   end

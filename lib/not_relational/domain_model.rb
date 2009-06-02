@@ -376,7 +376,9 @@ module NotRelational
       foriegn_key_attributes=options[:foriegn_key_attribute] || "#{domain_class.to_s.downcase}_id".to_sym
       foriegn_key_attributes=arrayify(foriegn_key_attributes)
       fkey_array_code="[:"+foriegn_key_attributes.join(",:")+"]"
+
       class_eval <<-XXDONE
+
 
 	def #{accesser_attribute_name}
             #unless @accessor_cache.has_key? :#{accesser_attribute_name}
@@ -794,6 +796,17 @@ module NotRelational
           results<<istantiate(item_attributes,self.repository(options))
         end
         return results
+
+      end
+      def find_paged(token=nil,options={})
+
+        results=[]
+        untyped_results,token=self.repository.query_with_token(self.table_name,attribute_descriptions,token,options)
+        untyped_results.each do |item_attributes|
+
+          results << istantiate(item_attributes,self.repository(options))
+        end
+        return results,token
 
       end
       def find_list(primary_keys,options={})
