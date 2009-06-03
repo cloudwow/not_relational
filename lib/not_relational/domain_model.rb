@@ -792,8 +792,7 @@ module NotRelational
         results=[]
         untyped_results=self.repository.query(self.table_name,attribute_descriptions,options)
         untyped_results.each do |item_attributes|
-
-          results<<istantiate(item_attributes,self.repository(options))
+          results << istantiate(item_attributes,self.repository(options))
         end
         return results
 

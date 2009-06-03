@@ -96,7 +96,7 @@ module NotRelational
       if options.has_key?(:limit) and !options.has_key?(:order_by)
         session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
         if options[:limit]==session_cache_result.length
-          return session_cache_result
+          return session_cache_result,nil
         end
       end
     

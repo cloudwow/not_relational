@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'test/unit'
 $:.push(File.dirname(__FILE__) +'/../../test/models')
+$:.push(File.dirname(__FILE__) +'/../../test')
 $:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
 require File.dirname(__FILE__) +'/../../lib/not_relational/domain_model.rb'
 require File.dirname(__FILE__) +'/../../lib/not_relational/attribute_range.rb'
