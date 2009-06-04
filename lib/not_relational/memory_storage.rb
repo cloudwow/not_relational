@@ -59,6 +59,11 @@ end
   def real_s3
     return self
   end
+    def start_session_cache
+  end
+  def end_session_cache
+  end
+
 end
 
 end

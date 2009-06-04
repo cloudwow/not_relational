@@ -12,9 +12,11 @@ class Storage
   @memcache_servers=nil
   @aws_key_id = nil
   @aws_secret_key = nil
+  @session_cache=nil
   attr_accessor :tokens
   attr_accessor :memory_only
   attr_accessor :fail_fast
+  attr_accessor :session_cache
   def initialize( aws_key_id,
       aws_secret_key,
       memcache_servers,
@@ -40,7 +42,12 @@ class Storage
      @cache= MemCache.new @memcache_servers, :namespace => 'my_namespace'
     end
   end
-  
+  def start_session_cache
+    @session_cache=MemoryStorage.new
+  end
+  def end_session_cache
+    @session_cache=nil
+  end
   def real_s3
     if self.memory_only
       raise "this is a memcache only storage.  there is no s3"
@@ -136,11 +143,14 @@ x=nil
         #memcache might be down
       end
     end
+    @session_cache.delete(bucket,key) if @session_cache
     real_s3.delete(bucket,key)
     
   end
   def get(bucket,key)
     value   =nil
+    value=@session_cache.get(bucket,key) if @session_cache
+    return value if value
     if @cache
       begin
         value=@cache[encode_key(bucket,key)]
@@ -154,6 +164,7 @@ x=nil
     unless value
      value=real_s3_get(bucket,key)
         begin
+
           @cache[encode_key(bucket,key)]=value if @cache
         rescue=>e
             s= "#{e.message}"
@@ -162,11 +173,12 @@ x=nil
 
         end
             
-      puts "------- missed memcached: #{key}"
+      @Logger.debug "------- missed memcached: #{key}"
 
     else
-      puts "+++++++ got from memcached: #{key}"
+      @Logger.debug "+++++++ got from memcached: #{key}"
     end
+    @session_cache.put(bucket,key,value) if @session_cache
     
     return value 
     
@@ -174,7 +186,8 @@ x=nil
   def put(bucket,key,object,attributes={})
 
     real_s3_put(bucket,key,object,attributes)
-    
+    @session_cache.put(bucket,key,object,attributes) if @session_cache
+
     #cache in memcache if not media file
     if   memory_only ||
         !attributes ||
@@ -192,6 +205,7 @@ x=nil
         end
       end
     end
+
   end
   
   def list_bucket(bucket,prefix=nil) 
@@ -222,6 +236,8 @@ x=nil
   end
   def copy(old_bucket,old_key,new_bucket,new_key,options)
     real_s3.copy(old_bucket,old_key,new_bucket,new_key,options)
+    @session_cache.copy(old_bucket,old_key,new_bucket,new_key,options) if @session_cache
+
   end
 
 

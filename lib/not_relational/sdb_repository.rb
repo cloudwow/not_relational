@@ -48,7 +48,7 @@ module NotRelational
       @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
       @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com")
       @session_cache=MemoryRepository.new
-
+      @storage.start_session_cache
     end
     
     def save(table_name, primary_key, attributes,index_descriptions)
@@ -212,11 +212,12 @@ def get_text(table_name,primary_key,clob_name)
 
     def  clear
       @session_cache.clear
+      @storage.clear_session_cache
     end
 
     # can you guess what this does?
     def clear_session_cache
-      @session_cache.clear
+      clear
     end
 
     
