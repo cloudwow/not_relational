@@ -61,6 +61,8 @@ end
   end
     def start_session_cache
   end
+  def clear_session_cache
+  end
   def end_session_cache
   end
 

@@ -45,6 +45,9 @@ class Storage
   def start_session_cache
     @session_cache=MemoryStorage.new
   end
+  def clear_session_cache
+    @session_cache=MemoryStorage.new
+  end
   def end_session_cache
     @session_cache=nil
   end
