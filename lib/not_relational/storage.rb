@@ -173,10 +173,10 @@ x=nil
 
         end
             
-      @Logger.debug "------- missed memcached: #{key}"
+      @logger.debug "------- missed memcached: #{key}"
 
     else
-      @Logger.debug "+++++++ got from memcached: #{key}"
+      @logger.debug "+++++++ got from memcached: #{key}"
     end
     @session_cache.put(bucket,key,value) if @session_cache
     
