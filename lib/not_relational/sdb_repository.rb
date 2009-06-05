@@ -25,9 +25,9 @@ module NotRelational
                     
       )
 
-      @logger = options[:logger]
+      @logger = options[:logger] 
       if !@logger
-        @logger = Logger.new(nil)
+        @logger = Logger.new(STDERR)
         @logger.level = options[:log_level] || Logger::WARN
       end
 

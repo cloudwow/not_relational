@@ -52,10 +52,16 @@ module NotRelational
         if @cipher_iv_file and File.exists?(@cipher_iv_file)
           @cipher_iv=File.open(@cipher_iv_file).read
         end
-      @log_level = not_relational_config["log_level"] || Logger::DEBUG
+        @log_level = not_relational_config["log_level"] || Logger::WARN
         
       end
     end
+    
+    def logger
+      @logger = Logger.new(STDERR)
+      @logger.level = @log_level
+    end
+
     def  crypto
       return @crypto if @crypto
       options={}
