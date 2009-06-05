@@ -1,5 +1,5 @@
 require "openssl"
-
+require "logger"
 
 module NotRelational
   class Configuration
@@ -52,14 +52,19 @@ module NotRelational
         if @cipher_iv_file and File.exists?(@cipher_iv_file)
           @cipher_iv=File.open(@cipher_iv_file).read
         end
-        @log_level = not_relational_config["log_level"] || Logger::WARN
+        @log_level = Logger::WARN
+        @log_level =eval( "Logger::"+not_relational_config["log_level"]) if not_relational_config["log_level"]
         
       end
     end
     
     def logger
-      @logger = Logger.new(STDERR)
-      @logger.level = @log_level
+      unless @logger
+        @logger = Logger.new(STDERR)
+        @logger.level = @log_level
+        puts "config logger: #{@logger.inspect}"
+      end
+      @logger
     end
 
     def  crypto

@@ -30,7 +30,7 @@ module NotRelational
         @logger = Logger.new(STDERR)
         @logger.level = options[:log_level] || Logger::WARN
       end
-
+      puts "sdb_logger: #{@logger.inspect}"
 
     
       @base_domain_name = base_domain_name
@@ -101,7 +101,6 @@ module NotRelational
       end
     
       the_query=build_query(table_name, attribute_descriptions, options)
-      @logger.debug "the query: #{the_query}"
 
       max=MAX_PAGE_SIZE
       if options[:limit]
@@ -113,6 +112,7 @@ module NotRelational
       sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
 
       while !(token.nil? || token.empty? || sdb_result.length>=max)
+        @logger.debug  "got #{sdb_results.length} so far. going for more..."
         page_size=max- sdb_result.length
         page_size=page_size> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : page_size
         partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
@@ -288,7 +288,7 @@ def get_text(table_name,primary_key,clob_name)
 
     def sdb_query_with_attributes(table_name,query,max,token=nil)
 
-      @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
+#      @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
       20.times do |i|
         begin
           return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)

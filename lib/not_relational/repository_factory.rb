@@ -27,6 +27,7 @@ module NotRelational
       options[:fail_fast]=config.fail_fast
       options[:log_level]=config.log_level
       options[:logger]=config.logger
+      puts "factory lgger="+config.logger.inspect
       @repository= config.repository_class.new(
         config.base_domain_name,
         config.blob_bucket,
