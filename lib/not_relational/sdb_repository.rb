@@ -112,7 +112,7 @@ module NotRelational
       sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
 
       while !(token.nil? || token.empty? || sdb_result.length>=max)
-        @logger.debug  "got #{sdb_results.length} so far. going for more..."
+        @logger.debug  "got #{sdb_result.length} so far. going for more..."
         page_size=max- sdb_result.length
         page_size=page_size> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : page_size
         partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
