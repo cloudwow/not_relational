@@ -62,7 +62,6 @@ module NotRelational
       unless @logger
         @logger = Logger.new(STDERR)
         @logger.level = @log_level
-        puts "config logger: #{@logger.inspect}"
       end
       @logger
     end

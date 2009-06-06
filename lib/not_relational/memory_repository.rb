@@ -35,7 +35,7 @@ module NotRelational
       @storage.clear
     end
   
-    def save(table_name, primary_key, attributes,index_descriptions)
+    def save(table_name, primary_key, attributes,index_descriptions=nil)
       key=make_cache_key(table_name,primary_key);
       record=@records[key]
       if !record
@@ -45,16 +45,14 @@ module NotRelational
       end
     
       attributes.each do |description,value|
-        if description.is_text?
-          @storage.put("",make_storage_key(table_name,primary_key,description.name),value)
-        else
-          record[description.name]=value
-        end
+        name=description# 
+        name=description.name if description.respond_to?(:name)
+        record[name]=value
       end
        record["metadata%table_name"]=table_name
       record["metadata%primary_key"]=key
+      remove_from_indices(table_name,primary_key)
       if index_descriptions
-        remove_from_indices(table_name,primary_key)
         index_descriptions.each do |index_name,index|
           index_value=record[index_name.to_sym]
           save_into_index(table_name, record, index.name, index_value)
@@ -216,10 +214,14 @@ module NotRelational
 
       return @records[make_cache_key(table_name,primary_key)]
     end
-
+    
     def get_text(table_name,primary_key,clob_name)
-      return @storage.get("",make_storage_key(table_name,primary_key,clob_name))
-        
+#      return
+      #      @storage.get("",make_storage_key(table_name,primary_key,clob_name))
+      record= @records[make_cache_key(table_name,primary_key)]
+      return record[clob_name] if record
+      return nil
+      
     end
 
     def destroy(table_name, primary_key)

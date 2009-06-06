@@ -35,7 +35,7 @@ property :metadata,:property_bag
       result=[]
       for media_item in self.mediaitems
         if !media_item.HasVideo && ! media_item.HasAudio
-          result<<media_item;
+          result << media_item;
         end
       end
         
@@ -45,7 +45,7 @@ property :metadata,:property_bag
       result=[]
       for media_item in self.mediaitems
         if media_item.HasVideo 
-          result<<media_item;
+          result << media_item;
         end
                   
       end
@@ -55,7 +55,7 @@ property :metadata,:property_bag
       result=[]
       for media_item in self.mediaitems
         if media_item.HasAudio
-          result<<media_item;
+          result<< media_item;
         end
       
       end

@@ -204,7 +204,9 @@ class PlaceTest < Test::Unit::TestCase
         node_album.connect_mediaitem(mediaitem3)
         node_album.connect_mediaitem(mediaitem4)
         node_album.connect_mediaitem(mediaitem5)
-        
+
+        NotRelational::RepositoryFactory.instance.pause()
+    
         found=node.video_media
         assert(found!=nil)         
         assert_equal(2,found.length)

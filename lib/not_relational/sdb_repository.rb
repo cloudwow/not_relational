@@ -30,7 +30,6 @@ module NotRelational
         @logger = Logger.new(STDERR)
         @logger.level = options[:log_level] || Logger::WARN
       end
-      puts "sdb_logger: #{@logger.inspect}"
 
     
       @base_domain_name = base_domain_name
@@ -48,6 +47,7 @@ module NotRelational
       @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
       @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com")
       @session_cache=MemoryRepository.new
+      @query_cache={}
       @storage.start_session_cache
     end
     
@@ -89,17 +89,15 @@ module NotRelational
     end
    
     # result will be an array of hashes. each hash is a set of attributes
-    def query_with_token(table_name,attribute_descriptions,token,options)
-
-     @logger.debug "query on table: #{table_name} : #{options.inspect}"
-
-      if options.has_key?(:limit) and !options.has_key?(:order_by)
+    def query_with_token(table_name,attribute_descriptions,token,options={})
+      token ||= options[:token]
+      
+      if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
         session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
         if options[:limit]==session_cache_result.length
           return session_cache_result,nil
         end
       end
-    
       the_query=build_query(table_name, attribute_descriptions, options)
 
       max=MAX_PAGE_SIZE
@@ -108,7 +106,38 @@ module NotRelational
       end
 
       page_size=max> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : max
-      token=options[:token]
+
+      query_cache_key=nil
+      result=nil
+      if token==nil
+        query_cache_key=table_name+":"+the_query
+        cached_primary_keys=@query_cache[query_cache_key]
+        if cached_primary_keys
+#          puts "    QCK: HIT !! #{cached_primary_keys.length} records"
+          result=[]
+          cached_primary_keys.each do |key|
+#            puts "pkey='#{key}'"
+            rec=@session_cache.find_one(table_name,key,attribute_descriptions)
+            result << rec
+          end
+        end
+      end
+      unless result
+      if @logger.debug?
+        msg="sdb query on table: #{table_name}. "
+        msg<< "limit:#{options[:limit]} ," if options.has_key?(:limit)
+        if options.has_key?(:conditions)
+          c_count=0
+          options[:conditions].each do |c|
+            msg << c.to_s << ", "
+            c_count+=1
+            break if c_count>4
+          end
+        end
+        msg << options[:params].inspect if options.has_key?(:params)
+        @logger.debug msg
+      end
+
       sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
 
       while !(token.nil? || token.empty? || sdb_result.length>=max)
@@ -120,43 +149,20 @@ module NotRelational
       end
 
       result=[]
+      primary_keys=[]
       sdb_result.each{|sdb_row|
         primary_key=sdb_row[0]
         sdb_attributes =sdb_row[1]
         attributes =parse_attributes(attribute_descriptions,sdb_attributes)
+        @session_cache.save(table_name,primary_key,attributes)
+        primary_keys << primary_key 
         if attributes
           result << attributes
         end
-      }
-
-      #ordering is handled in sdb now
-#      if options and options[:order_by]
-#        result.sort! do |a,b|
-#          a_value=a[options[:order_by]]
-#          b_value=b[options[:order_by]]
-#          if options[:order] && options[:order]!=:ascending
-#            if !a_value
-#              1
-#            else
-#              if b_value
-#                b_value <=> a_value
-#              else
-#                -1
-#              end
-#            end
-#          else
-#            if !b_value
-#              1
-#            else
-#              if a_value
-#                a_value <=> b_value
-#              else
-#                -1
-#              end
-#            end
-#          end
-#        end
-#      end
+        }
+        @query_cache[query_cache_key]=primary_keys if query_cache_key
+#        puts "   qk cached #{primary_keys.length} keys"
+    end
       if options[:limit] && result.length>options[:limit]
         result=result[0..(options[:limit]-1)]
       end
@@ -169,7 +175,10 @@ def get_text(table_name,primary_key,clob_name)
 
 
     def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
-      session_cache_result=@session_cache.find_one(table_name, make_cache_key(table_name,primary_key),attribute_descriptions)
+      session_cache_result=@session_cache.find_one(
+                                                   table_name,
+                                                   primary_key,
+                                                   attribute_descriptions)
       return session_cache_result if session_cache_result
       #    if @use_cache
       #      yaml=@storage.get(@storage_bucket,make_cache_key(table_name,primary_key))
@@ -185,8 +194,14 @@ def get_text(table_name,primary_key,clob_name)
       if attributes
         # #attributes[:primary_key]=primary_key #put_into_cache(table_name,
         # primary_key, attributes)
+        attribute_key_values={}
+        attributes.each do |name,value|
+        end
+        @session_cache.save(table_name,primary_key,attributes)
+
       end
-   
+      
+      
       attributes
     end
 
@@ -212,6 +227,7 @@ def get_text(table_name,primary_key,clob_name)
 
     def  clear
       @session_cache.clear
+      @query_cache={}
       @storage.clear_session_cache
     end
 

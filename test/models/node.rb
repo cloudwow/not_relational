@@ -142,9 +142,12 @@ class Node < NotRelational::DomainModel
     result=[]
     album=self.Album
     if album
-              
+      puts "found album" 
       result=album.video_media
+    else
+      puts "no album"
     end
+    
     return result
   end
   def audio_media

@@ -62,8 +62,7 @@ class Place< NotRelational::DomainModel
             
             result=[]
             if self.Album
-            
-                result=self.Album.video_media
+              result=self.Album.video_media
             end
             return result
          end
