@@ -133,7 +133,7 @@ x=nil
     end
     
     if x.http_response.code!="200"
-      @logger.error(x.http_reponse.inspect)
+      @logger.error(x.http_response.inspect)
       raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
     end
     

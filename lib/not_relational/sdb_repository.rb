@@ -10,7 +10,7 @@ module NotRelational
   require File.dirname(__FILE__) +"/sdb_monkey_patch.rb"
   # THis class implements access to SDB.
   class SdbRepository
-    MAX_PAGE_SIZE=250#defined by sdb
+    @@max_page_size = 250 #defined by sdb
     attr_accessor :storage
 
     def initialize(
@@ -100,12 +100,12 @@ module NotRelational
       end
       the_query=build_query(table_name, attribute_descriptions, options)
 
-      max=MAX_PAGE_SIZE
+      max=@@max_page_size
       if options[:limit]
         max=options[:limit].to_i
       end
 
-      page_size=max> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : max
+      page_size=max> @@max_page_size ? @@max_page_size : max
 
       query_cache_key=nil
       result=nil
@@ -143,7 +143,7 @@ module NotRelational
       while !(token.nil? || token.empty? || sdb_result.length>=max)
         @logger.debug  "got #{sdb_result.length} so far. going for more..."
         page_size=max- sdb_result.length
-        page_size=page_size> MAX_PAGE_SIZE ? MAX_PAGE_SIZE : page_size
+        page_size=page_size> @@max_page_size ? @@max_page_size : page_size
         partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
         sdb_result.concat( partial_results)
       end

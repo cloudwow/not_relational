@@ -618,6 +618,22 @@ module NotRelational
     def get_attribute(name)
       @attribute_values[name]
     end
+    def to_s
+       result= "#{self.class.table_name}\n"
+      attributes.each do |key,value|
+        if value.respond_to?(:flatten)
+          result<<"\t#{key}: ["
+          value.each do |sub_value|
+            result<<"'#{h sub_value.to_s}'"
+          end
+          result << "]\n"
+        else
+          result<<"\t#{key}: #{h value.to_s}\n"
+        end
+      end
+      result
+   
+    end
     def to_xml
       result= "<#{self.class.table_name}>"
       attributes.each do |key,value|
