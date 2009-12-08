@@ -77,7 +77,7 @@ class Group < NotRelational::DomainModel
     result=[]
     for member in self.group_members
       member_user=User.find(member.member_login)
-      result<<member_user if member_user
+      result<< member_user if member_user
     end
     return result;
   end

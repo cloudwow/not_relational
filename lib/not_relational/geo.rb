@@ -29,7 +29,7 @@ module Geo
           top=top+height/2.0
           if longitude<right
             right=right-width/2.0
-            address<<'q'
+            address<< 'q'
           else
             right=right+width/2.0
             address << 'r'
@@ -39,7 +39,7 @@ module Geo
           top=top-height/2.0
           if longitude<right
             right=right-width/2.0
-            address<<'t'
+            address<< 't'
           else
             right=right+width/2.0
             address << 's'
@@ -173,7 +173,7 @@ module Geo
         address_params=[]
         for address in nearby
             
-                 address_params<<StartsWithCondition.new(self.AttributeDescription(:address),address)
+                 address_params << StartsWithCondition.new(self.AttributeDescription(:address),address)
        
         end
        orCondition=OrCondition.new(address_params)

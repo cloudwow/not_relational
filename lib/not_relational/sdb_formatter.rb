@@ -17,7 +17,7 @@ module SdbFormatter
           return value
         end
         return nil if value.length==0
-        return Time.at(value.to_f)
+        return Time.at(value.to_f).gmtime
     end
     def parse_boolean(value)
         return nil if value==nil 

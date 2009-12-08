@@ -14,13 +14,43 @@ class CompositeKeyTest < Test::Unit::TestCase
   def CompositeKeyTest.set_up
 
     PageViewSummary.find(:all).each do |node|
-      node.destroy
+      puts node.inspect
+        node.destroy
     end
     PageViewDetail.find(:all).each do |node|
+
       node.destroy
     end
     
   end
+
+  def test_delete_null_key_part
+    CompositeKeyTest.set_up
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+
+     all=PageViewSummary.find(:all)
+    assert_equal(0,all.length)
+
+     x=PageViewSummary.new(:username=>'david',:date=>nil,:page_view_count=>7)
+    x.save!
+
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+    all=PageViewSummary.find(:all)
+    assert_equal(1,all.length)
+    all[0].destroy
+
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+ 
+    all=PageViewSummary.find(:all)
+    assert_equal(0,all.length)
+
+  end
+  
   def test_foo
     CompositeKeyTest.set_up
     NotRelational::RepositoryFactory.instance.pause
@@ -56,17 +86,17 @@ class CompositeKeyTest < Test::Unit::TestCase
     x_details=found_x.page_view_details
 
     assert_equal(3,x_details.length)
-  y_details=y.page_view_details
+    y_details=y.page_view_details
 
     assert_equal(1,y_details.length)
-assert_equal(77,y_details[0].page_view_count)
-assert_equal('url_y',y_details[0].url)
+    assert_equal(77,y_details[0].page_view_count)
+    assert_equal('url_y',y_details[0].url)
 
     found_x_2=c.page_view_summary
     assert_not_nil(found_x_2)
     assert_equal(7, found_x_2.page_view_count)
 
-  found_y_2=d.page_view_summary
+    found_y_2=d.page_view_summary
     assert_not_nil(found_y_2)
     assert_equal(6, found_y_2.page_view_count)
 

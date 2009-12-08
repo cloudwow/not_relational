@@ -3,7 +3,7 @@ require "logger"
 
 module NotRelational
   class Configuration
-  
+    
     attr_reader :repository_class
     attr_reader :base_domain_name
     attr_reader :blob_bucket
@@ -14,8 +14,6 @@ module NotRelational
     attr_reader :fail_fast
     attr_reader :log_level
 
-    attr_reader :cipher_key_file
-    attr_reader :cipher_iv_file
 
     def self.singleton
       @singleton ||= NotRelational::Configuration.new
@@ -41,17 +39,8 @@ module NotRelational
         @use_seperate_domain_per_model=not_relational_config['use_seperate_domain_per_model']||false
         @fail_fast=not_relational_config['fail_fast'] ||false
 
-        @cipher_key_file = not_relational_config['cipher_key_file']
-        @cipher_key_file ||= "./.cipher_key"
-        if @cipher_key_file and File.exists?(@cipher_key_file)
-          @cipher_key=File.open(@cipher_key_file).read
-        end
+        @cipher_password = not_relational_config['cipher_password']
 
-        @cipher_iv_file=not_relational_config['cipher_iv_file']
-        @cipher_iv_file ||= "./cipher_iv"
-        if @cipher_iv_file and File.exists?(@cipher_iv_file)
-          @cipher_iv=File.open(@cipher_iv_file).read
-        end
         @log_level = Logger::WARN
         @log_level =eval( "Logger::"+not_relational_config["log_level"]) if not_relational_config["log_level"]
         
@@ -68,23 +57,15 @@ module NotRelational
 
     def  crypto
       return @crypto if @crypto
-      options={}
-      if cipher_key
-        options[:cipher_key=]= cipher_key
-        options[:cipher_iv  ]= cipher_iv
-        @crypto=Crypto.new()
+      if cipher_password
+        @crypto=Crypto.new(cipher_password)
       else
-        @crypto=Crypto.new
-        File.open(self.cipher_key_file,'w').write(@crypto.key)
-        File.open(self.cipher_iv_file,'w').write(@crypto.iv)
+        raise " 'cipher_password' value not found in config."
       end
-    end
-    def cipher_key
-      return @cipher_key
-    end
 
-    def cipher_iv
-      return @cipher_iv
+    end
+    def cipher_password
+      return @cipher_password
     end
 
     def find_config_section
