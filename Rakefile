@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "not_relational"
-    gem.summary = %Q{TODO}
+    gem.summary = "I am not relational."
     gem.email = "david@cloudwow.com"
     gem.homepage = "http://github.com/cloudwow/not_relational"
     gem.authors = ["cloudwow"]
