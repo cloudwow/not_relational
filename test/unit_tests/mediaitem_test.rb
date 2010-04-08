@@ -142,6 +142,7 @@ class MediaItemTest < Test::Unit::TestCase
       item.save
       items << item
     end
+    NotRelational::RepositoryFactory.instance.pause()
     
     found=Mediaitem.recent(3)
     assert_equal(3,found.length)
@@ -223,7 +224,7 @@ class MediaItemTest < Test::Unit::TestCase
     big_file.width=1200
     big_file.height=1000
     big_file.save
-    
+    NotRelational::RepositoryFactory.instance.pause()    
     found=item.mediafiles
     
     assert_not_nil found
@@ -277,6 +278,7 @@ class MediaItemTest < Test::Unit::TestCase
     big640_file.height=480
     big640_file.mimeType="image/jpeg"
     big640_file.save
+    NotRelational::RepositoryFactory.instance.pause()
     
     found=item.thumbfile      
     assert_not_nil found
@@ -375,6 +377,7 @@ class MediaItemTest < Test::Unit::TestCase
     tag.rating=4
     tag.mediaitem_id=item.id
     tag.save
+    NotRelational::RepositoryFactory.instance.pause()
     rating=item.rating
     assert_equal(3.5,rating)
     

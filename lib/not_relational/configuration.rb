@@ -96,7 +96,9 @@ module NotRelational
       end
       if config_file_path and config_section
         config_file = YAML.load(File.open( config_file_path))
-
+        puts "@@@$$ not relational config file=#{config_file_path}"
+        puts "@@@$$ not relational config section=#{config_section}"
+        puts "@@@$$ SDB domain=#{config_file[config_section]['base_domain_name']}"
         $not_relational_config = config_file[config_section]
       end
       return $not_relational_config

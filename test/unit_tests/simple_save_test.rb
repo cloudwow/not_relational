@@ -38,6 +38,8 @@ class SimpleSaveTest < Test::Unit::TestCase
     node_album.save
     
     node_album.connect_mediaitem(a)
+    NotRelational::RepositoryFactory.instance.pause()
+
     found_items=node_album.mediaitems
     assert_equal(1,found_items.length)
 

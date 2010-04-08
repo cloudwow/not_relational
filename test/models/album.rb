@@ -14,7 +14,7 @@ class Album < NotRelational::DomainModel
   property :last_update_time_utc ,:date  
   property :is_private, :boolean
   property :group_id, :string
-property :metadata,:property_bag
+  property :metadata,:property_bag
   index :group_and_title ,[:group_id,:title],:unique=>true
   many_to_many :Mediaitem,:AlbumMediaItem,:album_id,:mediaitem_id,:mediaitems,:order_by=>:created_time
   belongs_to :Group

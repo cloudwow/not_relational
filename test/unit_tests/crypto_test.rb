@@ -1,5 +1,6 @@
 require 'rubygems'
-require 'test/unit'
+require 'test/test_helper.rb'
+require "openssl"
 require File.dirname(__FILE__) +'/../../lib/not_relational/crypto.rb'
 
 module NotRelational
@@ -34,7 +35,7 @@ module NotRelational
       x=target.encrypt("abc123")
       target=Crypto.new(:password => "duhduhduh",:salt => "13412333")
       
-      assert_raise(OpenSSL::Cipher::CipherError){
+      assert_raise(OpenSSL::CipherError){
         target.decrypt(x)
       }
     end
@@ -43,7 +44,7 @@ module NotRelational
       x=target.encrypt("abc123")
       target=Crypto.new(:password => "1uhduhduh",:salt => "23412333")
       
-      assert_raise(OpenSSL::Cipher::CipherError){
+      assert_raise(OpenSSL::CipherError){
         target.decrypt(x)
       }
     end

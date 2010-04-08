@@ -9,13 +9,19 @@ module NotRelational
   class DomainModel
     @@items_to_commit=nil
     @@transaction_depth=0
-    attr_accessor :sdb_key
+
+    # These two attributes will enable primary key bug 
+    # fix to be backwards compatible
+    attr_accessor :computed_flattened_primary_key_at_load_time
+    attr_accessor :sdb_primary_key_at_load_time
     def initialize(options={})
       @attribute_values=HashWithIndifferentAccess.new
 
       copy_attributes(options)
       @accessor_cache={}
-
+      @repository_id_at_load_time=options["@@REPOSITORY_ID"]
+      @computed_flattened_primary_key_at_load_time=flat_primary_key
+      
     end
     
     def set_default_values
@@ -563,18 +569,22 @@ module NotRelational
 
       result=[]
       self.class.primary_key_attribute_names.each do |key_part|
-        result<<@attribute_values[key_part ]
+        result<<@attribute_values[key_part ]# !!  #TODO need to translate null booleans into false
       end
       return result[0] if result.length==1
       return result
     end
     def flat_primary_key()
-      result=""
-      self.class.primary_key_attribute_names.each do | key_part|
-        result << "/" if result.length>0
-        result << CGI.escape(@attribute_values[key_part ])
+      key=primary_key
+      if key.is_a?( Array)
+        flattened_key=""
+        key.each do |key_part|
+          flattened_key << CGI.escape(key_part.to_s)+"/"
+        end
+        return flattened_key[0..-2]
+      else
+        return CGI.escape(key.to_s)
       end
-      return result
 
     end
 
@@ -668,7 +678,7 @@ module NotRelational
         end
       end
       if self.primary_key
-        self.repository(options).destroy(self.table_name,self.primary_key)
+        self.repository(options).destroy(self.table_name,primary_key,repository_id_for_updates)
       end
     end
     def attributes
@@ -737,11 +747,22 @@ module NotRelational
           
           attributes[self.class.index_descriptions[name]]=value
         end
-        
-        self.repository(options).save(self.table_name,self.primary_key,attributes,self.class.index_descriptions)
+
+        self.repository(options).save(self.table_name,primary_key,attributes,self.class.index_descriptions,  repository_id_for_updates)
         @accessor_cache=temp_accessor_cache
       end
       
+    end
+    def repository_id_for_updates
+      if @repository_id_at_load_time!=nil && self.flat_primary_key==@computed_flattened_primary_key_at_load_time
+        #no element of the primary key has change so
+        #preserve any buggy flat key that might have been saved by
+        #old code
+#        puts "OVERRIDING UPDATE KEY (#{self.flat_primary_key})#{@repository_id_at_load_time}"  if @repository_id_at_load_time!=self.flat_primary_key
+        return @repository_id_at_load_time
+
+      end
+      return nil
     end
     def table_name
       return self.class.table_name
@@ -847,12 +868,12 @@ module NotRelational
       def query_ids(options={})
         self.repository.query_ids(self.table_name,attribute_descriptions,options)
       end
-      def istantiate(sdb_attributes,repository)
+      def istantiate(sdb_attributes,repository,repository_id=nil)
         this_result=new(sdb_attributes || {})
         get_text_proc=nil
         clob_attribute_names.each do |clob_attribute_name|
           get_text_proc= proc {
-            repository.get_text(self.table_name,this_result.primary_key,clob_attribute_name)
+            repository.get_text(self.table_name,this_result.primary_key,clob_attribute_name,repository_id)
           }
           
           this_result.set_attribute(clob_attribute_name, LazyLoadingText.new(get_text_proc))

@@ -87,7 +87,8 @@ class GroupTest < Test::Unit::TestCase
      
     group.add_member 'david'
     NotRelational::RepositoryFactory.instance.pause()
-    NotRelational::RepositoryFactory.instance.clear
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
     
     found=group.members
      
