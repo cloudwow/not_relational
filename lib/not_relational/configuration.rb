@@ -26,6 +26,9 @@ module NotRelational
       if not_relational_config
         if not_relational_config.has_key?("repository_class")
           @repository_class=eval  not_relational_config["repository_class"]
+          unless @repository_class
+            raise "Repository class not found: '#{not_relational_config["repository_class"]}'"
+          end
         else
           @repository_class=NotRelational::MemoryRepository
         end
@@ -46,7 +49,19 @@ module NotRelational
         
       end
     end
-    
+
+    def assert_configured
+      return if @repository_class
+      
+      msg="NOT_RELATIONAL is not configured\n"
+      msg << "config file: #{config_file_path}\n"
+      msg << "config section: #{config_section_name}\n"
+      msg << "config: #{config_section.to_yml}\n"
+      
+      raise msg
+      
+    end
+
     def logger
       unless @logger
         @logger = Logger.new(STDERR)
@@ -67,38 +82,44 @@ module NotRelational
     def cipher_password
       return @cipher_password
     end
+    def config_file_path
+      unless @config_file_path
+        if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
+          @config_file_path =  File.join("#{RAILS_ROOT}","config","database.yml")
+        else
+          if File.exists?("database.yml")
 
+            @config_file_path = "database.yml"
+          elsif File.exists?(File.join("config", "database.yml"))
+            @config_file_path = File.join("config", "database.yml")
+          end
+
+        end
+      end
+      return @config_file_path
+    end
+    def config_section_name
+      unless @config_section_name
+        if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
+          @config_section_name =ENV['RAILS_ENV']+"_not_relational"
+
+        else
+          @config_section_name =(ENV['NOT_RELATIONAL_ENV'] || "test")+"_not_relational"
+        end
+      end
+      return @config_section_name
+    end
+    
     def find_config_section
       return $not_relational_config if $not_relational_config
-      config_file_path=nil
-      config_section=nil
 
-      # #when using rails use config/database.yml
-      if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
-        config_file_path =  File.join("#{RAILS_ROOT}","config","database.yml")
-
-        config_section =ENV['RAILS_ENV']+"_not_relational"
-
-
-
-      else
-        # #when not using rails use try database.yml then try
-        # config/database.yml
-
-        if File.exists?("database.yml")
-
-          config_file_path = "database.yml"
-        elsif File.exists?(File.join("config", "database.yml"))
-          config_file_path = File.join("config", "database.yml")
-        end
-
-        config_section =(ENV['NOT_RELATIONAL_ENV'] || "production")+"_not_relational"
-      end
-      if config_file_path and config_section
+    
+      if config_file_path and config_section_name
         config_file = YAML.load(File.open( config_file_path))
 
-        $not_relational_config = config_file[config_section]
+        $not_relational_config = config_file[config_section_name]
       end
+
       return $not_relational_config
     end
   end

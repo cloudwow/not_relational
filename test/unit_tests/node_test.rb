@@ -75,7 +75,7 @@ class NodeTest < Test::Unit::TestCase
       node.publicRead=true
       node.save
             
-      nodes<<node
+      nodes << node
       
     end
           NotRelational::RepositoryFactory.instance.pause()
@@ -325,7 +325,7 @@ class NodeTest < Test::Unit::TestCase
     node_album.connect_mediaitem(mediaitem2)
     node_album2.connect_mediaitem(mediaitem3)
          NotRelational::RepositoryFactory.instance.pause()
-         NotRelational::RepositoryFactory.instance.clear()
+         NotRelational::RepositoryFactory.instance.clear_session_cache
     found=node.mediaitems
     assert(found!=nil)         
     assert_equal(2,found.length)

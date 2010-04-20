@@ -23,7 +23,7 @@ module NotRelational
       return @repository if @repository
 
       config=NotRelational::Configuration.singleton
-      
+      config.assert_configured
       options[:fail_fast]=config.fail_fast
       options[:log_level]=config.log_level
       options[:logger]=config.logger
