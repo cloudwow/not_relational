@@ -35,8 +35,8 @@ module NotRelational
       @storage.clear
     end
   
-    def save(table_name, primary_key, attributes,index_descriptions=nil)
-      key=make_cache_key(table_name,primary_key);
+    def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil)
+      key=repository_id || make_cache_key(table_name,primary_key);
       record=@records[key]
       if !record
         record={}
@@ -215,19 +215,20 @@ module NotRelational
       return @records[make_cache_key(table_name,primary_key)]
     end
     
-    def get_text(table_name,primary_key,clob_name)
+    def get_text(table_name,primary_key,clob_name,repository_id=nil)
+
 #      return
-      #      @storage.get("",make_storage_key(table_name,primary_key,clob_name))
+      #      @storage.get("",make_storage_key(table_name,repository_key,clob_name))
       record= @records[make_cache_key(table_name,primary_key)]
       return record[clob_name] if record
       return nil
       
     end
 
-    def destroy(table_name, primary_key)
+    def destroy(table_name, primary_key,repository_id=nil)
       @query_count+=1
 
-      key=make_cache_key(table_name,primary_key);
+      key=repository_id || make_cache_key(table_name,primary_key);
     
       if @records.has_key?(key)
         @records.delete(key)

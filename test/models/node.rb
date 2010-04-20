@@ -142,7 +142,7 @@ class Node < NotRelational::DomainModel
     result=[]
     album=self.Album
     if album
-      puts "found album" 
+
       result=album.video_media
     else
       puts "no album"
@@ -219,9 +219,14 @@ class Node < NotRelational::DomainModel
       # #tried many angles on this query.
       
     end
-    result.collect!{|x|y=((x.publicRead==true or (x.publicRead==nil and x.group_id==nil)) && (x.isChannel==nil || x.isChannel==false))?x:nil}
+#    puts "x1: #{result.size}"
+    result.collect!{|x|y=((x.publicRead==true or (x.group_id==nil)) && (x.isChannel!=true ))?x:nil}
     result.compact!
-    result.sort {|x,y| y.creationTime <=> x.creationTime }
+#    puts "x2: #{result.size}"
+    result.sort {|x,y| 
+#      puts "  x3: #{x} <=> #{y}"
+
+y.creationTime <=> x.creationTime }
     result=result[0..how_many-1] if result.length>how_many
       
     result

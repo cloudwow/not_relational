@@ -74,6 +74,8 @@ class TagTest < Test::Unit::TestCase
     tag.mediaitem_id='c'
     tag.created_time=Time.now.gmtime
     tag.save
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
     
     found=Tag.find_by_group_and_tag(group1.id,'my',:limit=>100,:order_by=>:tag_name,:order=>:descending)
     assert_equal(2,found.length)

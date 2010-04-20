@@ -2,13 +2,9 @@
 # and open the template in the editor.
 
 
-require 'test/unit'
-$:.push(File.dirname(__FILE__) +'/../../test/models')
-$:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
 
-require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
-require File.dirname(__FILE__) +'/../../test/models/node.rb'
-ENV['NOT_RELATIONAL_ENV']='testing'
+require 'test/test_helper.rb'
+
 
 class MemoryRepositoryTest < Test::Unit::TestCase
 

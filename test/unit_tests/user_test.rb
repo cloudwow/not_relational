@@ -18,7 +18,6 @@ require File.dirname(__FILE__) +'/../../test/models/rating.rb'
 require File.dirname(__FILE__) +'/../../test/models/comment.rb'
 require File.dirname(__FILE__) +'/../../test/models/blurb.rb'
 
-ENV['NOT_RELATIONAL_ENV']='testing'
 
  class UserTest < Test::Unit::TestCase
   def test_range

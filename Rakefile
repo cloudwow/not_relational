@@ -5,7 +5,11 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "not_relational"
+<<<<<<< HEAD
     gem.summary = "slime"
+=======
+    gem.summary = "I am not relational."
+>>>>>>> 8eed236e3a7c2e951c55a7ede737da43bdc1e351
     gem.email = "david@cloudwow.com"
     gem.homepage = "http://github.com/cloudwow/not_relational"
     gem.authors = ["cloudwow"]
