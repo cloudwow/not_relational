@@ -45,7 +45,7 @@ module NotRelational
 
 
       @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
-      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com")
+      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger => @logger)
       @session_cache=MemoryRepository.new
       @query_cache={}
       @storage.start_session_cache
