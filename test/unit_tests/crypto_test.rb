@@ -35,7 +35,7 @@ module NotRelational
       x=target.encrypt("abc123")
       target=Crypto.new(:password => "duhduhduh",:salt => "13412333")
       
-      assert_raise(OpenSSL::CipherError){
+      assert_raise(OpenSSL::Cipher::CipherError){
         target.decrypt(x)
       }
     end
@@ -44,7 +44,7 @@ module NotRelational
       x=target.encrypt("abc123")
       target=Crypto.new(:password => "1uhduhduh",:salt => "23412333")
       
-      assert_raise(OpenSSL::CipherError){
+      assert_raise(OpenSSL::Cipher::CipherError){
         target.decrypt(x)
       }
     end
