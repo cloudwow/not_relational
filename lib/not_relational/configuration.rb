@@ -116,12 +116,8 @@ module NotRelational
     
       if config_file_path and config_section_name
         config_file = YAML.load(File.open( config_file_path))
-<<<<<<< HEAD
-
         $not_relational_config = config_file[config_section_name]
-=======
-        $not_relational_config = config_file[config_section]
->>>>>>> 8eed236e3a7c2e951c55a7ede737da43bdc1e351
+
       end
 
       return $not_relational_config

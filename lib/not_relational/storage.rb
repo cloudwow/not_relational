@@ -199,7 +199,7 @@ module NotRelational
 
       #cache in memcache if not media file
       if   memory_only ||
-        !attributes ||
+          !attributes ||
           !attributes.has_key?('Content-Type') || 
           (attributes['Content-Type'].index('image')!=0 && attributes['Content-Type'].index('audio')!=0  && attributes['Content-Type'].index('video')!=0   ) 
         if @cache
@@ -209,8 +209,16 @@ module NotRelational
           rescue=>e
             s= "#{e.message}\n"
 
-            puts("ERROR when putting /#{bucket}/#{key}into  cache.\n#{s}\n-----------------------\n")
-            #TODO try to whack any old value
+            puts("ERROR when putting /#{bucket}/#{key} into  cache.\n#{s}\n-----------------------\n")
+            #try to whack old value to avoid stale cache
+            puts "attempting to delete stale cache value"
+            begin
+              @cache[encode_key(bucket,key)]
+            rescue=>e2
+              s= "#{e.message}\n"
+              puts("ERROR when deleting /#{bucket}/#{key} from cache.\n#{s}\n-----------------------\n")
+
+            end
           end
         end
       end
