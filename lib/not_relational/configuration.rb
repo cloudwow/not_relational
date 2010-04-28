@@ -56,7 +56,12 @@ module NotRelational
       msg="NOT_RELATIONAL is not configured\n"
       msg << "config file: #{config_file_path}\n"
       msg << "config section: #{config_section_name}\n"
-      msg << "config: #{config_section.to_yml}\n"
+      config=find_config_section
+      if config
+        msg << "config: #{find_config_section.to_yml}\n"
+      else
+        msg << "config section not found\n"
+      end
       
       raise msg
       
@@ -113,7 +118,7 @@ module NotRelational
     def find_config_section
       return $not_relational_config if $not_relational_config
 
-    
+      
       if config_file_path and config_section_name
         config_file = YAML.load(File.open( config_file_path))
         $not_relational_config = config_file[config_section_name]
