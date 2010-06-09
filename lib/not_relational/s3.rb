@@ -160,7 +160,7 @@ module NotRelational
       def escape_key(key)
         parts=key.split('/')
         result=[]
-        parts.each{|part|result<<URI.escape(part, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}
+        parts.each{|part|result<< URI.escape(part, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}
         result.join('/')
       end
       def put(bucket, key, object, headers={})

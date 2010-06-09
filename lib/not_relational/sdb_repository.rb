@@ -9,10 +9,11 @@ module NotRelational
 
   require File.dirname(__FILE__) +"/sdb_monkey_patch.rb"
   # THis class implements access to SDB.
-  class SdbRepository
+  class SdbRepository  < RepositoryBase
     @@max_page_size = 250 #defined by sdb
     attr_accessor :storage
-
+    attr_accessor :logger
+#    attr_accessor :blob_bucket
     def initialize(
                    base_domain_name,#MyDevPayApp
                    clob_bucket,
@@ -33,7 +34,7 @@ module NotRelational
 
       
       @base_domain_name = base_domain_name
-      @storage_bucket = clob_bucket
+      @blob_bucket = @storage_bucket = clob_bucket
       @memcache_servers = memcache_servers
       @aws_key_id = aws_key_id
       @aws_secret_key = aws_secret_key

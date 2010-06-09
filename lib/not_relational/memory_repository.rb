@@ -2,21 +2,39 @@ module NotRelational
 
   require File.dirname(__FILE__) +"/memory_storage.rb"
 
-  class MemoryRepository
-    attr_accessor :use_cache #this here just so interface matches sdb repo
+  class MemoryRepository < RepositoryBase
+    #these attributes neccesary for repo interface
+    attr_accessor :use_cache
     attr_accessor :storage
-    attr_reader :query_count   
+    attr_reader :query_count
+    attr_accessor :storage
+    attr_accessor :logger
+
+    #this attribute neccesary for base class
+
+    #these are just internal
+    attr_accessor :records
+    attr_accessor :indexes
+    attr_accessor :reverse_indexes
     def initialize(
-        domain_name= nil,
-        clob_bucket= nil,
-        aws_key_id= nil,
-        aws_secret_key= nil,
-        memcache_servers = nil ,
-        dummy=nil,
-        use_seperate_domain_per_model=nil,
-        options={}
-      )
+                   domain_name= nil,
+                   blob_bucket= "",
+                   aws_key_id= nil,
+                   aws_secret_key= nil,
+                   memcache_servers = nil ,
+                   dummy=nil,
+                   use_seperate_domain_per_model=nil,
+                   options={}
+                   )
       clear
+      self.blob_bucket=blob_bucket || "BLOB_BUCKET"
+      
+
+      @logger = options[:logger]
+      unless @logger
+        @logger = Logger.new(STDERR)
+        @logger.level = options[:log_level] || Logger::WARN
+      end
     end
     def pause
     end
@@ -34,7 +52,7 @@ module NotRelational
       @storage ||=MemoryStorage.new
       @storage.clear
     end
-  
+    
     def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil)
       key=repository_id || make_cache_key(table_name,primary_key);
       record=@records[key]
@@ -43,13 +61,13 @@ module NotRelational
         @records[key]=record
         
       end
-    
+      
       attributes.each do |description,value|
         name=description# 
         name=description.name if description.respond_to?(:name)
         record[name]=value
       end
-       record["metadata%table_name"]=table_name
+      record["metadata%table_name"]=table_name
       record["metadata%primary_key"]=key
       remove_from_indices(table_name,primary_key)
       if index_descriptions
@@ -59,7 +77,7 @@ module NotRelational
         end
 
       end
-#      puts record.to_yaml
+      #      puts record.to_yaml
     end
 
 
@@ -94,7 +112,7 @@ module NotRelational
           primary_key= name.to_sym
           break
         end
-      
+        
       end
       objects=query(table_name,attribute_descriptions,options)
       result=[]
@@ -103,17 +121,27 @@ module NotRelational
       end
       result
     end
-  
+    
     def query(table_name,attribute_descriptions,options)
 
       @query_count+=1
       if options[:query]
         raise 'query not supported yet'
       end
+
       result=[]
       params=nil
+      conditions=nil
       params=options[:params] if options.has_key?(:params)
-      params ||= options[:conditions] if options.has_key?(:conditions) and options[:conditions].is_a?(Hash)
+      if options.has_key?(:conditions)
+
+        if options[:conditions].is_a?(Hash)
+          params ||= {}
+          params.merge! options[:conditions]
+        else
+          conditions=options[:conditions]
+        end
+      end
 
       if options.has_key?(:map)
         params||={}
@@ -126,6 +154,29 @@ module NotRelational
         end
 
       end
+
+      if @logger.debug?
+        msg="memory repository query.\n\ttable: #{table_name}\n "
+        msg<< "\tlimit: #{options[:limit]}\n" if options.has_key?(:limit)
+        if conditions
+          msg << "\tconditions:\n"
+
+          conditions.each do |c|
+            msg << "\t\t"<< c.to_s << "\n"
+          end
+        end
+
+        if params
+          msg << "\tparams:\n"
+
+          params.each do |key,value|
+            msg << "\t\t#{key}: #{value}\n"
+          end
+        end
+
+        @logger.debug msg
+      end
+
       if options.has_key?(:index)
         result= retrieve_from_index(table_name,options[:index],options[:index_value])
       else
@@ -135,7 +186,7 @@ module NotRelational
             ok=false
           else
             if params
-             
+              
               params.each do |param_key,param_value|
 
                 if param_value==:NOT_NULL
@@ -156,16 +207,16 @@ module NotRelational
                   end
                 elsif !record[param_key] && !param_value
                   # #ok
-                  break
+
                 elsif record[param_key]!=param_value
                   ok=false
                   break
                 end
               end
             end
-            if options.has_key?(:conditions) and !options[:conditions].is_a?(Hash)
-             
-              options[:conditions].each do |condition|
+            if conditions
+              
+              conditions.each do |condition|
 
                 if !condition.matches?(record)
                   ok=false
@@ -183,23 +234,23 @@ module NotRelational
       if options and options[:order_by]
         result.sort! do |a,b|
           
-            a_value=a[options[:order_by]]
-            b_value=b[options[:order_by]]
-                x=0
-                if b_value && a_value
-                  x=b_value <=> a_value
-                elsif a_value
-                  x=-1
-                elsif b_value
-                  x=1
-                else
-                  x=0
-                end
-            if options[:order] && options[:order]!=:ascending
-              x
-            else
-              -x
-            end
+          a_value=a[options[:order_by]]
+          b_value=b[options[:order_by]]
+          x=0
+          if b_value && a_value
+            x=b_value <=> a_value
+          elsif a_value
+            x=-1
+          elsif b_value
+            x=1
+          else
+            x=0
+          end
+          if options[:order] && options[:order]!=:ascending
+            x
+          else
+            -x
+          end
         end
       end
       if options[:limit] and result.length>options[:limit]
@@ -217,7 +268,7 @@ module NotRelational
     
     def get_text(table_name,primary_key,clob_name,repository_id=nil)
 
-#      return
+      #      return
       #      @storage.get("",make_storage_key(table_name,repository_key,clob_name))
       record= @records[make_cache_key(table_name,primary_key)]
       return record[clob_name] if record
@@ -229,7 +280,7 @@ module NotRelational
       @query_count+=1
 
       key=repository_id || make_cache_key(table_name,primary_key);
-    
+      
       if @records.has_key?(key)
         @records.delete(key)
       end

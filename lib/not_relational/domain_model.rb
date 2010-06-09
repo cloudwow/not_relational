@@ -18,7 +18,7 @@ module NotRelational
       @attribute_values=HashWithIndifferentAccess.new
 
       copy_attributes(options)
-      @accessor_cache={}
+
       @repository_id_at_load_time=options["@@REPOSITORY_ID"]
       @computed_flattened_primary_key_at_load_time=flat_primary_key
       
@@ -273,26 +273,26 @@ module NotRelational
     class_eval <<-GETTERDONE
     
 	 def #{attribute_description.name}=(xvalue)
-           @attribute_values[:#{attribute_description.name}] =xvalue
-                           end
-       def #{attribute_description.name}?
-         return @attribute_values[:#{attribute_description.name}] 
-                                end
-     
-     def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
-                                                    options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
-                                                      find(#{scope},options)
-                                                         end
-                                                         GETTERDONE
+       @attribute_values[:#{attribute_description.name}] =xvalue
+                       end
+   def #{attribute_description.name}?
+     return @attribute_values[:#{attribute_description.name}] 
+                            end
+ 
+ def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
+                                                options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
+                                                  find(#{scope},options)
+                                                     end
+                                                     GETTERDONE
 
-                                                         if options.has_key?(:enum)
-     attribute_name=attribute_description.name.to_s
-     x=""
-     enum_val=1
-     options[:enum].each { |enum|
-                                                             x<< "#{enum.to_s.upcase} = #{enum_val}\n"
-                                                             enum_val+=1
-                                                             class_eval <<-GETTERDONE
+                                                     if options.has_key?(:enum)
+ attribute_name=attribute_description.name.to_s
+ x=""
+ enum_val=1
+ options[:enum].each { |enum|
+                                                         x<< "#{enum.to_s.upcase} = #{enum_val}\n"
+                                                         enum_val+=1
+                                                         class_eval <<-GETTERDONE
         def  is_#{attribute_name}_#{enum.to_s.downcase}?
           #{attribute_name} == #{attribute_name.capitalize}::#{enum.to_s.upcase}
         end
@@ -325,7 +325,7 @@ module NotRelational
         def #{accesser_attribute_name}
 
           #{module_name+domain_class.to_s}.find(@attribute_values)
-	end
+        end
         GETTERDONE
 
         
@@ -343,179 +343,179 @@ module NotRelational
 
         class_eval <<-GETTERDONE
 	def #{accesser_attribute_name}
-          mapped_values={}
-          prefix='#{domain_class.to_s.downcase}'
-          ['#{fkey_names.join("','")}'].each |key|
-            mapped_values[key.splice(prefix.length)]=@attribute_values[key]
-        end
-        #{module_name+domain_class.to_s}.find(mapped_values)
-
-      end
-      GETTERDONE
-    else
-      class_eval <<-GETTERDONE
-	def #{accesser_attribute_name}
-          #{module_name+domain_class.to_s}.find(self.#{foreign_key_attribute})
-	end
-        GETTERDONE
-        if foreign_key_attribute.is_a?(Array)
-          index("#{foreign_key_attribute}_index".to_sym,[foreign_key_attribute])
-        end
-      end
-
+      mapped_values={}
+      prefix='#{domain_class.to_s.downcase}'
+      ['#{fkey_names.join("','")}'].each |key|
+        mapped_values[key.splice(prefix.length)]=@attribute_values[key]
     end
-    def self.many_to_many(domain_class,
-                          through_class,
-                          reflecting_key_attributes=nil,
-                          foriegn_key_attribute=nil,
-                          accesser_attribute_name=nil,
-                          options={})
-      reflecting_key_attributes ||= primary_key_attribute_names.map{|x|self.name+"_"+x.to_s}
-      reflecting_key_attributes =arrayify(reflecting_key_attributes)
-      reflecting_array_code="[:"+reflecting_key_attributes.join(",:")+"]"
+    #{module_name+domain_class.to_s}.find(mapped_values)
 
-      accesser_attribute_name ||=domain_class.to_s.underscore.pluralize
-      order=""
-      if options[:order_by]
-        if options[:order]
-          order="result=DomainModel.sort_result(result,:#{options[:order_by]},:#{options[:order]})"
-        else
-          order="result=DomainModel.sort_result(result,:#{options[:order_by]},:ascending)"
-        end
-      end
-      
-      
-      foriegn_key_attributes=options[:foriegn_key_attribute] || "#{domain_class.to_s.downcase}_id".to_sym
-      foriegn_key_attributes=arrayify(foriegn_key_attributes)
-      fkey_array_code="[:"+foriegn_key_attributes.join(",:")+"]"
+  end
+  GETTERDONE
+else
+  class_eval <<-GETTERDONE
+	def #{accesser_attribute_name}
+      #{module_name+domain_class.to_s}.find(self.#{foreign_key_attribute})
+	end
+    GETTERDONE
+    if foreign_key_attribute.is_a?(Array)
+      index("#{foreign_key_attribute}_index".to_sym,[foreign_key_attribute])
+    end
+  end
 
-      class_eval <<-XXDONE
+end
+def self.many_to_many(domain_class,
+                      through_class,
+                      reflecting_key_attributes=nil,
+                      foriegn_key_attribute=nil,
+                      accesser_attribute_name=nil,
+                      options={})
+  reflecting_key_attributes ||= primary_key_attribute_names.map{|x|self.name+"_"+x.to_s}
+  reflecting_key_attributes =arrayify(reflecting_key_attributes)
+  reflecting_array_code="[:"+reflecting_key_attributes.join(",:")+"]"
+
+  accesser_attribute_name ||=domain_class.to_s.underscore.pluralize
+  order=""
+  if options[:order_by]
+    if options[:order]
+      order="result=DomainModel.sort_result(result,:#{options[:order_by]},:#{options[:order]})"
+    else
+      order="result=DomainModel.sort_result(result,:#{options[:order_by]},:ascending)"
+    end
+  end
+  
+  
+  foriegn_key_attributes=options[:foriegn_key_attribute] || "#{domain_class.to_s.downcase}_id".to_sym
+  foriegn_key_attributes=arrayify(foriegn_key_attributes)
+  fkey_array_code="[:"+foriegn_key_attributes.join(",:")+"]"
+
+  class_eval <<-XXDONE
 
 
 	def #{accesser_attribute_name}
-          #unless @accessor_cache.has_key? :#{accesser_attribute_name}
-          through_results= #{module_name+through_class.to_s}.find(:all,:map=>{:keys=>#{reflecting_array_code},:values=>DomainModel.arrayify(self.primary_key)})
-            result=[]
-          through_results.each do |through_result|
-            item= #{module_name+domain_class.to_s}.find(through_result.#{foriegn_key_attribute}) 
-              result<< item if item
-          end
-          #{order}
-          
-          #  @accessor_cache[:#{accesser_attribute_name}]=result
-          return result
-          #end
-          #return @accessor_cache[:#{accesser_attribute_name}]
-          
+      #unless @accessor_cache.has_key? :#{accesser_attribute_name}
+      through_results= #{module_name+through_class.to_s}.find(:all,:map=>{:keys=>#{reflecting_array_code},:values=>DomainModel.arrayify(self.primary_key)})
+        result=[]
+      through_results.each do |through_result|
+        item= #{module_name+domain_class.to_s}.find(through_result.#{foriegn_key_attribute}) 
+          result<< item if item
+      end
+      #{order}
+      
+      #  @accessor_cache[:#{accesser_attribute_name}]=result
+      return result
+      #end
+      #return @accessor_cache[:#{accesser_attribute_name}]
+      
 	end
-        def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})
-                                                  connector=#{module_name+through_class.to_s}.new
-                                                  connector.set_map(#{fkey_array_code},DomainModel.arrayify(#{domain_class.to_s.downcase}.primary_key))
-                                                                    connector.set_map(#{reflecting_array_code},DomainModel.arrayify(self.primary_key))
-                                                                                      connector.save
-                                                                                    end
-                                                                    XXDONE
-                                                                    
-                                                                    
-                                                                  end
+    def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})
+                                              connector=#{module_name+through_class.to_s}.new
+                                              connector.set_map(#{fkey_array_code},DomainModel.arrayify(#{domain_class.to_s.downcase}.primary_key))
+                                                                connector.set_map(#{reflecting_array_code},DomainModel.arrayify(self.primary_key))
+                                                                                  connector.save
+                                                                                end
+                                                                XXDONE
+                                                                
+                                                                
+                                                              end
 
 
-                                                  def DomainModel.transaction
-                                                    @@items_to_commit||=[]
-                                                    @@transaction_depth+=1
-                                                    begin
-                                                      yield
-                                                    rescue # catch all
-                                                      raise $! # rethrow
-                                                    ensure
-                                                      @@transaction_depth-=1
-                                                      
-                                                    end
-                                                    
-                                                    
-                                                    if @@transaction_depth==0
-                                                      
-                                                      @@items_to_commit.uniq.each do |item |
-                                                        item.save!
-                                                      end
-                                                      @@items_to_commit=[]
-                                                    end
-                                                    
+                                              def DomainModel.transaction
+                                                @@items_to_commit||=[]
+                                                @@transaction_depth+=1
+                                                begin
+                                                  yield
+                                                rescue # catch all
+                                                  raise $! # rethrow
+                                                ensure
+                                                  @@transaction_depth-=1
+                                                  
+                                                end
+                                                
+                                                
+                                                if @@transaction_depth==0
+                                                  
+                                                  @@items_to_commit.uniq.each do |item |
+                                                    item.save!
                                                   end
-                                                  def DomainModel.sort_result(results,sort_by,order=:ascending)
-                                                    non_null_results=[]
-                                                    null_results=[]
-                                                    results.each { |i|
-                                                      sorter_value=i.get_attribute(sort_by)
-                                                      if sorter_value
-                                                        non_null_results<< i
-                                                      else
-                                                        null_results<< i
-                                                      end
-                                                    }
-                                                    sorted_results=non_null_results.sort{ |a,b|
-                                                      a_val= a.get_sortable_attribute(sort_by)
-                                                      b_val= b.get_sortable_attribute(sort_by)
-                                                      
-                                                      a_val <=> b_val
-                                                    }
-                                                    
-                                                    if order!=:ascending
-                                                      sorted_results.reverse!
-                                                    end
-                                                    sorted_results.concat( null_results)
-                                                    sorted_results
+                                                  @@items_to_commit=[]
+                                                end
+                                                
+                                              end
+                                              def DomainModel.sort_result(results,sort_by,order=:ascending)
+                                                non_null_results=[]
+                                                null_results=[]
+                                                results.each { |i|
+                                                  sorter_value=i.get_attribute(sort_by)
+                                                  if sorter_value
+                                                    non_null_results<< i
+                                                  else
+                                                    null_results<< i
                                                   end
-                                                  def get_sortable_attribute(attr_name)
-                                                    a_val= self.get_attribute(attr_name)
-                                                    return 0 unless a_val
-                                                    if a_val.class== Time
-                                                      return a_val.to_f
-                                                    else
-                                                      return a_val
-                                                    end
+                                                }
+                                                sorted_results=non_null_results.sort{ |a,b|
+                                                  a_val= a.get_sortable_attribute(sort_by)
+                                                  b_val= b.get_sortable_attribute(sort_by)
+                                                  
+                                                  a_val <=> b_val
+                                                }
+                                                
+                                                if order!=:ascending
+                                                  sorted_results.reverse!
+                                                end
+                                                sorted_results.concat( null_results)
+                                                sorted_results
+                                              end
+                                              def get_sortable_attribute(attr_name)
+                                                a_val= self.get_attribute(attr_name)
+                                                return 0 unless a_val
+                                                if a_val.class== Time
+                                                  return a_val.to_f
+                                                else
+                                                  return a_val
+                                                end
+                                              end
+                                              def self.has_many(domain_class,
+                                                                reflecting_key_attributes=nil,
+                                                                accesser_attribute_name=nil,
+                                                                options={})
+                                                if reflecting_key_attributes==:without_prefix
+                                                  reflecting_key_attributes = primary_key_attribute_names.map{|x|x.to_s}
+
+                                                end
+
+                                                reflecting_key_attributes ||= primary_key_attribute_names.map{|x|self.name.downcase+"_"+x.to_s}
+                                                reflecting_key_attributes =arrayify(reflecting_key_attributes)
+                                                reflecting_array_code="[:"+reflecting_key_attributes.join(",:")+"]"
+
+                                                accesser_attribute_name ||= domain_class.to_s.underscore.pluralize
+                                                order=""
+                                                if options[:order_by]
+                                                  order="{:order_by=>:#{options[:order_by]}"
+                                                end
+                                                if options[:order]
+                                                  if order.length>0
+                                                    order << ","
+                                                  else
+                                                    order<< "{"
                                                   end
-                                                  def self.has_many(domain_class,
-                                                                    reflecting_key_attributes=nil,
-                                                                    accesser_attribute_name=nil,
-                                                                    options={})
-                                                    if reflecting_key_attributes==:without_prefix
-                                                      reflecting_key_attributes = primary_key_attribute_names.map{|x|x.to_s}
-
-                                                    end
-
-                                                    reflecting_key_attributes ||= primary_key_attribute_names.map{|x|self.name.downcase+"_"+x.to_s}
-                                                    reflecting_key_attributes =arrayify(reflecting_key_attributes)
-                                                    reflecting_array_code="[:"+reflecting_key_attributes.join(",:")+"]"
-
-                                                    accesser_attribute_name ||= domain_class.to_s.underscore.pluralize
-                                                    order=""
-                                                    if options[:order_by]
-                                                      order="{:order_by=>:#{options[:order_by]}"
-                                                    end
-                                                    if options[:order]
-                                                      if order.length>0
-                                                        order << ","
-                                                      else
-                                                        order<< "{"
-                                                      end
-                                                      order<< ":order=>:#{options[:order]}"
-                                                    end
-                                                    if order.length==0
-                                                      order << "{}"
-                                                    else
-                                                      order<< "}"
-                                                    end
+                                                  order<< ":order=>:#{options[:order]}"
+                                                end
+                                                if order.length==0
+                                                  order << "{}"
+                                                else
+                                                  order<< "}"
+                                                end
 
 
-                                                    if options[:dependent]
-                                                      
-                                                      class_eval <<-XXDONE
+                                                if options[:dependent]
+                                                  
+        #                                           class_eval <<-XXDONE
           
-            on_destroy_blocks<< "#{accesser_attribute_name}.each{|item|item.destroy}"
-        XXDONE
-                                                    end
-                                                    class_eval <<-XXDONE
+        #     on_destroy_blocks<< "#{accesser_attribute_name}.each{|item|item.destroy}"
+        # XXDONE
+                                                end
+                                                class_eval <<-XXDONE
       def create_child_#{domain_class.to_s.downcase}(options=nil)
 
         result=#{module_name+domain_class.to_s}.new(options)
@@ -544,398 +544,398 @@ module NotRelational
       class_eval <<-XXDONE
 	def #{accesser_attribute_name}
 
-          #{}if !@accessor_cache.has_key? :#{accesser_attribute_name}
-          h={}
-          pkey=DomainModel::arrayify(self.primary_key)
-          #{reflecting_array_code}.each do |key|
-          h[key]=pkey.shift
-        end
-        result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
-          return result
-        #{}   @accessor_cache[:#{accesser_attribute_name}]=result || []
-        #{}end
-        #return @accessor_cache[:#{accesser_attribute_name}]
-      end
-      XXDONE
-      # end
-    end
-    def self.AttributeDescription(name)
-      return attribute_descriptions[name]
-    end
-    def self.ColumnDescription(name)
-      return column_descriptions[name]
-    end
-    def primary_key
 
-      result=[]
-      self.class.primary_key_attribute_names.each do |key_part|
-        result<<@attribute_values[key_part ]# !!  #TODO need to translate null booleans into false
-      end
-      return result[0] if result.length==1
+      h={}
+      pkey=DomainModel::arrayify(self.primary_key)
+      #{reflecting_array_code}.each do |key|
+      h[key]=pkey.shift
+    end
+    result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
       return result
-    end
-    def flat_primary_key()
-      key=primary_key
-      if key.is_a?( Array)
-        flattened_key=""
-        key.each do |key_part|
-          flattened_key << CGI.escape(key_part.to_s)+"/"
-        end
-        return flattened_key[0..-2]
-      else
-        return CGI.escape(key.to_s)
-      end
 
-    end
+  end
+  XXDONE
+  # end
+end
+def self.AttributeDescription(name)
+  return attribute_descriptions[name]
+end
+def self.ColumnDescription(name)
+  return column_descriptions[name]
+end
+def primary_key
 
-    def primary_key_hash
+  result=[]
+  self.class.primary_key_attribute_names.each do |key_part|
+    result<<@attribute_values[key_part ]# !!  #TODO need to translate null booleans into false
+  end
+  return result[0] if result.length==1
+  return result
+end
+def flat_primary_key()
+  key=primary_key
+  if key.is_a?( Array)
+    flattened_key=""
+    key.each do |key_part|
+      flattened_key << CGI.escape(key_part.to_s)+"/"
+    end
+    return flattened_key[0..-2]
+  else
+    return CGI.escape(key.to_s)
+  end
 
-      result={}
-      self.class.primary_key_attribute_names.each do |key_part|
-        result[key_part]=@attribute_values[key_part ]
-      end
-      return result
-    end
-    def primary_key=(value)
-      key=DomainModel::arrayify(value)
-      self.class.primary_key_attribute_names.each do |key_part|
+end
 
-        @attribute_values[ key_part]=key.shift
-      end
-    end
-    def method_missing(method_symbol, *arguments) #:nodoc:
-      method_name = method_symbol.to_s
+def primary_key_hash
 
-      case method_name.last
-      when "="
-        if @attribute_values.has_key?(method_name.first(-1))
-          @attribute_values[method_name.first(-1)] = arguments.first
-        else
-          super
-        end
-      when "?"
-        @attribute_values[method_name.first(-1)]
-      else
-        @attribute_values.has_key?(method_name) ? @attribute_values[method_name] : super
-      end
-    end
-    def index_values
-      result={}
-      self.class.index_names.each do |name|
-        
-        result[name]=  self.send("#{name}")
-        
-      end
-      result
-    end
-    def set_attribute(name,value)
-      @attribute_values[name]=value
-    end
-    def get_attribute(name)
-      @attribute_values[name]
-    end
-    def to_s
-      result= "#{self.class.table_name}\n"
-      attributes.each do |key,value|
-        if value.respond_to?(:flatten)
-          result<< "\t#{key}: ["
-          value.each do |sub_value|
-            result<< "'#{h sub_value.to_s}'"
-          end
-          result << "]\n"
-        else
-          result<< "\t#{key}: #{value.to_s}\n"
-        end
-      end
-      result
-      
-    end
-    def to_xml
-      result= "<#{self.class.table_name}>"
-      attributes.each do |key,value|
-        if value.respond_to?(:flatten)
-          result<< "<#{key}>"
-          value.each do |sub_value|
-            result<< "<value>#{h sub_value.to_s}</value>"
-          end
-          result<< "</#{key}>"
-        else
-          result<< "<#{key}>#{h value.to_s}</#{key}>"
-        end
-      end
-      result<< "</#{self.class.table_name}>"
-      result
-    end
+  result={}
+  self.class.primary_key_attribute_names.each do |key_part|
+    result[key_part]=@attribute_values[key_part ]
+  end
+  return result
+end
+def primary_key=(value)
+  key=DomainModel::arrayify(value)
+  self.class.primary_key_attribute_names.each do |key_part|
 
-    def destroy(options={})
-      if self.class.on_destroy_blocks
-        self.class.on_destroy_blocks.each do |block|
-          instance_eval <<-XXDONE
-                    #{block}
+    @attribute_values[ key_part]=key.shift
+  end
+end
+def method_missing(method_symbol, *arguments) #:nodoc:
+  method_name = method_symbol.to_s
 
-          XXDONE
-
-        end
-      end
-      if self.primary_key
-        self.repository(options).destroy(self.table_name,primary_key,repository_id_for_updates)
-      end
+  case method_name.last
+  when "="
+    if @attribute_values.has_key?(method_name.first(-1))
+      @attribute_values[method_name.first(-1)] = arguments.first
+    else
+      super
     end
-    def attributes
-      result={}
-      # #todo refactor to avoid this copy
-      self.class.attribute_descriptions.values.each do |description|
-        if !description.is_text? || is_dirty(description.name)
-          result[description.name]=@attribute_values[description.name]
-        end
+  when "?"
+    @attribute_values[method_name.first(-1)]
+  else
+    @attribute_values.has_key?(method_name) ? @attribute_values[method_name] : super
+  end
+end
+def index_values
+  result={}
+  self.class.index_names.each do |name|
+    
+    result[name]=  self.send("#{name}")
+    
+  end
+  result
+end
+def set_attribute(name,value)
+  @attribute_values[name]=value
+end
+def get_attribute(name)
+  @attribute_values[name]
+end
+def to_s
+  result= "#{self.class.table_name}\n"
+  attributes.each do |key,value|
+    if value.respond_to?(:flatten)
+      result<< "\t#{key}: ["
+      value.each do |sub_value|
+        result<< "'#{h sub_value.to_s}'"
       end
-      return result
+      result << "]\n"
+    else
+      result<< "\t#{key}: #{value.to_s}\n"
     end
-
-    def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)
-      # #if the attribute has no  value do a query
-      list=@attribute_values[tracking_attribute]
-      if !list
-        list=other_class.query_ids(:params=>{reflecting_attribute=>self.primary_key})
-        @attribute_values[tracking_attribute]=list
-        self.save!
+  end
+  result
+  
+end
+def to_xml
+  result= "<#{self.class.table_name}>"
+  attributes.each do |key,value|
+    if value.respond_to?(:flatten)
+      result<< "<#{key}>"
+      value.each do |sub_value|
+        result<< "<value>#{h sub_value.to_s}</value>"
       end
-      
-      return other_class.find_list(list)
-      
+      result<< "</#{key}>"
+    else
+      result<< "<#{key}>#{h value.to_s}</#{key}>"
+    end
+  end
+  result<< "</#{self.class.table_name}>"
+  result
+end
+
+def destroy(options={})
+  # if self.class.on_destroy_blocks
+  #   self.class.on_destroy_blocks.each do |block|
+  #     instance_eval <<-XXDONE
+  #                   #{block}
+
+  #         XXDONE
+
+  #   end
+  # end
+  if self.primary_key
+    self.repository(options).destroy(self.table_name,primary_key,repository_id_for_updates)
+  end
+end
+def attributes
+  result={}
+  # #todo refactor to avoid this copy
+  self.class.attribute_descriptions.values.each do |description|
+    if !description.is_text? || is_dirty(description.name)
+      result[description.name]=@attribute_values[description.name]
+    end
+  end
+  return result
+end
+
+def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)
+  # #if the attribute has no  value do a query
+  list=@attribute_values[tracking_attribute]
+  if !list
+    list=other_class.query_ids(:params=>{reflecting_attribute=>self.primary_key})
+    @attribute_values[tracking_attribute]=list
+    self.save!
+  end
+  
+  return other_class.find_list(list)
+  
+end
+
+def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)
+  list=@attribute_values[tracking_attribute]
+  if !list
+    list=other_class.query_ids(:params=>{reflecting_attribute=>self.primary_key})
+    
+  end
+  list<< value
+  @attribute_values[tracking_attribute]=list.uniq
+  
+end
+def save!(options={})
+  save(options)
+end
+def save(options={})
+  if !self.primary_key
+    self.primary_key= NotRelational::UUID.generate
+  end
+  
+  if @@transaction_depth>0
+    # #we are in a transaction.  wait to commit
+    @@items_to_commit<< self
+    
+  else
+
+    self.repository(options).save(self.table_name,primary_key,attributes_value_hash,self.class.index_descriptions,  repository_id_for_updates)
+
+  end
+  
+end
+def attributes_value_hash
+  
+  #     $service.put_attributes(class_object.table_name,item.send(name_column),attributes,true)
+  attributes={}
+  # #todo refactor to avoid this copy
+  self.class.attribute_descriptions.values.each do |description|
+    if !description.is_text? || is_dirty(description.name)
+      value=@attribute_values[description.name]
+      attributes[description]=value
     end
     
-    def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)
-      list=@attribute_values[tracking_attribute]
-      if !list
-        list=other_class.query_ids(:params=>{reflecting_attribute=>self.primary_key})
-        
-      end
-      list<< value
-      @attribute_values[tracking_attribute]=list.uniq
-      
-    end
-    def save!(options={})
-      save(options)
-    end
-    def save(options={})
-      if !self.primary_key
-        self.primary_key= NotRelational::UUID.generate
-      end
-      
-      if @@transaction_depth>0
-        # #we are in a transaction.  wait to commit
-        @@items_to_commit<< self
-        
-      else
-        temp_accessor_cache=@accessor_cache
-        @accessor_cache=nil
-        
-        #     $service.put_attributes(class_object.table_name,item.send(name_column),attributes,true)
-        attributes={}
-        # #todo refactor to avoid this copy
-        self.class.attribute_descriptions.values.each do |description|
-          if !description.is_text? || is_dirty(description.name)
-            value=@attribute_values[description.name]
-            attributes[description]=value
-          end
-          
-          
-          
-        end
-        self.index_values.each do |name,value|
-          
-          attributes[self.class.index_descriptions[name]]=value
-        end
+    
+    
+  end
+  self.index_values.each do |name,value|
+    
+    attributes[self.class.index_descriptions[name]]=value
+  end
+  attributes
+end
+def repository_id_for_updates
+  if @repository_id_at_load_time!=nil && self.flat_primary_key==@computed_flattened_primary_key_at_load_time
+    #no element of the primary key has change so
+    #preserve any buggy flat key that might have been saved by
+    #old code
+    #        puts "OVERRIDING UPDATE KEY (#{self.flat_primary_key})#{@repository_id_at_load_time}"  if @repository_id_at_load_time!=self.flat_primary_key
+    return @repository_id_at_load_time
 
-        self.repository(options).save(self.table_name,primary_key,attributes,self.class.index_descriptions,  repository_id_for_updates)
-        @accessor_cache=temp_accessor_cache
-      end
-      
-    end
-    def repository_id_for_updates
-      if @repository_id_at_load_time!=nil && self.flat_primary_key==@computed_flattened_primary_key_at_load_time
-        #no element of the primary key has change so
-        #preserve any buggy flat key that might have been saved by
-        #old code
-#        puts "OVERRIDING UPDATE KEY (#{self.flat_primary_key})#{@repository_id_at_load_time}"  if @repository_id_at_load_time!=self.flat_primary_key
-        return @repository_id_at_load_time
+  end
+  return nil
+end
+def table_name
+  return self.class.table_name
+end
+def DomainModel.table_name
+  
+  return self.name.split(':').pop
+end
+#    def find
+#
+#       attributes=repository.find(self.class.name,self.primary_key,@@non_clob_attribute_names,@@clob_attribute_names)
+#       attributes.each do |key,value|
+#           @attribute_values[key]=value
+#       end
+#    end
+def repository(options=nil)
+  
+  if options and options.has_key?(:repository)
+    return options[:repository]
+  end
+  if @repository
+    return @repository
+  end
 
-      end
-      return nil
-    end
-    def table_name
-      return self.class.table_name
-    end
-    def DomainModel.table_name
-      return self.name
-    end
-    #    def find
-    #
-    #       attributes=repository.find(self.class.name,self.primary_key,@@non_clob_attribute_names,@@clob_attribute_names)
-    #       attributes.each do |key,value|
-    #           @attribute_values[key]=value
-    #       end
-    #    end
-    def repository(options=nil)
-      
-      if options and options.has_key?(:repository)
-        return options[:repository]
-      end
-      if @repository
-        return @repository
-      end
+  return self.class.repository
+end
 
-      return self.class.repository
+class << self
+  def repository(options={})
+    
+    if options.has_key?(:repository)
+      return options[:repository]
     end
-
-    class << self
-      def repository(options={})
-        
-        if options.has_key?(:repository)
-          return options[:repository]
-        end
-        
-        return RepositoryFactory.instance(options)
-        
-      end
-      def find_by_index(values,more_options)
-        index_descriptions.each do |name,desc|
-          if desc.keys_match?(values)
-            options={}
-            options[:params]={desc.name=>desc.format_index_entry(self.attribute_descriptions,values)}
-            options[:index]=desc.name
-            options[:index_value]=desc.format_index_entry(self.attribute_descriptions,values)
-            options.merge!(more_options)
-            return find(:all,options)
-          end
-        end
+    
+    return RepositoryFactory.instance(options)
+    
+  end
+  def find_by_index(values,more_options)
+    index_descriptions.each do |name,desc|
+      if desc.keys_match?(values)
         options={}
-
-        options[:params]={}
+        options[:params]={desc.name=>desc.format_index_entry(self.attribute_descriptions,values)}
+        options[:index]=desc.name
+        options[:index_value]=desc.format_index_entry(self.attribute_descriptions,values)
         options.merge!(more_options)
-        values.each{|key,value|options[:params][key]=value}
-        return find_every(options)
+        return find(:all,options)
       end
-      def find(*arguments)
-        scope   = arguments.slice!(0)
-        options = arguments.slice!(0) || {}
-        
-        case scope
-        when :all   then return find_every(options)
-        when :first then return find_one(options)
-        else             return find_single(scope, options)
-        end
-      end
-      def find_one(options={})
-        options[:limit]=1
-        find_every(options).first
-      end
-      def find_every(options={})
+    end
+    options={}
 
-        results=[]
-        untyped_results=self.repository.query(self.table_name,attribute_descriptions,options)
-        untyped_results.each do |item_attributes|
-          results << istantiate(item_attributes,self.repository(options))
-        end
-        return results
+    options[:params]={}
+    options.merge!(more_options)
+    values.each{|key,value|options[:params][key]=value}
+    return find_every(options)
+  end
+  def find(*arguments)
+    scope   = arguments.slice!(0)
+    options = arguments.slice!(0) || {}
+    
+    case scope
+    when :all   then return find_every(options)
+    when :first then return find_one(options)
+    else             return find_single(scope, options)
+    end
+  end
+  def find_one(options={})
+    options[:limit]=1
+    find_every(options).first
+  end
+  def find_every(options={})
 
-      end
-      def find_paged(token=nil,options={})
+    results=[]
+    untyped_results=self.repository.query(self.table_name,attribute_descriptions,options)
+    untyped_results.each do |item_attributes|
+      results << istantiate(item_attributes,self.repository(options))
+    end
+    return results
 
-        results=[]
-        untyped_results,token=self.repository.query_with_token(self.table_name,attribute_descriptions,token,options)
-        untyped_results.each do |item_attributes|
+  end
+  def find_paged(token=nil,options={})
 
-          results << istantiate(item_attributes,self.repository(options))
-        end
-        return results,token
+    results=[]
+    untyped_results,token=self.repository.query_with_token(self.table_name,attribute_descriptions,token,options)
+    untyped_results.each do |item_attributes|
 
-      end
-      def find_list(primary_keys,options={})
-        result=[]
-        primary_keys.each do |key|
-          item=find_single(key,options)
-          result << item if item
-        end
-        return result
-      end
+      results << istantiate(item_attributes,self.repository(options))
+    end
+    return results,token
 
-      def destroy_all(options={})
-        find(:all,options).each{|x|x.destroy}
-      end
+  end
+  def find_list(primary_keys,options={})
+    result=[]
+    primary_keys.each do |key|
+      item=find_single(key,options)
+      result << item if item
+    end
+    return result
+  end
+
+  def destroy_all(options={})
+    find(:all,options).each{|x|x.destroy}
+  end
+  
+  def query_ids(options={})
+    self.repository.query_ids(self.table_name,attribute_descriptions,options)
+  end
+  def istantiate(sdb_attributes,repository,repository_id=nil)
+    this_result=new(sdb_attributes || {})
+    get_text_proc=nil
+    clob_attribute_names.each do |clob_attribute_name|
+      get_text_proc= proc {
+        repository.get_text(self.table_name,this_result.primary_key,clob_attribute_name,repository_id)
+      }
       
-      def query_ids(options={})
-        self.repository.query_ids(self.table_name,attribute_descriptions,options)
-      end
-      def istantiate(sdb_attributes,repository,repository_id=nil)
-        this_result=new(sdb_attributes || {})
-        get_text_proc=nil
-        clob_attribute_names.each do |clob_attribute_name|
-          get_text_proc= proc {
-            repository.get_text(self.table_name,this_result.primary_key,clob_attribute_name,repository_id)
-          }
-          
-          this_result.set_attribute(clob_attribute_name, LazyLoadingText.new(get_text_proc))
-        end
-        this_result
-      end
-      def arrayify(x)
-        unless x.is_a?(Array)
-          x=[x]
-        end
-        return x
-
-      end
-      def find_single(id, options)
-        return nil if id==nil
-        return nil if id.is_a?(String) && id.length==0
-        if id.is_a?(Hash)
-          id_as_array=[]
-          @primary_key_attribute_names.each do |key_name|
-            id_as_array << id[key_name]
-          end
-          id=id_as_array
-        end
-        id=arrayify(id)
-        attributes=self.repository(options).find_one(self.table_name,id,attribute_descriptions)
-        if attributes && attributes.length>0
-          @primary_key_attribute_names.each do |key_name|
-            attributes[key_name]=id.shift
-          end
-          attributes[:repository]=self.repository(options)
-          return istantiate(attributes,self.repository(options))
-        end
-        return nil
-      end
-      def find_recent_with_exponential_expansion(time_column,how_many,options={})
-        found=[]
-        tries=0
-        timespan=options[:timespan_hint] || 60*60*4
-        
-        params = options[:params] || {}
-        
-        while found.length<how_many && tries<4
-          time=Time.now.gmtime-timespan
-          params[time_column]  =AttributeRange.new(:greater_than=>time)
-          found= find(:all,:limit=>how_many,:order=>:descending,:order_by => time_column,
-                      :params=>params)
-          
-          tries=tries+1
-          timespan=timespan*3
-        end
-        return found
-        
-      end
-
-      def all(options={})
-        return find_every(options)
-      end
+      this_result.set_attribute(clob_attribute_name, LazyLoadingText.new(get_text_proc))
     end
-    def self.module_name
-      result=""
-      result=self.name.slice(0, self.name.rindex(":")+1) if self.name.rindex(":")
-      result
+    this_result
+  end
+  def arrayify(x)
+    unless x.is_a?(Array)
+      x=[x]
     end
+    return x
+
+  end
+  def find_single(id, options)
+    return nil if id==nil
+    return nil if id.is_a?(String) && id.length==0
+    if id.is_a?(Hash)
+      id_as_array=[]
+      @primary_key_attribute_names.each do |key_name|
+        id_as_array << id[key_name]
+      end
+      id=id_as_array
+    end
+    id=arrayify(id)
+    attributes=self.repository(options).find_one(self.table_name,id,attribute_descriptions)
+    if attributes && attributes.length>0
+      @primary_key_attribute_names.each do |key_name|
+        attributes[key_name]=id.shift
+      end
+      attributes[:repository]=self.repository(options)
+      return istantiate(attributes,self.repository(options))
+    end
+    return nil
+  end
+  def find_recent_with_exponential_expansion(time_column,how_many,options={})
+    found=[]
+    tries=0
+    timespan=options[:timespan_hint] || 60*60*4
+    
+    params = options[:params] || {}
+    
+    while found.length<how_many && tries<4
+      time=Time.now.gmtime-timespan
+      params[time_column]  =AttributeRange.new(:greater_than=>time)
+      found= find(:all,:limit=>how_many,:order=>:descending,:order_by => time_column,
+                  :params=>params)
+      
+      tries=tries+1
+      timespan=timespan*3
+    end
+    return found
+    
+  end
+
+  def all(options={})
+    return find_every(options)
+  end
+end
+def self.module_name
+  result=""
+  result=self.name.slice(0, self.name.rindex(":")+1) if self.name.rindex(":")
+  result
+end
   end
 end

@@ -7,13 +7,14 @@ module NotRelational
     attr_reader :repository_class
     attr_reader :base_domain_name
     attr_reader :blob_bucket
+    attr_reader :caching_bucket
     attr_reader :aws_key_id
     attr_reader :aws_secret_key
     attr_reader :memcache_servers
     attr_reader :use_seperate_domain_per_model
     attr_reader :fail_fast
     attr_reader :log_level
-
+    attr_reader :data_filepath
 
     def self.singleton
       @singleton ||= NotRelational::Configuration.new
@@ -34,8 +35,10 @@ module NotRelational
         end
         @base_domain_name= not_relational_config["base_domain_name"] || ""
         @blob_bucket= not_relational_config["blob_bucket"]
+        @caching_bucket= not_relational_config["caching_bucket"]
         @aws_key_id = not_relational_config["aws_key_id"]
         @aws_secret_key = not_relational_config["aws_secret_key"]
+        @data_filepath= not_relational_config['data_filepath']
         @memcache_servers= not_relational_config['memcache_servers']
         @memcache_servers = memcache_servers.split(",") if memcache_servers and memcache_servers.respond_to?(:split)
 
