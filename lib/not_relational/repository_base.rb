@@ -20,7 +20,7 @@ module NotRelational
     end
     
     def persist_cache_peek(key)
-      return nil unless cache_write_only
+      return nil if cache_write_only
       return short_cache("PersistantCacheCache/"+key) do
         result_yaml= NotRelational::Repository.storage.get(self.blob_bucket,"persistant_cache/"+ key  )
         if result_yaml
@@ -38,15 +38,20 @@ module NotRelational
     
     def persist_cache_me(key,force_refresh=false)
 
-      if force_refresh
+      if force_refresh==true
+        puts "force refresh for key #{key}"
         result = yield
 
         persist_cache_put(key,result)
         result
       else
-        return short_cache("PersistantCacheCache/"+key) do
+        long_key="PersistantCacheCache/"+key
+        return short_cache(long_key) do
+          puts "#{key} key not in short cache.  checking long cache";
           result=persist_cache_peek(key)
-          
+
+          puts "no result from persistant cache" unless result
+          puts "cache is write only" if cache_write_only==true
           unless result && !cache_write_only
             result = yield
 
