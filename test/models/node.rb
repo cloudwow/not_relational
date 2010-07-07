@@ -1,11 +1,7 @@
 require 'digest/sha1'
 require "uri"
 
-require 'not_relational/geo.rb'
-require 'not_relational/tag_cloud.rb'
 require 'place.rb'
-require 'or_condition.rb'
-require 'domain_model.rb'
 
 class Node < NotRelational::DomainModel
   extend NotRelational::Geo::Locatable

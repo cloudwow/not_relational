@@ -1,7 +1,5 @@
 require 'digest/sha1'
 require "uri"
-require "domain_model.rb"
-require "is_null_transform.rb"
 
 class Tag < NotRelational::DomainModel
     

@@ -1,7 +1,5 @@
 require 'digest/sha1'
 require "uri"
-
-require "not_relational/domain_model.rb"
 require "active_support/inflector"
 
 class Album < NotRelational::DomainModel

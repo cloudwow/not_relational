@@ -68,7 +68,7 @@ class Group < NotRelational::DomainModel
       member.group_id=self.id
       member.member_login=login
       member.save!
-      @accessor_cache.delete(:group_members)
+#      @accessor_cache.delete(:group_members)
     end
     
     return member
