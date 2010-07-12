@@ -13,7 +13,7 @@ module NotRelational
     @@max_page_size = 250 #defined by sdb
     attr_accessor :storage
     attr_accessor :logger
-#    attr_accessor :blob_bucket
+    #    attr_accessor :blob_bucket
     def initialize(
                    base_domain_name,#MyDevPayApp
                    clob_bucket,
@@ -85,7 +85,23 @@ module NotRelational
       repository_id||=make_cache_key(table_name,primary_key)
       @session_cache.destroy(table_name,repository_id)
 
-      @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_cache_key(table_name, primary_key) )
+      #################
+      20.times do |i|
+        begin
+          @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_cache_key(table_name, primary_key) )
+
+          return
+        rescue Exception => e
+          s= "#{e.message}\n#{e.backtrace}"
+          @logger.warn(s) if @logger
+          
+          sleep(i*i)
+          
+        end
+      end
+      
+
+      ################
       # #TODO destroy text
     end
     def query(table_name,attribute_descriptions,options)
