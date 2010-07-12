@@ -39,7 +39,7 @@ module NotRelational
     def persist_cache_me(key,force_refresh=false)
 
       if force_refresh==true
-        puts "force refresh for key #{key}"
+
         result = yield
 
         persist_cache_put(key,result)
@@ -47,11 +47,10 @@ module NotRelational
       else
         long_key="PersistantCacheCache/"+key
         return short_cache(long_key) do
-          puts "#{key} key not in short cache.  checking long cache";
+
           result=persist_cache_peek(key)
 
-          puts "no result from persistant cache" unless result
-          puts "cache is write only" if cache_write_only==true
+
           unless result && !cache_write_only
             result = yield
 

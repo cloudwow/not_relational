@@ -510,10 +510,10 @@ def self.many_to_many(domain_class,
 
                                                 if options[:dependent]
                                                   
-        #                                           class_eval <<-XXDONE
+                                                  class_eval <<-XXDONE
           
-        #     on_destroy_blocks<< "#{accesser_attribute_name}.each{|item|item.destroy}"
-        # XXDONE
+            on_destroy_blocks<< "#{accesser_attribute_name}.each{|item|item.destroy}"
+        XXDONE
                                                 end
                                                 class_eval <<-XXDONE
       def create_child_#{domain_class.to_s.downcase}(options=nil)
@@ -666,15 +666,15 @@ def to_xml
 end
 
 def destroy(options={})
-  # if self.class.on_destroy_blocks
-  #   self.class.on_destroy_blocks.each do |block|
-  #     instance_eval <<-XXDONE
-  #                   #{block}
+  if self.class.on_destroy_blocks
+    self.class.on_destroy_blocks.each do |block|
+      instance_eval <<-XXDONE
+                    #{block}
 
-  #         XXDONE
+          XXDONE
 
-  #   end
-  # end
+    end
+  end
   if self.primary_key
     self.repository(options).destroy(self.table_name,primary_key,repository_id_for_updates)
   end

@@ -30,15 +30,15 @@ class CompositeKeyTest < Test::Unit::TestCase
     
   end
   def test_delete_null_boolean_key_part
-   CompositeKeyTest.set_up
+    CompositeKeyTest.set_up
     NotRelational::RepositoryFactory.instance.pause
     NotRelational::RepositoryFactory.instance.clear_session_cache
     all=CompositeKeyThing.find(:all)
     assert_equal(0,all.length)
-thing=CompositeKeyThing.new
-thing.name="duh"
-thing.the_time=Time.now
-thing.save
+    thing=CompositeKeyThing.new
+    thing.name="duh"
+    thing.the_time=Time.now
+    thing.save
     NotRelational::RepositoryFactory.instance.pause
     NotRelational::RepositoryFactory.instance.clear_session_cache
     all=CompositeKeyThing.find(:all)
