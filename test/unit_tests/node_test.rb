@@ -1,23 +1,4 @@
-
-require 'rubygems'
-require 'test/unit'
-$:.push(File.dirname(__FILE__) +'/../../test/models')
-$:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
-require File.dirname(__FILE__) +'/../../lib/not_relational/domain_model.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/attribute_range.rb'
-
-require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
-require File.dirname(__FILE__) +'/../../test/models/node.rb'
-require File.dirname(__FILE__) +'/../../test/models/user.rb'
-require File.dirname(__FILE__) +'/../../test/models/place.rb'
-require File.dirname(__FILE__) +'/../../test/models/album.rb'
-require File.dirname(__FILE__) +'/../../test/models/media_item.rb'
-require File.dirname(__FILE__) +'/../../test/models/media_file.rb'
-require File.dirname(__FILE__) +'/../../test/models/tag.rb'
-require File.dirname(__FILE__) +'/../../test/models/rating.rb'
-require File.dirname(__FILE__) +'/../../test/models/comment.rb'
-
-ENV['NOT_RELATIONAL_ENV']='testing'
+require 'test/test_helper.rb'
 
 class NodeTest < Test::Unit::TestCase
   
