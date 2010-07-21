@@ -10,6 +10,16 @@ begin
     gem.email = "david@cloudwow.com"
     gem.homepage = "http://github.com/cloudwow/not_relational"
     gem.authors = ["cloudwow"]
+    gem.files=[".document",
+               ".gitignore",
+               "LICENSE",
+               "README.rdoc",
+               "Rakefile",
+               "VERSION",
+               "lib/not_relational.rb",
+               "lib/not_relational/*"
+              ]
+
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
