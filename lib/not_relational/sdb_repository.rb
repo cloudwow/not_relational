@@ -31,7 +31,9 @@ module NotRelational
         @logger = Logger.new(STDERR)
         @logger.level = options[:log_level] || Logger::WARN
       end
-
+      
+      @quiet_logger=Logger.new(STDERR)
+      @quiet_logger.level=Logger::WARN	
       
       @base_domain_name = base_domain_name
       @blob_bucket = @storage_bucket = clob_bucket
@@ -46,7 +48,7 @@ module NotRelational
 
 
       @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
-      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger => @logger)
+      @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger => @quiet_logger)
       @session_cache=MemoryRepository.new
       @query_cache={}
       @storage.start_session_cache
