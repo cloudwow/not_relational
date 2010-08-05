@@ -1,12 +1,4 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-
-$:.unshift File.join(File.dirname(__FILE__),'..','lib')
-
-require 'test/unit'
-
-require File.dirname(__FILE__) +'/../../lib/not_relational/repository_factory.rb'
-ENV['NOT_RELATIONAL_ENV']='testing'
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 
 class RepositoryFactoryTest < Test::Unit::TestCase
   def test_foo

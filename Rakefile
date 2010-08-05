@@ -1,12 +1,12 @@
 require 'rubygems'
 require 'rake'
+$: << "." 
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "not_relational"
     gem.summary = "I am not relational."
-
     gem.email = "david@cloudwow.com"
     gem.homepage = "http://github.com/cloudwow/not_relational"
     gem.authors = ["cloudwow"]
@@ -19,6 +19,7 @@ begin
                "lib/not_relational.rb",
                "lib/not_relational/*"
               ]
+    gem.add_dependency( "aws-sdb")
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
@@ -79,8 +80,8 @@ namespace :metrics do
     
     Find.find('./lib') do |path|
       if (
-        path =~ /\.rb$/i
-      )
+          path =~ /\.rb$/i
+          )
         output_file = "#{File.basename(path)}.txt"
         cmd = "reek #{path} > #{reek_dir}/#{output_file}"
         puts cmd
@@ -126,10 +127,10 @@ namespace :metrics do
     
     Find.find('./lib') do |path|
       if (
-        path =~ /flay_report\.txt$/ ||
-        path =~ /flog_report\.txt$/ ||
-        path =~ /roodi_report\.txt$/
-      )
+          path =~ /flay_report\.txt$/ ||
+          path =~ /flog_report\.txt$/ ||
+          path =~ /roodi_report\.txt$/
+          )
         reports << File.basename(path)
       end
     end
@@ -221,14 +222,14 @@ namespace :metrics do
     system('rake metrics:make_index')
   end
 end
-    task :emacs  do
- 	 files = FileList['**/*.rb'].exclude("vendor")
+task :tags  do
+  files = FileList['**/*.rb'].exclude("vendor")
 
-	 puts "Making Emacs TAGS file"
+  puts "Making Emacs TAGS file"
 
-	 puts "ctags -f #{files}"
-         sh "ctags -e #{files}", :verbose => false
 
-    end
+  sh "ctags -e #{files}", :verbose => false
+
+end
 
 

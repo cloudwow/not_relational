@@ -1,27 +1,5 @@
 
-require 'rubygems'
-require 'test/unit'
-$:.push(File.dirname(__FILE__) +'/../../test/models')
-$:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
-require File.dirname(__FILE__) +'/../../lib/not_relational/domain_model.rb'
-require File.dirname(__FILE__) +'/../../lib/not_relational/attribute_range.rb'
-
-require File.dirname(__FILE__) +'/../../lib/not_relational/memory_repository.rb'
-require File.dirname(__FILE__) +'/../../test/models/node.rb'
-require File.dirname(__FILE__) +'/../../test/models/user.rb'
-require File.dirname(__FILE__) +'/../../test/models/place.rb'
-require File.dirname(__FILE__) +'/../../test/models/album.rb'
-require File.dirname(__FILE__) +'/../../test/models/media_item.rb'
-require File.dirname(__FILE__) +'/../../test/models/media_file.rb'
-require File.dirname(__FILE__) +'/../../test/models/tag.rb'
-require File.dirname(__FILE__) +'/../../test/models/rating.rb'
-require File.dirname(__FILE__) +'/../../test/models/comment.rb'
-require File.dirname(__FILE__) +'/../../test/models/blurb_wording.rb'
-require File.dirname(__FILE__) +'/../../test/models/blurb.rb'
-
-ENV['NOT_RELATIONAL_ENV']='testing'
-
-$gc_bucket='static.globalcoordinate.com'
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 class BlurbTest < Test::Unit::TestCase
   def BlurbTest.set_up
     

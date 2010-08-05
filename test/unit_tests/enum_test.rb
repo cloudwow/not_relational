@@ -1,15 +1,5 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 
-
-require 'test/unit'
-
-$:.push(File.dirname(__FILE__) +'/../../test/models')
-$:.push(File.dirname(__FILE__) +'/../../lib/not_relational')
-
-require File.dirname(__FILE__) +'/../../test/models/page_view_summary.rb'
-require File.dirname(__FILE__) +'/../../test/models/page_view_detail.rb'
-ENV['NOT_RELATIONAL_ENV']='testing'
 class EnumTest < Test::Unit::TestCase
   def self.set_up
 

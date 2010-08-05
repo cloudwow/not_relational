@@ -1,7 +1,6 @@
-require 'rubygems'
-require 'test/test_helper.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 require "openssl"
-require File.dirname(__FILE__) +'/../../lib/not_relational/crypto.rb'
+
 
 module NotRelational
 

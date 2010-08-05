@@ -1,15 +1,7 @@
-require 'digest/sha1'
-require "uri"
-
-require "models/tag.rb"
-require "models/comment.rb"
-require "models/rating.rb"
-require "models/album.rb"
-require "models/media_file.rb"
 
 class Mediaitem < NotRelational::DomainModel
-  extend NotRelational::Geo::Locatable
-  include NotRelational::Geo::Locatable
+
+  include NotRelational::Locatable
   property :id,:string,:is_primary_key=>true
   property :guid,:string,:unique=>true
   property :group_id , :string

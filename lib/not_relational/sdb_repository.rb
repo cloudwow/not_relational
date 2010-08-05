@@ -1,7 +1,7 @@
 # THis class implements access to SDB 222.
 # =I am the walrus=
 module NotRelational
-  $KCODE = 'u'
+
   require "aws_sdb"
   require "not_relational/storage.rb"
   require File.dirname(__FILE__) +"/memory_repository.rb"

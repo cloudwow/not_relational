@@ -1,10 +1,4 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-
-
-
-require 'test/test_helper.rb'
-
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 
 class MemoryRepositoryTest < Test::Unit::TestCase
 

@@ -81,7 +81,7 @@ module NotRelational
     def  crypto
       return @crypto if @crypto
       if cipher_password
-        @crypto=Crypto.new(cipher_password)
+        @crypto=Crypto.new(:password => cipher_password)
       else
         raise " 'cipher_password' value not found in config."
       end
@@ -103,7 +103,9 @@ module NotRelational
           end
 
         end
+        @config_file_path=File.expand_path(@config_file_path)
       end
+
       return @config_file_path
     end
     def config_section_name

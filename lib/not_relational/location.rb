@@ -1,9 +1,6 @@
-require "not_relational/starts_with_condition.rb"
 module NotRelational
-module Geo
-
   class Location
-  
+    
 
     attr_accessor :latitude
     attr_accessor :longitude
@@ -14,10 +11,10 @@ module Geo
     end
 
     def to_address
-	if latitude==nil || longitude==nil
-		return nil
-	end      
-	address='t'
+      if latitude==nil || longitude==nil
+        return nil
+      end      
+      address='t'
       right=0
       top=0
       width=180.0
@@ -28,7 +25,7 @@ module Geo
           top=top+height/2.0
           if longitude<right
             right=right-width/2.0
-            address<<'q'
+            address<< 'q'
           else
             right=right+width/2.0
             address << 'r'
@@ -38,7 +35,7 @@ module Geo
           top=top-height/2.0
           if longitude<right
             right=right-width/2.0
-            address<<'t'
+            address<< 't'
           else
             right=right+width/2.0
             address << 's'
@@ -46,7 +43,7 @@ module Geo
         end
         width=width/2.0
         height=height/2.0
-    #    puts "#{address} w=#{width}  h=#{height} r=#{right}  t=#{top}"
+        #    puts "#{address} w=#{width}  h=#{height} r=#{right}  t=#{top}"
       end
       return address
     end
@@ -61,29 +58,29 @@ module Geo
       tileWidth=360.0/(2**zoom_level)
       tileHeight=180.0/(2**zoom_level)
 
-      other=Geo::Location.new(self.latitude+tileHeight,self.longitude+tileWidth)
+      other=Location.new(self.latitude+tileHeight,self.longitude+tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude+tileHeight,self.longitude)
+      other=Location.new(self.latitude+tileHeight,self.longitude)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude+tileHeight,self.longitude-tileWidth)
+      other=Location.new(self.latitude+tileHeight,self.longitude-tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude-tileHeight,self.longitude+tileWidth)
+      other=Location.new(self.latitude-tileHeight,self.longitude+tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude-tileHeight,self.longitude)
+      other=Location.new(self.latitude-tileHeight,self.longitude)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude-tileHeight,self.longitude-tileWidth)
+      other=Location.new(self.latitude-tileHeight,self.longitude-tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
 
-      other=Geo::Location.new(self.latitude,self.longitude+tileWidth)
+      other=Location.new(self.latitude,self.longitude+tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
-      other=Geo::Location.new(self.latitude,self.longitude-tileWidth)
+      other=Location.new(self.latitude,self.longitude-tileWidth)
       result << other.to_address.slice(0,zoom_level+1)
 
 
@@ -102,24 +99,24 @@ module Geo
         puts address[index].chr
         case address[index].chr
 
-           when 'r'
-            x+=width
-            y+=height
-           when 'q'
-            x-=width
-            y+=height
+        when 'r'
+          x+=width
+          y+=height
+        when 'q'
+          x-=width
+          y+=height
 
-           when 't'
-            x-=width
-            y-=height
-           when 's'
-            x+=width
-            y-=height
+        when 't'
+          x-=width
+          y-=height
+        when 's'
+          x+=width
+          y-=height
         end
         width/=2
         height/=2
       end
-        loc=Location.new
+      loc=Location.new
       loc.latitude=y
       loc.longitude=x
       return loc
@@ -127,7 +124,7 @@ module Geo
 
     def self.deg2rad(deg)
       (deg * Math::PI / 180)
-      end
+    end
     
     def self.rad2deg(rad)
       (rad * 180 / Math::PI)
@@ -150,37 +147,4 @@ module Geo
     end
     
   end
-
-#mixin
-#locatable object must have latitude, longitude and address attributes
-  module Locatable
-    def location
-      return Geo::Location.new(latitude,longitude)
-    end
-    def get_nearby(zoom_level=7,order=nil)
-       if latitude==nil or longitude==nil 
-	return []
-	end
-	result= self.class.find_near(self.location,zoom_level,order)
-        result.delete_if{|item|item.id==id}
-        return result
-    end
-
-    def find_near(loc,zoom_level=7,order_by=nil,order=:ascending)
-        nearby= loc.get_nearby_addresses(zoom_level)
-
-        address_params=[]
-        for address in nearby
-            
-                 address_params<<NotRelational::StartsWithCondition.new(self.AttributeDescription(:address),address)
-       
-        end
-       orCondition=OrCondition.new(address_params)
-      
-        return find(:all,:limit => 24,:order_by => order_by,:order => order,:conditions=>[orCondition])
-      
-    end
-  end
-  
-end
 end

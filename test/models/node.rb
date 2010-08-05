@@ -4,8 +4,8 @@ require "uri"
 require 'place.rb'
 
 class Node < NotRelational::DomainModel
-  extend NotRelational::Geo::Locatable
-  include NotRelational::Geo::Locatable
+  include NotRelational::Locatable
+
   encrypt_me
   property :id,:string,:is_primary_key=>true
   property :creator         ,         :unsigned_integer                                                                                                               
@@ -47,7 +47,7 @@ class Node < NotRelational::DomainModel
   
   belongs_to :User ,:username, :author
   belongs_to :Node ,:parent_id, :parent
-   
+  
   belongs_to :Place,:AncestorPlace,:ancestor_place
   belongs_to :Place,:place_id,:place
   
@@ -87,7 +87,7 @@ class Node < NotRelational::DomainModel
     result.reverse! if order==:ascending
     result
     
-         
+    
   end
   def child_count
     children.length
@@ -105,36 +105,36 @@ class Node < NotRelational::DomainModel
     end
     return @ancestor_place_cache
   end
-    
-    
+  
+  
   def Album
     return Album.find_by_guid(self.album_guid)
-            
+    
   end
   def album_guid
     return "gc_node#{self.id}"
   end
   def mediaitems
-            
+    
     result=[]
     if self.Album
-            
+      
       result=self.Album.mediaitems
     end
     return result
   end
-         
+  
   def still_image_media
-              
+    
     result=[]
     if self.Album
-              
+      
       result=self.Album.still_image_media
     end
     return result
   end
   def video_media
-              
+    
     result=[]
     album=self.Album
     if album
@@ -147,10 +147,10 @@ class Node < NotRelational::DomainModel
     return result
   end
   def audio_media
-              
+    
     result=[]
     if self.Album
-              
+      
       result=self.Album.audio_media
     end
     return result
@@ -169,7 +169,7 @@ class Node < NotRelational::DomainModel
   end
   def Node.all_recent(language_id=nil,how_many=64)
     result=find(:all,:limit=>how_many,:order=>:descending,:order_by => :creationTime)
-     
+    
   end      
   def Node.recent(language_id=nil,how_many=64)
     # #this query has been dumbed down to get bearable performance
@@ -177,23 +177,23 @@ class Node < NotRelational::DomainModel
     
     how_long_back=60*60*24*30
     result=find(:all,:limit=>1000,:order=>:descending,:order_by => :creationTime)
-       
+    
     if language_id
-   
+      
       result.collect!{|x|y=(x.language_id==language_id && x.publicRead)?x:nil}
     else
       result.collect!{|x|y=(x.publicRead )?x:nil}
-     
+      
     end
     result.compact!
     result.sort {|x,y| y.creationTime <=> x.creationTime }
     result=result[0..how_many-1] if result.length>how_many
-   
     
-       
+    
+    
     result
   end
-        
+  
   def Node.recent_public_for_user(user_login,how_many=20)
     # #TODO fix this
     # #Node.find_by_username_public_read_and_is_channel(user_login  ,true
@@ -215,16 +215,16 @@ class Node < NotRelational::DomainModel
       # #tried many angles on this query.
       
     end
-#    puts "x1: #{result.size}"
+    #    puts "x1: #{result.size}"
     result.collect!{|x|y=((x.publicRead==true or (x.group_id==nil)) && (x.isChannel!=true ))?x:nil}
     result.compact!
-#    puts "x2: #{result.size}"
+    #    puts "x2: #{result.size}"
     result.sort {|x,y| 
-#      puts "  x3: #{x} <=> #{y}"
+      #      puts "  x3: #{x} <=> #{y}"
 
-y.creationTime <=> x.creationTime }
+      y.creationTime <=> x.creationTime }
     result=result[0..how_many-1] if result.length>how_many
-      
+    
     result
   end
   def Node.recent_for_user(user_login,how_many=100)
@@ -264,7 +264,7 @@ y.creationTime <=> x.creationTime }
         new_node.isNews=parent.isNews
         new_node.isComment=true
       end
-     
+      
       
       ancestor=parent
       while ancestor
@@ -280,7 +280,7 @@ y.creationTime <=> x.creationTime }
     
     
     new_node.save!
-   
+    
     return new_node
   end
 end

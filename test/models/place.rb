@@ -3,8 +3,8 @@ require "uri"
 
 
 class Place< NotRelational::DomainModel
-  extend NotRelational::Geo::Locatable
-  include NotRelational::Geo::Locatable
+
+  include NotRelational::Locatable
   property :id,:string,:is_primary_key=>true
   property :latitude        ,         :float                                                                                                                 
   property :longitude       ,         :float                                                      

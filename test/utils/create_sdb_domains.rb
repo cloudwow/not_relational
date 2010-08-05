@@ -1,4 +1,3 @@
-$KCODE = 'u'
 require 'config/boot.rb'
 require 'config/environment.rb'
 require "aws_sdb"

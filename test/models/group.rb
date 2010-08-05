@@ -1,7 +1,6 @@
 require 'digest/sha1'
 require "uri"
-require "not_relational/domain_model.rb"
-require "models/tag.rb"
+require "tag.rb"
 
 class Group < NotRelational::DomainModel
     encrypt_me

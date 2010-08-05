@@ -1,8 +1,6 @@
 
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 
-require 'test/test_helper.rb'
-
-ENV['NOT_RELATIONAL_ENV']='testing'
 class AlbumTest < Test::Unit::TestCase
   def AlbumTest.set_up
     NotRelational::RepositoryFactory.instance.clear_session_cache

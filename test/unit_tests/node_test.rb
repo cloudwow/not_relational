@@ -1,4 +1,4 @@
-require 'test/test_helper.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 
 class NodeTest < Test::Unit::TestCase
   
@@ -56,7 +56,7 @@ class NodeTest < Test::Unit::TestCase
       node.publicRead=true
       node.save
       
-      nodes<<node
+      nodes << node
       
     end
     NotRelational::RepositoryFactory.instance.pause()
@@ -86,10 +86,10 @@ class NodeTest < Test::Unit::TestCase
     node2.address=node2.location.to_address
     node2.save
     NotRelational::RepositoryFactory.instance.pause()
-    results=Node.find_near(NotRelational::Geo::Location.new(-51,51),4)
+    results=Node.find_near(NotRelational::Location.new(-51,51),4)
     assert_equal(2,results.length)
     
-    results=Node.find_near(NotRelational::Geo::Location.new(-51,51),12)
+    results=Node.find_near(NotRelational::Location.new(-51,51),12)
     assert_equal(1,results.length)
     
     

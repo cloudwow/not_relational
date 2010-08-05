@@ -1,4 +1,3 @@
-$KCODE = 'u'
 require "aws_sdb"
 
 log = Logger.new(STDOUT)

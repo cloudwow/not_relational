@@ -718,7 +718,7 @@ def save!(options={})
 end
 def save(options={})
   if !self.primary_key
-    self.primary_key= NotRelational::UUID.generate
+    self.primary_key= NotRelational::UUID.generate(:compact)
   end
   
   if @@transaction_depth>0

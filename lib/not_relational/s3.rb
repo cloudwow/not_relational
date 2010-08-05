@@ -20,21 +20,22 @@ module NotRelational
   # appropriate authentication query string parameters, which could be used in
   # another tool (such as your web browser for GETs).
   module S3
-    DEFAULT_HOST = 's3.amazonaws.com'
-    PORTS_BY_SECURITY = { true => 443, false => 80 }
-    METADATA_PREFIX = 'x-amz-meta-'
-    AMAZON_HEADER_PREFIX = 'x-amz-'
-    AMAZON_TOKEN_HEADER_PREFIX = "x-amz-security-token"
-
+    unless const_defined?('DEFAULT_HOST')
+      DEFAULT_HOST = 's3.amazonaws.com'
+      PORTS_BY_SECURITY = { true => 443, false => 80 }
+      METADATA_PREFIX = 'x-amz-meta-'
+      AMAZON_HEADER_PREFIX = 'x-amz-'
+      AMAZON_TOKEN_HEADER_PREFIX = "x-amz-security-token"
+    end
     # builds the canonical string for signing.
     def S3.canonical_string(method, bucket="", path="", path_args={}, headers={}, expires=nil)
       interesting_headers = {}
       headers.each do |key, value|
         lk = key.downcase
         if (lk == 'content-md5' or
-                lk == 'content-type' or
-                lk == 'date' or
-                lk =~ /^#{AMAZON_HEADER_PREFIX}/o)
+            lk == 'content-type' or
+            lk == 'date' or
+            lk =~ /^#{AMAZON_HEADER_PREFIX}/o)
           interesting_headers[lk] = value.to_s.strip
         end
       end
@@ -89,8 +90,8 @@ module NotRelational
     def S3.encode(aws_secret_access_key, str, urlencode=false)
       digest = OpenSSL::Digest::Digest.new('sha1')
       b64_hmac =
-          Base64.encode64(
-        OpenSSL::HMAC.digest(digest, aws_secret_access_key, str)).strip
+        Base64.encode64(
+                        OpenSSL::HMAC.digest(digest, aws_secret_access_key, str)).strip
 
       if urlencode
         return CGI::escape(b64_hmac)
@@ -122,12 +123,12 @@ module NotRelational
       attr_accessor :calling_format
 
       def initialize(aws_access_key_id,
-          aws_secret_access_key,
-          tokens=Array.new,
-          is_secure=true,
-          server=DEFAULT_HOST,
-          port=PORTS_BY_SECURITY[is_secure],
-          calling_format=CallingFormat::REGULAR)
+                     aws_secret_access_key,
+                     tokens=Array.new,
+                     is_secure=true,
+                     server=DEFAULT_HOST,
+                     port=PORTS_BY_SECURITY[is_secure],
+                     calling_format=CallingFormat::REGULAR)
         @aws_access_key_id = aws_access_key_id
         @aws_secret_access_key = aws_secret_access_key
         @server = server
@@ -164,7 +165,7 @@ module NotRelational
         result.join('/')
       end
       def put(bucket, key, object, headers={})
-      
+        
         object = S3Object.new(object) if not object.instance_of? S3Object
         x=make_request('PUT', bucket, escape_key(key), {}, headers, object.data, object.metadata)
         return Response.new(x)
@@ -225,8 +226,8 @@ module NotRelational
       # be a string in the acl xml format.
       def put_acl(bucket, key, acl_xml_doc, headers={})
         return Response.new(
-          make_request('PUT', bucket, CGI::escape(key), {'acl' => nil}, headers, acl_xml_doc, {})
-        )
+                            make_request('PUT', bucket, CGI::escape(key), {'acl' => nil}, headers, acl_xml_doc, {})
+                            )
       end
 
       def list_all_my_buckets(headers={})
@@ -311,7 +312,7 @@ module NotRelational
         request['Content-Type'] ||= ''
 
         canonical_string =
-            S3.canonical_string(request.method, bucket, key, path_args, request.to_hash, nil)
+          S3.canonical_string(request.method, bucket, key, path_args, request.to_hash, nil)
         encoded_canonical = S3.encode(aws_secret_access_key, canonical_string)
 
         request['Authorization'] = "AWS #{aws_access_key_id}:#{encoded_canonical}"
@@ -336,10 +337,11 @@ module NotRelational
 
     # class for storing calling format constants
     module CallingFormat
-      REGULAR   = 0 # http://s3.amazonaws.com/bucket/key
-      SUBDOMAIN = 1 # http://bucket.s3.amazonaws.com/key
-      VANITY    = 2  # http://<vanity_domain>/key  -- vanity_domain resolves to s3.amazonaws.com
-
+      unless const_defined?('VANITY')
+        REGULAR   = 0 # http://s3.amazonaws.com/bucket/key
+        SUBDOMAIN = 1 # http://bucket.s3.amazonaws.com/key
+        VANITY    = 2  # http://<vanity_domain>/key  -- vanity_domain resolves to s3.amazonaws.com
+      end
       # build the url based on the calling format, and bucket
       def CallingFormat.build_url_base(protocol, server, port, bucket, format)
         build_url_base = "#{protocol}://"
