@@ -29,15 +29,15 @@ module NotRelational
       assert_equal("abc123",actual)
       
     end
-    def test_decrypt_with_wrong_salt
-      target=Crypto.new(:password => "duhduhduh",:salt => "23412333")
-      x=target.encrypt("abc123")
-      target=Crypto.new(:password => "duhduhduh",:salt => "13412333")
+    # def test_decrypt_with_wrong_salt
+    #   target=Crypto.new(:password => "duhduhduh",:salt => "23412333")
+    #   x=target.encrypt("abc123")
+    #   target=Crypto.new(:password => "duhduhduh",:salt => "13412333")
       
-      assert_raise(OpenSSL::Cipher::CipherError){
-        target.decrypt(x)
-      }
-    end
+    #   assert_raise(OpenSSL::Cipher::CipherError){
+    #     target.decrypt(x)
+    #   }
+    # end
     def test_decrypt_with_wrong_password
       target=Crypto.new(:password => "duhduhduh",:salt => "23412333")
       x=target.encrypt("abc123")

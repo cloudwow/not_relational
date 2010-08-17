@@ -9,18 +9,28 @@ module NotRelational
       @cipher = OpenSSL::Cipher::Cipher.new("AES-256-CBC")
 
       @password=options[:password] || "hello"#@cipher.random_password()
+
       
-      @salt=options[:salt] || OpenSSL::Random::random_bytes(8)
+      @salt=options[:salt]
+      # if @salt && @salt.is_a?(String)
+      #   @salt=hex_to_binary(@salt)
+      # end
       
 
     end
 
-
-    def encrypt(text)
+    def hex_to_binary
+      temp = gsub("\s", "");
+      ret = []
+      (0...temp.size()/2).each{|index| ret[index] = [temp[index*2, 2]].pack("H2")}
+      return ret
+    end
+    
+    def encrypt(text,salt=nil)
 
 
       @cipher.encrypt
-      @cipher.pkcs5_keyivgen(@password, @salt)
+      @cipher.pkcs5_keyivgen(@password, salt || @salt) 
 
       e = @cipher.update(text)
       e << @cipher.final()
@@ -28,10 +38,10 @@ module NotRelational
 
     end
 
-    def decrypt(text)
+    def decrypt(text,salt=nil)
       x=Base64.decode64(text)
       @cipher.decrypt()
-      @cipher.pkcs5_keyivgen(@password, @salt)
+      @cipher.pkcs5_keyivgen(@password, salt || @salt)
       d = @cipher.update(x)
       d << @cipher.final()
       return  d

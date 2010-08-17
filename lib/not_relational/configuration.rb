@@ -46,6 +46,7 @@ module NotRelational
         @fail_fast=not_relational_config['fail_fast'] ||false
 
         @cipher_password = not_relational_config['cipher_password']
+        @cipher_salt = not_relational_config['cipher_salt']
 
         @log_level = Logger::WARN
         @log_level =eval( "Logger::"+not_relational_config["log_level"]) if not_relational_config["log_level"]
@@ -80,15 +81,19 @@ module NotRelational
 
     def  crypto
       return @crypto if @crypto
-      if cipher_password
-        @crypto=Crypto.new(:password => cipher_password)
-      else
-        raise " 'cipher_password' value not found in config."
+      if cipher_password && cipher_salt
+        @crypto=Crypto.new(:password => cipher_password,
+                           :salt => cipher_salt)
+      else 
+        raise " Either 'cipher_password' or 'cipher_salt' value not found in config."
       end
 
     end
     def cipher_password
       return @cipher_password
+    end
+    def cipher_salt
+      return @cipher_salt
     end
     def config_file_path
       unless @config_file_path

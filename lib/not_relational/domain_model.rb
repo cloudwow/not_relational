@@ -162,7 +162,7 @@ module NotRelational
          @is_encrypted=true
       GETTERDONE
                                                                         end
-                                                                        def self.property(name,type,options={})
+                                                                        def self.property(name,type=:string,options={})
                                                                           class_eval <<-GETTERDONE
       
     @@attribute_descriptions||=HashWithIndifferentAccess.new 
