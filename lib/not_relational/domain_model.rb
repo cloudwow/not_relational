@@ -123,27 +123,28 @@ module NotRelational
     end
     
   end
-                                                                 find_scope=":all"
-                                                                 if options[:unique]
-    find_scope=":first"
-  end
+    find_scope=":all"
+    if options[:unique]
+      find_scope=":first"
+    end
                                                                  class_eval <<-GETTERDONE
-        def #{index_name}              
+        def #{index_name}()              
           return	self.class.calculate_#{index_name}(#{getter_params.join(",")})
         end
 
         def self.calculate_#{index_name}(#{params.join(",")})
-                                         index_description=index_descriptions[:#{index_name}]
-                                                                              h={}
-                                                                              #{finder_code}
-                                                                              index_description.format_index_entry(@@attribute_descriptions,h)
-                                                                            end
-                                         def self.find_by_#{index_name}(#{params.join(",")},options={})
-                                                                        options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
-                                                                          options[:index]=:#{index_name}
-                                                                          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
-                                                                          find(#{find_scope},options)
-                                                                             end
+          index_description=index_descriptions[:#{index_name}]
+          h={}
+          #{finder_code}
+          index_description.format_index_entry(@@attribute_descriptions,h)
+        end
+
+        def self.find_by_#{index_name}(#{params.join(",")},options={})
+          options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
+          options[:index]=:#{index_name}
+          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
+          find(#{find_scope},options)
+        end
                                                                              GETTERDONE
                                                                            end
 
@@ -542,18 +543,18 @@ def self.many_to_many(domain_class,
       #    XXDONE
       #  else
       class_eval <<-XXDONE
-	def #{accesser_attribute_name}
+	def #{accesser_attribute_name}()
 
 
       h={}
       pkey=DomainModel::arrayify(self.primary_key)
       #{reflecting_array_code}.each do |key|
-      h[key]=pkey.shift
-    end
-    result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
+        h[key]=pkey.shift
+      end
+      result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
       return result
 
-  end
+     end
   XXDONE
   # end
 end
