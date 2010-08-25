@@ -16,8 +16,41 @@ class CompositeKeyTest < Test::Unit::TestCase
 
       node.destroy
     end
-    
+
+    CompositeKeyThing2.find(:all).each do |node|
+
+      node.destroy
+    end
+
   end
+  
+  def test_find_from_cache
+    CompositeKeyTest.set_up
+   NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+    3.times do |i|
+      thing=CompositeKeyThing2.new
+      thing.site_id="site#{i}"
+      thing.product_id="prod#{i}"
+      thing.stuff="stuff#{i}"
+      thing.save
+    end
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+    #the first round will be from repo, 2nd and 3rd rounds will be from cache
+    3.times do |i|
+      found=CompositeKeyThing2.find(:all,:params => {:site_id => "site1"})
+      assert_equal(1,found.length)
+      assert_equal("site1",found[0].site_id)
+      assert_equal("prod1",found[0].product_id)
+      assert_equal("stuff1",found[0].stuff)
+      
+    end
+
+  end
+  
   def test_delete_null_boolean_key_part
     CompositeKeyTest.set_up
     NotRelational::RepositoryFactory.instance.pause
@@ -60,7 +93,7 @@ class CompositeKeyTest < Test::Unit::TestCase
 
     NotRelational::RepositoryFactory.instance.pause
     NotRelational::RepositoryFactory.instance.clear_session_cache
-    
+  
     all=PageViewSummary.find(:all)
     assert_equal(0,all.length)
 

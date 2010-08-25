@@ -54,7 +54,7 @@ module NotRelational
     end
     
     def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil)
-      key=repository_id || make_cache_key(table_name,primary_key);
+      key=repository_id || make_repo_key(table_name,primary_key);
       record=@records[key]
       if !record
         record={}
@@ -263,14 +263,14 @@ module NotRelational
       #non_clob_attribute_names, clob_attribute_names)
       @query_count+=1
 
-      return @records[make_cache_key(table_name,primary_key)]
+      return @records[make_repo_key(table_name,primary_key)]
     end
     
     def get_text(table_name,primary_key,clob_name,repository_id=nil)
 
       #      return
       #      @storage.get("",make_storage_key(table_name,repository_key,clob_name))
-      record= @records[make_cache_key(table_name,primary_key)]
+      record= @records[make_repo_key(table_name,primary_key)]
       return record[clob_name] if record
       return nil
       
@@ -279,7 +279,7 @@ module NotRelational
     def destroy(table_name, primary_key,repository_id=nil)
       @query_count+=1
 
-      key=repository_id || make_cache_key(table_name,primary_key);
+      key=repository_id || make_repo_key(table_name,primary_key);
       
       if @records.has_key?(key)
         @records.delete(key)
@@ -288,7 +288,7 @@ module NotRelational
     end
 
     def remove_from_indices(table_name,primary_key)
-      key=make_cache_key(table_name,primary_key);
+      key=make_repo_key(table_name,primary_key);
       if @reverse_indexes[table_name]
         indicies=@reverse_indexes[table_name][key]
         if indicies
@@ -320,7 +320,7 @@ module NotRelational
       end
     end
 
-    def make_cache_key(table_name,primary_key)
+    def make_repo_key(table_name,primary_key)
 
       primary_key=flatten_key(primary_key)
       return "cached_objects/#{table_name}/#{primary_key}"

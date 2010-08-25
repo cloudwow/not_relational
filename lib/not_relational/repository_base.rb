@@ -7,6 +7,16 @@ module NotRelational
       @blob_bucket=val
     end
 
+    def make_repo_key(table_name,primary_key)
+
+      if @use_seperate_domain_per_model
+        return primary_key 
+      else
+        flat_primary_key=flatten_key(primary_key)
+        return "#{table_name}/#{flat_primary_key}" 
+      end
+    end
+
     def cache_write_only=(val)
       @cache_write_only=val
     end
@@ -80,5 +90,7 @@ module NotRelational
     def clear_short_cache(key=nil)
       @@cache_me_cache={}
     end
+
+
   end
 end

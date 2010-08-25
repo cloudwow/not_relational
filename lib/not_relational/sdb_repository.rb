@@ -56,8 +56,8 @@ module NotRelational
     
     def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil)
 
-      repository_id ||=make_cache_key(table_name,primary_key)
-      @session_cache.save(table_name,repository_id,attributes,index_descriptions)
+      repository_id ||=make_repo_key(table_name,primary_key)
+      @session_cache.save(table_name,primary_key,attributes,index_descriptions)
 
       formatted_attributes={}
       attributes.each do |description,value|
@@ -84,13 +84,13 @@ module NotRelational
 
     def destroy(table_name, primary_key,repository_id=nil)
       @logger.debug  "Destroying #{table_name}.[#{primary_key}]"
-      repository_id||=make_cache_key(table_name,primary_key)
-      @session_cache.destroy(table_name,repository_id)
+      repository_id||=make_repo_key(table_name,primary_key)
+      @session_cache.destroy(table_name,primary_key)
 
       #################
       20.times do |i|
         begin
-          @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_cache_key(table_name, primary_key) )
+          @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_repo_key(table_name, primary_key) )
 
           return
         rescue Exception => e
@@ -136,10 +136,8 @@ module NotRelational
         query_cache_key=table_name+":"+the_query
         cached_primary_keys=@query_cache[query_cache_key]
         if cached_primary_keys
-          #          puts "    QCK: HIT !! #{cached_primary_keys.length} records"
           result=[]
           cached_primary_keys.each do |key|
-            #            puts "pkey='#{key}'"
             rec=@session_cache.find_one(table_name,key,attribute_descriptions)
             result << rec
           end
@@ -180,14 +178,13 @@ module NotRelational
 
           attributes =parse_attributes(attribute_descriptions,sdb_attributes)
           attributes["@@REPOSITORY_ID"]=primary_key
-          @session_cache.save(table_name,make_cache_key(table_name,primary_key),attributes)
+          @session_cache.save(table_name,primary_key,attributes)
           primary_keys << primary_key
           if attributes
             result << attributes
           end
         }
         @query_cache[query_cache_key]=primary_keys if query_cache_key
-        #        puts "   qk cached #{primary_keys.length} keys"
       end
       if options[:limit] && result.length>options[:limit]
         result=result[0..(options[:limit]-1)]
@@ -195,21 +192,20 @@ module NotRelational
       return result,token
     end
     def get_text(table_name,primary_key,clob_name,repository_id=nil)
-      repository_id ||= make_cache_key(table_name,primary_key)
+      repository_id ||= make_repo_key(table_name,primary_key)
       return @storage.get(@storage_bucket,make_storage_key_from_cache_key(table_name,repository_id,clob_name))
 
     end
 
 
     def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
-      repository_id=make_cache_key(table_name,primary_key)
       session_cache_result=@session_cache.find_one(
                                                    table_name,
-                                                   repository_id,
+                                                   primary_key,
                                                    attribute_descriptions)
       return session_cache_result if session_cache_result
       #    if @use_cache
-      #      yaml=@storage.get(@storage_bucket,make_cache_key(table_name,primary_key))
+      #      yaml=@storage.get(@storage_bucket,make_repo_key(table_name,primary_key))
       #      if yaml
       #        result=YAML::load( yaml)
       #        if result.respond_to?(:non_clob_attributes) && result.non_clob_attributes!=nil
@@ -224,7 +220,7 @@ module NotRelational
         attribute_key_values={}
         attributes.each do |name,value|
         end
-        @session_cache.save(table_name,make_cache_key(table_name,primary_key),attributes)
+        @session_cache.save(table_name,primary_key,attributes)
 
       end
       
@@ -277,7 +273,7 @@ module NotRelational
     def put_attributes(table_name,primary_key, formatted_attributes,repository_id)
       20.times do |i|
         begin
-          @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_cache_key(table_name,primary_key) , formatted_attributes, true )
+          @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_repo_key(table_name,primary_key) , formatted_attributes, true )
           return
 
         rescue Exception => e
@@ -295,7 +291,7 @@ module NotRelational
       
       20.times do |i|
         begin
-          return @sdb.get_attributes(make_domain_name(table_name), make_cache_key(table_name,primary_key))
+          return @sdb.get_attributes(make_domain_name(table_name), make_repo_key(table_name,primary_key))
         rescue Exception => e
           s= "#{e.message}\n#{e.backtrace}"
           @logger.warn(s) if @logger
@@ -451,7 +447,7 @@ module NotRelational
     #
     #      @storage.put(
     #        @storage_bucket,
-    #        make_cache_key(table_name,primary_key),
+    #        make_repo_key(table_name,primary_key),
     #        yaml ,
     #        {})
     #    end
@@ -491,16 +487,18 @@ module NotRelational
       end
     end
 
-    def make_cache_key(table_name,primary_key)
+    def make_repo_key(table_name,primary_key)
 
-      primary_key=flatten_key(primary_key)
-      primary_key="#{table_name}/#{primary_key}" unless @use_seperate_domain_per_model
-      #        puts "flat key=[#{primary_key}]"
-      return primary_key
+      if @use_seperate_domain_per_model
+        return primary_key 
+      else
+        flat_primary_key=flatten_key(primary_key)
+        return "#{table_name}/#{flat_primary_key}" 
+      end
     end
 
     def make_storage_key_from_cache_key(table_name,cache_key,clob_name)
-      return "clobs/#{table_name}/#{cache_key}/#{clob_name}"
+      "clobs/#{table_name}/#{cache_key}/#{clob_name}"
     end
 
     

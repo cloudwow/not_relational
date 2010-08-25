@@ -82,8 +82,8 @@ module NotRelational
     end
     def make_cache_key(table_name,primary_key)
 
-      primary_key=flatten_key(primary_key)
-      return "#{@domain_name}/#{table_name}/#{primary_key}"
+      flat_primary_key=flatten_key(primary_key)
+      return "#{@domain_name}/#{table_name}/#{flat_primary_key}"
     end
 
   end

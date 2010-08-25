@@ -34,7 +34,7 @@ module NotRelational
           @repository_class=NotRelational::MemoryRepository
         end
         @base_domain_name= not_relational_config["base_domain_name"] || ""
-        @blob_bucket= not_relational_config["blob_bucket"]
+        @blob_bucket=  not_relational_config["blob_bucket"]
         @caching_bucket= not_relational_config["caching_bucket"]
         @aws_key_id = not_relational_config["aws_key_id"]
         @aws_secret_key = not_relational_config["aws_secret_key"]
@@ -54,6 +54,8 @@ module NotRelational
       end
     end
 
+
+    
     def assert_configured
       return if @repository_class
       
