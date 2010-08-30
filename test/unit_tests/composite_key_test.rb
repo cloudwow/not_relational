@@ -26,7 +26,7 @@ class CompositeKeyTest < Test::Unit::TestCase
   
   def test_find_from_cache
     CompositeKeyTest.set_up
-   NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.pause
     NotRelational::RepositoryFactory.instance.clear_session_cache
 
     3.times do |i|
@@ -93,12 +93,36 @@ class CompositeKeyTest < Test::Unit::TestCase
 
     NotRelational::RepositoryFactory.instance.pause
     NotRelational::RepositoryFactory.instance.clear_session_cache
-  
+    
     all=PageViewSummary.find(:all)
     assert_equal(0,all.length)
 
   end
-  
+
+  def test_select_with_array
+    CompositeKeyTest.set_up
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+    thing=CompositeKeyThing2.new
+    3.times do |i|
+      thing.site_id="site_id_#{i}"
+      thing.product_id="prod_id_#{i}"
+      thing.stuff="stuff_#{i}"
+
+      thing.save
+    end
+    NotRelational::RepositoryFactory.instance.pause
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+
+    3.times do |i|
+      found = CompositeKeyThing2.find(["site_id_#{i}","prod_id_#{i}"])
+      assert_not_nil(found)
+      assert_equal("stuff_#{i}",found.stuff)
+      
+    end
+
+  end
   #   def test_foo
   #     CompositeKeyTest.set_up
   #     NotRelational::RepositoryFactory.instance.pause

@@ -6,14 +6,25 @@ module NotRelational
     def blob_bucket=(val)
       @blob_bucket=val
     end
-
+    
     def make_repo_key(table_name,primary_key)
 
       if @use_seperate_domain_per_model
-        return primary_key 
+        return flatten_key(primary_key )
       else
         flat_primary_key=flatten_key(primary_key)
         return "#{table_name}/#{flat_primary_key}" 
+      end
+    end
+    def flatten_key(key)
+      if key.is_a?( Array)
+        flattened_key=""
+        key.each do |key_part|
+          flattened_key << CGI.escape(key_part.to_s)+"/"
+        end
+        return flattened_key[0..-2]
+      else
+        return CGI.escape(key.to_s)
       end
     end
 

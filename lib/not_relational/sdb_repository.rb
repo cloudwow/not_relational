@@ -286,12 +286,14 @@ module NotRelational
     end
 
     def sdb_get_attributes(table_name,primary_key)
-      
-      @logger.debug( "SDB get_attributes #{table_name} : #{primary_key}") if @logger
+
+      domain_name=make_domain_name(table_name)
+      repo_key=make_repo_key(table_name,primary_key)
+      @logger.debug( "SDB get_attributes.  domain:#{domain_name} , sdb_id:#{repo_key}") if @logger
       
       20.times do |i|
         begin
-          return @sdb.get_attributes(make_domain_name(table_name), make_repo_key(table_name,primary_key))
+          return @sdb.get_attributes(domain_name, repo_key)
         rescue Exception => e
           s= "#{e.message}\n#{e.backtrace}"
           @logger.warn(s) if @logger
@@ -333,10 +335,15 @@ module NotRelational
           return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
 
         rescue Exception => e
-          s= "#{e.message}\n#{e.backtrace}"
-          @logger.error(s) if @logger
+          if e.message =="The specified domain does not exist."
+            raise "The SDB domain '#{make_domain_name(table_name)}' does not exist."
+            
+          else
+            s= "#{e.message}\n#{e.backtrace}"
+            @logger.error(s) if @logger
 
-          sleep(i*i)
+            sleep(i*i)
+          end
         ensure
 
         end
@@ -475,27 +482,6 @@ module NotRelational
     end
 
     
-    def flatten_key(key)
-      if key.is_a?( Array)
-        flattened_key=""
-        key.each do |key_part|
-          flattened_key << CGI.escape(key_part.to_s)+"/"
-        end
-        return flattened_key[0..-2]
-      else
-        return CGI.escape(key.to_s)
-      end
-    end
-
-    def make_repo_key(table_name,primary_key)
-
-      if @use_seperate_domain_per_model
-        return primary_key 
-      else
-        flat_primary_key=flatten_key(primary_key)
-        return "#{table_name}/#{flat_primary_key}" 
-      end
-    end
 
     def make_storage_key_from_cache_key(table_name,cache_key,clob_name)
       "clobs/#{table_name}/#{cache_key}/#{clob_name}"
