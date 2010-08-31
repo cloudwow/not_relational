@@ -329,7 +329,7 @@ module NotRelational
 
     def sdb_query_with_attributes(table_name,query,max,token=nil)
 
-      #      @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
+      @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
       20.times do |i|
         begin
           return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
