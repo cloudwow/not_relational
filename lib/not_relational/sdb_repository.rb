@@ -90,8 +90,10 @@ module NotRelational
       #################
       20.times do |i|
         begin
-          @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_repo_key(table_name, primary_key) )
+          with_time_logging("delete_attributes") {
 
+            @sdb.delete_attributes(make_domain_name(table_name),repository_id|| make_repo_key(table_name, primary_key) )
+          }
           return
         rescue Exception => e
           s= "#{e.message}\n#{e.backtrace}"
@@ -271,9 +273,14 @@ module NotRelational
     end
 
     def put_attributes(table_name,primary_key, formatted_attributes,repository_id)
+      @logger.debug( "SDB put_attributes.  #{table_name} , sdb_id:#{repository_id}") if @logger
+
       20.times do |i|
         begin
-          @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_repo_key(table_name,primary_key) , formatted_attributes, true )
+          with_time_logging("put_attributes") {
+
+            @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_repo_key(table_name,primary_key) , formatted_attributes, true )
+          }
           return
 
         rescue Exception => e
@@ -285,23 +292,42 @@ module NotRelational
 
     end
 
+    def with_time_logging(title)
+      start_time=Time.now
+
+      result=yield
+      
+      if @logger
+        
+        elapsed_time=Time.now-start_time
+        msg="SDB #{title} elapsed time: #{elapsed_time} seconds"
+        if elapsed_time >1.5
+          @logger.warn(msg)
+        else
+          @logger.debug(msg)
+        end
+      end
+      result
+    end
     def sdb_get_attributes(table_name,primary_key)
 
       domain_name=make_domain_name(table_name)
       repo_key=make_repo_key(table_name,primary_key)
       @logger.debug( "SDB get_attributes.  domain:#{domain_name} , sdb_id:#{repo_key}") if @logger
-      
       20.times do |i|
         begin
-          return @sdb.get_attributes(domain_name, repo_key)
+          with_time_logging("get_attributes"){
+            return @sdb.get_attributes(domain_name, repo_key)
+          }
+
         rescue Exception => e
           s= "#{e.message}\n#{e.backtrace}"
           @logger.warn(s) if @logger
           
           sleep(i*i)
-        ensure
-          
+
         end
+        throw "too many errors"
       end
       
     end
@@ -329,11 +355,13 @@ module NotRelational
 
     def sdb_query_with_attributes(table_name,query,max,token=nil)
 
-      @logger.debug( "SDB query:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
+      @logger.debug( "SDB query_with_attributes:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
       20.times do |i|
         begin
-          return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
-
+          with_time_logging("query_with_attributes") {
+            
+            return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
+          }
         rescue Exception => e
           if e.message =="The specified domain does not exist."
             raise "The SDB domain '#{make_domain_name(table_name)}' does not exist."
