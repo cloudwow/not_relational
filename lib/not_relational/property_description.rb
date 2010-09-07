@@ -135,7 +135,8 @@ module NotRelational
           #assume wasn't encrypted originally
         end
       end
-
+      value=CGI.unescapeHTML(value) if value
+      
       if self.value_type==:integer
         return parse_integer(value)
       elsif self.value_type==:date
