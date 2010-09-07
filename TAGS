@@ -56,7 +56,7 @@ module NotRelationalNotRelational3,35
     def encrypt(text,salt=nil)encrypt29,603
     def decrypt(text,salt=nil)decrypt41,815
 
-lib/not_relational/domain_model.rb,4886
+lib/not_relational/domain_model.rb,4919
 module NotRelationalNotRelational8,344
   class DomainModelDomainModel9,365
     def initialize(options={})initialize17,642
@@ -68,69 +68,69 @@ module NotRelationalNotRelational8,344
     def self.index_namesindex_names82,2360
     def self.index(index_name,columns,options={})index86,2403
     def self.index_namesindex_names99,2838
-        def self.calculate_#{index_name}(#{params.join(",")})calculate_135,4527
-        def self.find_by_#{index_name}(#{params.join(",")},options={})find_by_142,4780
-                                                                        def self.index_descriptionsindex_descriptions154,5387
-                                                                        def self.is_encrypted?is_encrypted158,5664
-                                                                        def self.encrypt_meencrypt_me161,5931
-                                                                        def self.property(name,type=:string,options={})property166,6243
-    def self.on_destroy_blockson_destroy_blocks174,6633
-    def self.attribute_descriptionsattribute_descriptions177,6704
-    def self.non_clob_attribute_namesnon_clob_attribute_names181,6784
-    def self.clob_attribute_namesclob_attribute_names184,6863
-    def is_dirty(attribute_name)is_dirty187,6934
-       def self.primary_key_attribute_namesprimary_key_attribute_names208,7780
-       def self.exists?(primary_key)exists211,7855
-      def add_to_#{attribute_description.name}(item,index=-1)add_to_236,8609
-                          def remove_from_#{attribute_description.name}(item)remove_from_240,8920
- def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})find_by_283,11205
-        def  is_#{attribute_name}_#{enum.to_s.downcase}?is_297,12073
-    def self.belongs_to(domain_class,foreign_key_attribute=nil,accesser_attribute_name=nil,options={})belongs_to315,12398
-def self.many_to_many(domain_class,many_to_many368,14037
-    def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})connect_412,15748
-                                              def DomainModel.transactiontransaction424,16664
-                                              def DomainModel.sort_result(results,sort_by,order=:ascending)sort_result446,18008
-                                              def get_sortable_attribute(attr_name)get_sortable_attribute470,19653
-                                              def self.has_many(domain_class,has_many479,20248
-      def create_child_#{domain_class.to_s.downcase}(options=nil)create_child_520,22857
-def self.AttributeDescription(name)AttributeDescription561,24284
-def self.ColumnDescription(name)ColumnDescription564,24362
-def primary_keyprimary_key567,24434
-def flat_primary_key()flat_primary_key576,24683
-def primary_key_hashprimary_key_hash590,24939
-def primary_key=(value)primary_key=598,25109
-def method_missing(method_symbol, *arguments) #:nodoc:method_missing605,25282
-def index_valuesindex_values621,25717
-def set_attribute(name,value)set_attribute630,25855
-def get_attribute(name)get_attribute633,25921
-def to_sto_s636,25975
-def to_xmlto_xml652,26307
-def destroy(options={})destroy669,26702
-def attributesattributes683,27025
-def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list694,27316
-def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list707,27692
-def save!(options={})save!717,27996
-def save(options={})save720,28038
-def attributes_value_hashattributes_value_hash736,28426
-def repository_id_for_updatesrepository_id_for_updates756,28969
-def table_nametable_name767,29451
-def DomainModel.table_nametable_name770,29501
-def repository(options=nil)repository781,29805
-  def repository(options={})repository794,30018
-  def find_by_index(values,more_options)find_by_index803,30194
-  def find(*arguments)find821,30808
-  def find_one(options={})find_one831,31089
-  def find_every(options={})find_every835,31174
-  def find_paged(token=nil,options={})find_paged845,31459
-  def find_list(primary_keys,options={})find_list856,31784
-  def destroy_all(options={})destroy_all865,31968
-  def query_ids(options={})query_ids869,32049
-  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate872,32161
-  def arrayify(x)arrayify884,32607
-  def find_single(id, options)find_single891,32691
-  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion912,33371
-  def all(options={})all932,33926
-def self.module_namemodule_name936,33989
+        def self.calculate_#{index_name}(#{params.join(",")})calculate_135,4645
+                                         def self.find_by_#{index_name}(#{params.join(",")},options={})find_by_142,5201
+                                                                        def self.index_descriptionsindex_descriptions154,6164
+                                                                        def self.is_encrypted?is_encrypted158,6441
+                                                                        def self.encrypt_meencrypt_me161,6708
+                                                                        def self.property(name,type=:string,options={})property166,7020
+    def self.on_destroy_blockson_destroy_blocks174,7410
+    def self.attribute_descriptionsattribute_descriptions177,7481
+    def self.non_clob_attribute_namesnon_clob_attribute_names181,7561
+    def self.clob_attribute_namesclob_attribute_names184,7640
+    def is_dirty(attribute_name)is_dirty187,7711
+       def self.primary_key_attribute_namesprimary_key_attribute_names208,8557
+       def self.exists?(primary_key)exists211,8632
+      def add_to_#{attribute_description.name}(item,index=-1)add_to_236,9386
+                          def remove_from_#{attribute_description.name}(item)remove_from_240,9697
+ def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})find_by_283,11982
+        def  is_#{attribute_name}_#{enum.to_s.downcase}?is_297,12850
+    def self.belongs_to(domain_class,foreign_key_attribute=nil,accesser_attribute_name=nil,options={})belongs_to315,13175
+def self.many_to_many(domain_class,many_to_many368,14814
+    def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})connect_412,16525
+                                              def DomainModel.transactiontransaction424,17441
+                                              def DomainModel.sort_result(results,sort_by,order=:ascending)sort_result446,18785
+                                              def get_sortable_attribute(attr_name)get_sortable_attribute470,20430
+                                              def self.has_many(domain_class,has_many479,21025
+      def create_child_#{domain_class.to_s.downcase}(options=nil)create_child_520,23634
+def self.AttributeDescription(name)AttributeDescription561,25052
+def self.ColumnDescription(name)ColumnDescription564,25130
+def primary_keyprimary_key567,25202
+def flat_primary_key()flat_primary_key576,25451
+def primary_key_hashprimary_key_hash590,25707
+def primary_key=(value)primary_key=598,25877
+def method_missing(method_symbol, *arguments) #:nodoc:method_missing605,26050
+def index_valuesindex_values621,26485
+def set_attribute(name,value)set_attribute630,26623
+def get_attribute(name)get_attribute633,26689
+def to_sto_s636,26743
+def to_xmlto_xml652,27075
+def destroy(options={})destroy669,27470
+def attributesattributes683,27793
+def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list694,28084
+def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list707,28460
+def save!(options={})save!717,28764
+def save(options={})save720,28806
+def attributes_value_hashattributes_value_hash736,29194
+def repository_id_for_updatesrepository_id_for_updates756,29737
+def table_nametable_name767,30219
+def DomainModel.table_nametable_name770,30269
+def repository(options=nil)repository781,30573
+  def repository(options={})repository794,30786
+  def find_by_index(values,more_options)find_by_index803,30962
+  def find(*arguments)find821,31576
+  def find_one(options={})find_one831,31857
+  def find_every(options={})find_every835,31942
+  def find_paged(token=nil,options={})find_paged845,32227
+  def find_list(primary_keys,options={})find_list856,32552
+  def destroy_all(options={})destroy_all865,32736
+  def query_ids(options={})query_ids869,32817
+  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate872,32929
+  def arrayify(x)arrayify884,33375
+  def find_single(id, options)find_single891,33459
+  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion912,34139
+  def all(options={})all932,34694
+def self.module_namemodule_name936,34757
 
 lib/not_relational/domain_model_cache_item.rb,170
 module NotRelationalNotRelational1,0
@@ -461,29 +461,30 @@ module AwsSdbAwsSdb11,162
   class ServiceService12,176
      def query_with_attributes(domain, query, max = nil, token = nil)query_with_attributes13,192
 
-lib/not_relational/sdb_repository.rb,1625
+lib/not_relational/sdb_repository.rb,1685
 module NotRelationalNotRelational3,63
   class SdbRepository  < RepositoryBaseSdbRepository12,364
     def initialize(initialize17,535
     def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil)save57,1897
     def destroy(table_name, primary_key,repository_id=nil)destroy85,2946
-    def query(table_name,attribute_descriptions,options)query109,3623
-    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token115,3863
-    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text194,6694
-    def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)find_one201,6947
-    def create_domaincreate_domain231,8212
-    def pausepause247,8492
-    def  clearclear251,8532
-    def clear_session_cacheclear_session_cache258,8676
-    def make_domain_name(table_name)make_domain_name265,8748
-    def put_attributes(table_name,primary_key, formatted_attributes,repository_id)put_attributes273,8922
-    def sdb_get_attributes(table_name,primary_key)sdb_get_attributes288,9370
-    def sdb_query_with_attributes(table_name,query,max,token=nil)sdb_query_with_attributes330,10617
-    def extend_query(query,new_clause)extend_query355,11282
-    def escape_quotes(value)escape_quotes362,11424
-    def build_query(table_name,attribute_descriptions,options={})build_query366,11520
-    def parse_attributes(attribute_descriptions,attributes)parse_attributes465,15304
-    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key486,15988
+    def query(table_name,attribute_descriptions,options)query111,3688
+    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token117,3928
+    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text196,6759
+    def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)find_one203,7012
+    def create_domaincreate_domain233,8277
+    def pausepause249,8557
+    def  clearclear253,8597
+    def clear_session_cacheclear_session_cache260,8741
+    def make_domain_name(table_name)make_domain_name267,8813
+    def put_attributes(table_name,primary_key, formatted_attributes,repository_id)put_attributes275,8987
+    def with_time_logging(title)with_time_logging295,9595
+    def sdb_get_attributes(table_name,primary_key)sdb_get_attributes312,9955
+    def sdb_query_with_attributes(table_name,query,max,token=nil)sdb_query_with_attributes356,11264
+    def extend_query(query,new_clause)extend_query383,12026
+    def escape_quotes(value)escape_quotes390,12168
+    def build_query(table_name,attribute_descriptions,options={})build_query394,12264
+    def parse_attributes(attribute_descriptions,attributes)parse_attributes493,16048
+    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key514,16732
 
 lib/not_relational/starts_with_condition.rb,263
 module NotRelationalNotRelational1,0

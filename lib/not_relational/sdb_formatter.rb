@@ -2,11 +2,7 @@ module NotRelational
   
 
   module SdbFormatter
-    def parse_reference_set(value)
-      result=YAML::load(value)
-      return result if(result.class==Reference)
-      return 
-    end
+
     
     def parse_date(value)
       return nil if value==nil 
@@ -32,6 +28,11 @@ module NotRelational
       return value.to_i
       
     end
+    def parse_enum(value)
+      return nil if value==nil 
+      return value.to_sym
+      
+    end
     def parse_float(value)
       return nil if value==nil
       return value.to_f
@@ -46,11 +47,6 @@ module NotRelational
     def parse_unsigned_integer(value)
       return nil if value==nil 
       return value.to_i
-    end
-    
-    def format_reference_set(value)
-      value.to_yaml#ya2yaml(:syck_compatible => true)
-      
     end
     
     def format_date(value)
@@ -91,6 +87,12 @@ module NotRelational
         return nil
       end
       return zero_pad_float(value)
+    end
+    def format_enum(value)
+      if value==nil 
+        return nil
+      end
+      return value.to_s
     end
     def format_unsigned_integer(value)
       if !value

@@ -31,11 +31,13 @@ module NotRelational
     def copy_attributes(hash)
       self.class.attribute_descriptions.each do |attribute_name,description|
         if hash.has_key?(attribute_name) or hash.has_key?(attribute_name.intern)
+          
           value=hash[attribute_name]
-          value=value || hash[attribute_name.intern]
+          value ||= hash[attribute_name.intern]
           if !description.is_collection && value.respond_to?(:flatten) && value.length==1
             value=value[0]
           end
+          description.assert_valid_value(value)
           @attribute_values[attribute_name]=value
         else
           unless @attribute_values.has_key?(attribute_name)
@@ -92,107 +94,111 @@ module NotRelational
       $columns_xxx=columns
       class_eval <<-GETTERDONE
 
-      unless @index_descriptions.has_key?(:#{index_name})
-      @index_names||=[]
-      @index_names << :#{index_name}
+         unless @index_descriptions.has_key?(:#{index_name})
+         @index_names||=[]
+         @index_names << :#{index_name}
 
-    def self.index_names
-      @index_names
-    end
+         def self.index_names
+           @index_names
+         end
 
-    attribute_description=NotRelational::PropertyDescription.new(:#{index_name},:string,{})
-                                                                 @index_descriptions[:#{index_name}]=NotRelational::IndexDescription.new(:#{index_name},$columns_xxx,#{is_index_encrypted.to_s})
+         attribute_description=NotRelational::PropertyDescription.new(:#{index_name},:string,{})
+         @index_descriptions[:#{index_name}]=NotRelational::IndexDescription.new(:#{index_name},$columns_xxx,#{is_index_encrypted.to_s})
                                                                                    end
-                                                                 GETTERDONE
+      GETTERDONE
                                                                  
-                                                                 getter_params=[]
-                                                                 finder_code=""
+     getter_params=[]
+     finder_code=""
                                                                  
-                                                                 params=[]
-                                                                 columns.each do |column|
-    if column.respond_to?(:transform)
-      finder_code<< "h[:#{column.name}]=#{column.name.to_s.downcase}\n"
-      getter_params<< "@attribute_values[:#{column.source_column}]"
+     params=[]
+    columns.each do |column|
+       if column.respond_to?(:transform)   
+         finder_code<< "h[:#{column.name}]=#{column.name.to_s.downcase}\n"
+         getter_params<< "@attribute_values[:#{column.source_column}]"
       
-      params<< "#{column.name.to_s.downcase}"
-    else
-      finder_code<< "h[:#{column}]=#{column.to_s.downcase}\n"
-      getter_params<< "@attribute_values[:#{column}]"
-      params << "#{column.to_s.downcase}"
+         params<< "#{column.name.to_s.downcase}"
+       else
+         finder_code<< "h[:#{column}]=#{column.to_s.downcase}\n"
+         getter_params<< "@attribute_values[:#{column}]"
+         params << "#{column.to_s.downcase}"
       
-    end
+       end
     
-  end
+    end
     find_scope=":all"
     if options[:unique]
       find_scope=":first"
     end
-                                                                 class_eval <<-GETTERDONE
+    class_eval <<-GETTERDONE
         def #{index_name}()              
           return	self.class.calculate_#{index_name}(#{getter_params.join(",")})
         end
 
         def self.calculate_#{index_name}(#{params.join(",")})
-          index_description=index_descriptions[:#{index_name}]
-          h={}
-          #{finder_code}
-          index_description.format_index_entry(@@attribute_descriptions,h)
+                                         index_description=index_descriptions[:#{index_name}]
+                                                                              h={}
+                                                                              #{finder_code}
+                                                                              index_description.format_index_entry(@@attribute_descriptions,h)
         end
 
         def self.find_by_#{index_name}(#{params.join(",")},options={})
-          options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
-          options[:index]=:#{index_name}
-          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
-          find(#{find_scope},options)
-        end
-                                                                             GETTERDONE
-                                                                           end
+                                                                        options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
+                                                                          options[:index]=:#{index_name}
+                                                                          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
+                                                                          find(#{find_scope},options)
+       end
+   GETTERDONE
+   end #self.index
 
 
-                                                                        @index_descriptions ||={}
+    @index_descriptions ||={}
 
-                                                                        def self.index_descriptions
-                                                                          @index_descriptions || {}
-                                                                        end
+    def self.index_descriptions
+      @index_descriptions || {}
+    end
 
-                                                                        def self.is_encrypted?
-                                                                          return @is_encrypted 
-                                                                        end
-                                                                        def self.encrypt_me
-                                                                          class_eval <<-GETTERDONE
+    def self.is_encrypted?
+      return @is_encrypted 
+    end
+
+    def self.encrypt_me
+      class_eval <<-GETTERDONE
          @is_encrypted=true
       GETTERDONE
-                                                                        end
-                                                                        def self.property(name,type=:string,options={})
-                                                                          class_eval <<-GETTERDONE
+    end
+    def self.property(name,type=:string,options={})
+       class_eval <<-GETTERDONE
       
-    @@attribute_descriptions||=HashWithIndifferentAccess.new 
-    
-    @@non_clob_attribute_names||=[]
-    @@clob_attribute_names||=[]
-    @@on_destroy_blocks||=[]
-    def self.on_destroy_blocks
-      @@on_destroy_blocks || []
-    end
-    def self.attribute_descriptions
-      @@attribute_descriptions
-    end
-    
-    def self.non_clob_attribute_names
-      @@non_clob_attribute_names
-    end
-    def self.clob_attribute_names
-      @@clob_attribute_names
-    end
-    def is_dirty(attribute_name)
-      if @attribute_values[attribute_name]!= nil && 
-          @attribute_values[attribute_name].is_a?(LazyLoadingText)
-        return @attribute_values[attribute_name].is_dirty
-      else
-        return true
-      end
-    end
-    GETTERDONE
+          @@attribute_descriptions||=HashWithIndifferentAccess.new 
+          @@non_clob_attribute_names||=[]
+          @@clob_attribute_names||=[]
+          @@on_destroy_blocks||=[]
+
+          def self.on_destroy_blocks
+            @@on_destroy_blocks || []
+          end
+
+          def self.attribute_descriptions
+            @@attribute_descriptions
+          end
+
+          def self.non_clob_attribute_names
+            @@non_clob_attribute_names
+          end
+
+          def self.clob_attribute_names
+            @@clob_attribute_names
+          end
+
+          def is_dirty(attribute_name)
+            if @attribute_values[attribute_name]!= nil && 
+                      @attribute_values[attribute_name].is_a?(LazyLoadingText)
+              return @attribute_values[attribute_name].is_dirty
+            else
+              return true
+            end
+          end
+      GETTERDONE
     @is_encrypted||=false
     is_prop_encrypted=@is_encrypted
     is_prop_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)
@@ -224,94 +230,66 @@ module NotRelational
      if(options[:unique] && options[:unique]==true)
        scope=":first"
      end
-     if type==:reference_set
-       
-       
+     
+     class_eval <<-GETTERDONE
+    
+	 def #{attribute_description.name}=(xvalue)
+       self.class.attribute_descriptions[:#{attribute_description.name}].assert_valid_value(xvalue)
+       @attribute_values[:#{attribute_description.name}] = xvalue
+     end
+
+     def #{attribute_description.name}?
+        return @attribute_values[:#{attribute_description.name}] 
+     end
+ 
+     def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
+       options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
+       find(#{scope},options)
+     end
+    GETTERDONE
+
+    if type==:text
        class_eval <<-GETTERDONE
-        def #{attribute_description.name}
-          result=@attribute_values[:#{attribute_description.name}] || []
-                                   result=result.sort_by{|item|item.index}
-                                   
-                                 end
-      def add_to_#{attribute_description.name}(item,index=-1)
-        @attribute_values[:#{attribute_description.name}] ||=[]
-                          @attribute_values[:#{attribute_description.name}] << NotRelational::Reference.new(:target=> item ,:index=>index)
-                                          end
-                          def remove_from_#{attribute_description.name}(item)
-                            @attribute_values[:#{attribute_description.name}] ||=[]
-                                              @attribute_values.each do |reference|
-                                                if reference.targets?(item)
-                                                  @attribute_values.remove(reference)
-                                                  return
-                                                end
-                                              end
-                                            end
-                        
-                        GETTERDONE
-                        
-                      elsif type==:text
-                        class_eval <<-GETTERDONE
          
         def #{attribute_description.name}
           if @attribute_values[:#{attribute_description.name}]!= nil && 
                                @attribute_values[:#{attribute_description.name}].respond_to?(:value)
                                                  return @attribute_values[:#{attribute_description.name}].value 
-                                                                        else
-                                                                          return @attribute_values[:#{attribute_description.name}] 
-                                                                                                 end
-                                                                        end
+          else
+            return @attribute_values[:#{attribute_description.name}] 
+          end
+        end
+      GETTERDONE
+   else
                                                  
-                                                 GETTERDONE
-                                               else
-                                                 
-                                                 class_eval <<-GETTERDONE
+     class_eval <<-GETTERDONE
         def #{attribute_description.name}
-          return @attribute_values[:#{attribute_description.name}] 
-                                 end
-      
+            return @attribute_values[:#{attribute_description.name}] 
+        end
       GETTERDONE
     end
-    class_eval <<-GETTERDONE
-    
-	 def #{attribute_description.name}=(xvalue)
-       @attribute_values[:#{attribute_description.name}] =xvalue
-                       end
-   def #{attribute_description.name}?
-     return @attribute_values[:#{attribute_description.name}] 
-                            end
- 
- def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
-                                                options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
-                                                  find(#{scope},options)
-                                                     end
-                                                     GETTERDONE
-
-                                                     if options.has_key?(:enum)
- attribute_name=attribute_description.name.to_s
- x=""
- enum_val=1
- options[:enum].each { |enum|
-                                                         x<< "#{enum.to_s.upcase} = #{enum_val}\n"
-                                                         enum_val+=1
-                                                         class_eval <<-GETTERDONE
-        def  is_#{attribute_name}_#{enum.to_s.downcase}?
-          #{attribute_name} == #{attribute_name.capitalize}::#{enum.to_s.upcase}
-        end
-        GETTERDONE
-
-      }
+    if type==:enum
+      attribute_name=attribute_description.name.to_s
+      options[:values].each do |enum|
+                
       class_eval <<-GETTERDONE
-        class #{attribute_name.capitalize}
-          #{x}
+        def  is_#{attribute_name}_#{enum.to_s.downcase}?
+          #{attribute_name} == :#{enum.to_s}
+        end
+        
+        def  is_#{attribute_name}_#{enum.to_s.downcase}=(val)
+          if val
+            #{attribute_name} = :#{enum.to_s.upcase}
+          elsif self.is_#{attribute_name}_#{enum.to_s.downcase}?
+            #{attribute_name} = nil
+          end
+          
         end
         GETTERDONE
 
-
-      end
-
-
+       end
     end
-    
+end    
     def self.belongs_to(domain_class,foreign_key_attribute=nil,accesser_attribute_name=nil,options={})
 
 
@@ -549,12 +527,12 @@ def self.many_to_many(domain_class,
       h={}
       pkey=DomainModel::arrayify(self.primary_key)
       #{reflecting_array_code}.each do |key|
-        h[key]=pkey.shift
-      end
-      result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
+      h[key]=pkey.shift
+    end
+    result= #{module_name+domain_class.to_s}.find_by_index(h,#{order})
       return result
 
-     end
+  end
   XXDONE
   # end
 end

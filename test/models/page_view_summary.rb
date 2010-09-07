@@ -9,7 +9,7 @@ class PageViewSummary < NotRelational::DomainModel
   property :date,:date,:is_primary_key=>true
   property :page_view_count,:integer
   property :details,:reference_set
-  property :type,:integer,:enum =>[:BLOG,:HOMEPAGE,:PORTAL]
+  property :type,:enum, :values => [:BLOG,:HOMEPAGE,:PORTAL]
   has_many :PageViewDetail,:without_prefix
 
 end
