@@ -5,7 +5,11 @@ require File.dirname(__FILE__) +"/reference.rb"
 require File.dirname(__FILE__) +"/index_description.rb"
 require File.dirname(__FILE__) +"/lazy_loading_text.rb"
 require File.dirname(__FILE__) +"/repository_factory.rb"
+require 'active_support/core_ext/string/inflections.rb'
+
 module NotRelational
+    autoload :Inflector, 'active_support/inflector'
+
   class DomainModel
     @@items_to_commit=nil
     @@transaction_depth=0
@@ -30,10 +34,11 @@ module NotRelational
 
     def copy_attributes(hash)
       self.class.attribute_descriptions.each do |attribute_name,description|
-        if hash.has_key?(attribute_name) or hash.has_key?(attribute_name.intern)
+        attribute_name=attribute_name.to_sym
+        if hash.has_key?(attribute_name) 
           
           value=hash[attribute_name]
-          value ||= hash[attribute_name.intern]
+
           if !description.is_collection && value.respond_to?(:flatten) && value.length==1
             value=value[0]
           end
@@ -169,7 +174,7 @@ module NotRelational
     def self.property(name,type=:string,options={})
        class_eval <<-GETTERDONE
       
-          @@attribute_descriptions||=HashWithIndifferentAccess.new 
+          @@attribute_descriptions||= HashWithIndifferentAccess.new
           @@non_clob_attribute_names||=[]
           @@clob_attribute_names||=[]
           @@on_destroy_blocks||=[]
@@ -353,7 +358,7 @@ def self.many_to_many(domain_class,
   reflecting_key_attributes =arrayify(reflecting_key_attributes)
   reflecting_array_code="[:"+reflecting_key_attributes.join(",:")+"]"
 
-  accesser_attribute_name ||=domain_class.to_s.underscore.pluralize
+  accesser_attribute_name ||= domain_class.to_s.underscore.pluralize
   order=""
   if options[:order_by]
     if options[:order]
@@ -583,17 +588,26 @@ end
 def method_missing(method_symbol, *arguments) #:nodoc:
   method_name = method_symbol.to_s
 
-  case method_name.last
+  last_char=method_name[-1..-1]
+
+  without_last_char=method_name[0..-2].to_sym
+
+
+  case last_char
   when "="
-    if @attribute_values.has_key?(method_name.first(-1))
-      @attribute_values[method_name.first(-1)] = arguments.first
+
+    if @attribute_values.has_key?(without_last_char)
+      @attribute_values[without_last_char] = arguments.first
     else
       super
     end
   when "?"
-    @attribute_values[method_name.first(-1)]
+
+
+    @attribute_values[without_last_char]
   else
-    @attribute_values.has_key?(method_name) ? @attribute_values[method_name] : super
+
+    @attribute_values.has_key?(method_symbol) ? @attribute_values[method_symbol] : super
   end
 end
 def index_values

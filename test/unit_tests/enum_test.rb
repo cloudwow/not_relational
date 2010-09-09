@@ -52,7 +52,7 @@ class EnumTest < Test::Unit::TestCase
 
     found_x1=PageViewSummary.find(x1.primary_key)
     assert_not_nil(found_x1)
-    puts found_x1.inspect
+
     assert_equal(:BLOG,found_x1.type)
 
     

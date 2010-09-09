@@ -1,6 +1,6 @@
 require "openssl"
 require "logger"
-
+require "yaml"
 module NotRelational
   class Configuration
     
