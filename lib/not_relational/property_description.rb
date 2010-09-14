@@ -65,9 +65,9 @@ module NotRelational
       if value_type==:enum
         raise_mismatch( value,"one of [ :#{self.enum_values.join(", :")} ]") unless enum_values.include?(value)
       elsif value_type==:integer
-        raise_mismatch( value,"an integer") unless  value.is_a?(Fixnum) || value.is_a(Bignum)
+        raise_mismatch( value,"an integer") unless  value.is_a?(Fixnum) || value.is_a?(Bignum)
       elsif value_type==:float
-        raise_mismatch( value,"a number") unless value.is_a?(Float) || value.is_a?(Fixnum) || value.is_a(Bignum) 
+        raise_mismatch( value,"a number") unless value.is_a?(Float) || value.is_a?(Fixnum) || value.is_a?(Bignum) 
       end
 
     end
