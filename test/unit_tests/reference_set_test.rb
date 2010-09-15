@@ -1,6 +1,6 @@
-require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
+#require File.expand_path(File.dirname(__FILE__)) + '/../test_helper.rb'
 #ref sets were deleted from code base, at least for the time being
-class ReferenceSetTest < Test::Unit::TestCase
+#class ReferenceSetTest < Test::Unit::TestCase
 #   def ReferenceSetTest.set_up
 
 #     PageViewSummary.find(:all).each do |node|
@@ -52,4 +52,4 @@ class ReferenceSetTest < Test::Unit::TestCase
 #     assert_equal(0,found_y.details.length)
 
 #   end
-end
+#end

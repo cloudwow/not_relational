@@ -155,7 +155,7 @@ module NotRelational
       
     end
     def get(bucket,key)
-
+#      puts "storage get: #{key}"
       value   =nil
       value=@session_cache.get(bucket,key) if @session_cache
       return value if value
@@ -193,7 +193,7 @@ module NotRelational
     end
     def put(bucket,key,object,attributes={})
 
-
+#      puts "Storage put: #{key}, #{object.to_s[0..8]}"
       real_s3_put(bucket,key,object,attributes)
       @session_cache.put(bucket,key,object,attributes) if @session_cache
 

@@ -2,7 +2,9 @@ module NotRelational
   
 
   module SdbFormatter
-
+    TEXT_IN_STORAGE= "storage:"
+    TEXT_IS_NIL=     "nil    :"
+    TEXT_IS_HERE=    "here   :"
     
     def parse_date(value)
       return nil if value==nil 
@@ -15,6 +17,7 @@ module NotRelational
       return nil if value.length==0
       return Time.at(value.to_f).gmtime
     end
+
     def parse_boolean(value)
       return nil if value==nil 
       if value=="true"
@@ -48,7 +51,31 @@ module NotRelational
       return nil if value==nil 
       return value.to_i
     end
-    
+    def parse_text(value)
+      
+      if value && value.length>=TEXT_IS_HERE.length
+        prefix=value[0..TEXT_IS_HERE.length-1]
+        
+        case prefix
+        when TEXT_IS_HERE
+          return value[TEXT_IS_HERE.length..-1]
+        when TEXT_IN_STORAGE
+          return :in_storage
+        when TEXT_IS_NIL
+          return nil
+        end
+      end
+      if value
+        #has value but does not match any prefix
+        #this was a string
+
+        return value
+      else
+
+        #backwards compatible from before anything for text was put in SDB
+        return :in_storage
+      end
+    end
     def format_date(value)
       return nil if value==nil 
       return format("%.4f",value.to_f)
@@ -81,6 +108,17 @@ module NotRelational
         value=value[0..1023]
       end
       value
+    end
+    def format_text(value)
+      #text value should always have a prefix describing where the value is stored or if it is nil
+      if value==nil 
+        return TEXT_IS_NIL
+      end
+      
+      if value.length>1024
+        return TEXT_IN_STORAGE
+      end
+      TEXT_IS_HERE+  value
     end
     def format_float(value)
       if value==nil 

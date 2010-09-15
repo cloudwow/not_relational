@@ -11,7 +11,7 @@ module NotRelational
     attr_accessor :is_primary_key
     attr_accessor :is_collection
     attr_accessor :is_encrypted
-    attr_accessor :default_value
+    attr_accessor  :default_value
     attr_accessor :enum_values
     def self.crypto
       @@crypto||= Configuration.singleton.crypto
@@ -33,7 +33,17 @@ module NotRelational
         self.enum_values=options[:values]
       end
     end
-    
+
+    def default_value
+      return @default_value if @default_value
+      if self.is_collection
+        return []
+      elsif self.value_type==:property_bag
+        return {}
+      else
+        return nil
+      end
+    end
     def is_text?
       return self.value_type==:text
     end
@@ -86,7 +96,7 @@ module NotRelational
     end
 
     def format_for_sdb_single(value)
-      return nil if value == nil && self.value_type!=:boolean
+      return nil if value == nil && self.value_type!=:boolean && self.value_type!=:text
       if self.value_type==:integer
         result= format_integer(value)
       elsif self.value_type==:date
@@ -104,14 +114,29 @@ module NotRelational
       elsif self.value_type==:property_bag
         result= format_property_bag(value)
 
+      elsif self.value_type==:text# || self.value_type==:string
+        
+        result=format_text(value)
+
       else
         result= format_string(value.to_s)
       end
+
+
       if self.is_encrypted
         result=PropertyDescription.crypto.encrypt(result)
       end
 
+      
       result      
+    end
+
+    def format_for_storage(value)
+      #only very long text values go into storage
+      if self.value_type==:text && value && value.length>1024
+        return value
+      end
+      return nil
     end
     
     def parse_from_sdb( value)
@@ -126,9 +151,8 @@ module NotRelational
     end
 
     def parse_from_sdb_single( value)
-      return self.default_value if value==nil 
       
-      if is_encrypted
+      if value && is_encrypted
         begin
           value=PropertyDescription.crypto.decrypt(value)
         rescue
@@ -136,25 +160,31 @@ module NotRelational
         end
       end
       value=CGI.unescapeHTML(value) if value
-      
+
+      result=value
       if self.value_type==:integer
-        return parse_integer(value)
+        result =  parse_integer(value)
       elsif self.value_type==:date
-        return parse_date(value)     
+        result =  parse_date(value)     
       elsif self.value_type==:boolean
-        return parse_boolean(value)     
+        result =  parse_boolean(value)     
       elsif self.value_type==:unsigned_integer
-        return parse_unsigned_integer(value)    
+        result =  parse_unsigned_integer(value)    
       elsif self.value_type==:float
-        return parse_float(value)
+        result =  parse_float(value)
       elsif self.value_type==:enum
-        return parse_enum(value)
+        result =  parse_enum(value)
       elsif self.value_type==:property_bag
-        return parse_property_bag(value)
+        result =  parse_property_bag(value)
+      elsif self.value_type==:text# || self.value_type==:string
+        result = parse_text(value)
       else
-        return value.to_s
+        result =  value.to_s
       end
-      return value
+      if result==nil
+        result=self.default_value
+      end
+      return result
     end
   end
 end

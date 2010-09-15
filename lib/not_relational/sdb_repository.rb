@@ -61,24 +61,18 @@ module NotRelational
 
       formatted_attributes={}
       attributes.each do |description,value|
-        #        if value || description.value_type==:boolean
-        if description.is_text?
-          if value
+
+        formatted_attributes[description.name]=description.format_for_sdb(value)
+
+          storage_value = description.format_for_storage(value)
+          if storage_value
             @storage.put(
                          @storage_bucket,
                          make_storage_key_from_cache_key(table_name,repository_id,description.name),
-                         value.to_s,
+                         storage_value.to_s,
                          {})
-          else
-            @storage.delete(
-                         @storage_bucket,
-                         make_storage_key_from_cache_key(table_name,repository_id,description.name))
-
           end
-        else
-          formatted_attributes[description.name]=description.format_for_sdb(value)
-        end
-        #        end
+
       end
       if !@use_seperate_domain_per_model
         formatted_attributes['metadata%%table_name'] = table_name
@@ -201,6 +195,7 @@ module NotRelational
       return result,token
     end
     def get_text(table_name,primary_key,clob_name,repository_id=nil)
+
       repository_id ||= make_repo_key(table_name,primary_key)
       return @storage.get(@storage_bucket,make_storage_key_from_cache_key(table_name,repository_id,clob_name))
 
@@ -282,6 +277,7 @@ module NotRelational
     def put_attributes(table_name,primary_key, formatted_attributes,repository_id)
       @logger.debug( "SDB put_attributes.  #{table_name} , sdb_id:#{repository_id}") if @logger
       @logger.debug( "\tattributes to put:  #{formatted_attributes.inspect}") if @logger
+
 
       20.times do |i|
         begin
