@@ -29,7 +29,7 @@ module NotRelational
       
     end
     def parse_enum(value)
-      return nil if value==nil 
+      return nil if value==nil || value.empty?
       return value.to_sym
       
     end
