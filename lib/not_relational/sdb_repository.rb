@@ -278,6 +278,7 @@ module NotRelational
       @logger.debug( "SDB put_attributes.  #{table_name} , sdb_id:#{repository_id}") if @logger
       @logger.debug( "\tattributes to put:  #{formatted_attributes.inspect}") if @logger
 
+      return if formatted_attributes.length==0
 
       20.times do |i|
         begin
