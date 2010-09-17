@@ -394,7 +394,8 @@ module NotRelational
     end
     def escape_quotes(value)
       return nil unless value
-      value.gsub( "'","\\'")
+      #escape slashes too, working with  bizarre ruby need to double escape in gsub
+      value.gsub("\\","\\\\\\\\").gsub( "'","\\'")
     end
     def build_query(table_name,attribute_descriptions,options={})
 
