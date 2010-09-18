@@ -48,10 +48,6 @@ module NotRelational
       return self.value_type==:text
     end
 
-    def assert_valid_value(value)
-      x=value_problems(value)
-      raise "Invalid value (#{value}) for #{self.name}: #{x}" if x != nil
-    end
 
     
     #return 

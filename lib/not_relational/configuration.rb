@@ -50,6 +50,8 @@ module NotRelational
 
         @log_level = Logger::WARN
         @log_level =eval( "Logger::"+not_relational_config["log_level"]) if not_relational_config["log_level"]
+        #override with NR specific log level
+        @log_level =eval( "Logger::"+not_relational_config["not_relational_log_level"]) if not_relational_config["not_relational_log_level"]
         
       end
     end

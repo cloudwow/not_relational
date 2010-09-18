@@ -105,7 +105,9 @@ module NotRelational
           if !description.is_collection && value.respond_to?(:flatten) && value.length==1
             value=value[0]
           end
+          
           set_attribute(attribute_name,value)
+          
         else
 
           unless @attribute_values.has_key?(attribute_name)
