@@ -589,26 +589,30 @@ end
 def method_missing(method_symbol, *arguments) #:nodoc:
   method_name = method_symbol.to_s
 
-  last_char=method_name[-1..-1]
+  if method_name.length > 1
+    
+    last_char=method_name[-1..-1]
+  
+    without_last_char=method_name[0..-2].to_sym
+  
 
-  without_last_char=method_name[0..-2].to_sym
-
-
-  case last_char
-  when "="
-
-    if @attribute_values.has_key?(without_last_char)
-      @attribute_values[without_last_char] = arguments.first
+    case last_char
+      when "="
+  
+      if @attribute_values.has_key?(without_last_char)
+        @attribute_values[without_last_char] = arguments.first
+      else
+        super
+      end
+    when "?"
+      @attribute_values[without_last_char]
     else
-      super
+
+      @attribute_values.has_key?(method_symbol) ? @attribute_values[method_symbol] : super
     end
-  when "?"
-
-
-    @attribute_values[without_last_char]
   else
-
-    @attribute_values.has_key?(method_symbol) ? @attribute_values[method_symbol] : super
+    #its just one char
+    super
   end
 end
 def index_values

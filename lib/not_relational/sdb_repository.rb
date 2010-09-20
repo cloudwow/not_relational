@@ -64,14 +64,14 @@ module NotRelational
 
         formatted_attributes[description.name]=description.format_for_sdb(value)
 
-          storage_value = description.format_for_storage(value)
-          if storage_value
-            @storage.put(
-                         @storage_bucket,
-                         make_storage_key_from_cache_key(table_name,repository_id,description.name),
-                         storage_value.to_s,
-                         {})
-          end
+        storage_value = description.format_for_storage(value)
+        if storage_value
+          @storage.put(
+                       @storage_bucket,
+                       make_storage_key_from_cache_key(table_name,repository_id,description.name),
+                       storage_value.to_s,
+                       {})
+        end
 
       end
       if !@use_seperate_domain_per_model
@@ -126,7 +126,7 @@ module NotRelational
       end
       the_query=build_query(table_name, attribute_descriptions, options)
 
-      max=@@max_page_size
+      max=1000000
       if options[:limit]
         max=options[:limit].to_i
       end
