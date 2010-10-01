@@ -4,8 +4,8 @@ require "not_relational/domain_model.rb"
 class Comment < NotRelational::DomainModel
     
   property :id,:string,:is_primary_key=>true
-  property :title  , :string
-  property :content  , :string
+  property :title  , :text
+  property :content  , :text
   property :posted_time , :date
   property :mediaitem_id , :string
   property :parent_id  , :string

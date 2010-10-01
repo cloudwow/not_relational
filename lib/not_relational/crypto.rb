@@ -28,6 +28,8 @@ module NotRelational
     
     def encrypt(text,salt=nil)
 
+      return nil unless text
+      return "" if text.empty?
 
       @cipher.encrypt
       @cipher.pkcs5_keyivgen(@password, salt || @salt) 
@@ -39,6 +41,8 @@ module NotRelational
     end
 
     def decrypt(text,salt=nil)
+      return nil unless text
+      return "" if text.empty?
       x=Base64.decode64(text)
       @cipher.decrypt()
       @cipher.pkcs5_keyivgen(@password, salt || @salt)

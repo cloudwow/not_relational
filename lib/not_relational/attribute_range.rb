@@ -34,19 +34,19 @@ module NotRelational
     def to_sdb_query
       query=''
       if self.less_than 
-        query << "  '#{attribute_description.name}' < '#{ attribute_description.format_for_sdb( self.less_than)}'"
+        query << "  `#{attribute_description.name}` < '#{ attribute_description.format_for_sdb( self.less_than)}'"
       end
       if self.greater_than  
         query << ' and ' if query.length>0
-        query << "  '#{attribute_description.name}' > '#{ attribute_description.format_for_sdb( self.greater_than)}'"
+        query << "  `#{attribute_description.name}` > '#{ attribute_description.format_for_sdb( self.greater_than)}'"
       end
       if  self.less_than_or_equal_to 
         query << ' and ' if query.length>0
-        query << "  '#{attribute_description.name}' <= '#{ attribute_description.format_for_sdb( self.less_than_or_equal_to)}'"
+        query << "  `#{attribute_description.name}` <= '#{ attribute_description.format_for_sdb( self.less_than_or_equal_to)}'"
       end
       if  self.greater_than_or_equal_to 
         query << ' and ' if query.length>0
-        query << "  '#{attribute_description.name}' >= '#{ attribute_description.format_for_sdb( self.greater_than_or_equal_to)}'"
+        query << "  `#{attribute_description.name}` >= '#{ attribute_description.format_for_sdb( self.greater_than_or_equal_to)}'"
       end
       
       return  query

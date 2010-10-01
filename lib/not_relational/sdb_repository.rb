@@ -117,7 +117,8 @@ module NotRelational
     # result will be an array of hashes. each hash is a set of attributes
     def query_with_token(table_name,attribute_descriptions,token,options={})
       token ||= options[:token]
-      
+      extra_sdb_params={}
+      extra_sdb_params["ConsistentRead"]="true" if options[:consistent_read]
       if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
         session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
         if options[:limit]==session_cache_result.length
@@ -162,13 +163,13 @@ module NotRelational
           @logger.debug msg
         end
 
-        sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
+        sdb_result,token=sdb_query_with_attributes(table_name,the_query,page_size,token,extra_sdb_params)
 
         while !(token.nil? || token.empty? || sdb_result.length>=max)
           @logger.debug  "got #{sdb_result.length} so far. going for more..."
           page_size=max- sdb_result.length
           page_size=page_size> @@max_page_size ? @@max_page_size : page_size
-          partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token)
+          partial_results,token=sdb_query_with_attributes(table_name,the_query,page_size,token,extra_sdb_params)
           sdb_result.concat( partial_results)
         end
 
@@ -202,7 +203,7 @@ module NotRelational
     end
 
 
-    def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)
+    def find_one(table_name, primary_key,attribute_descriptions,options={})#, non_clob_attribute_names, clob_attribute_names)
       session_cache_result=@session_cache.find_one(
                                                    table_name,
                                                    primary_key,
@@ -218,7 +219,9 @@ module NotRelational
       #
       #      end
       #    end
-      attributes=parse_attributes(attribute_descriptions,sdb_get_attributes(table_name,primary_key))
+      extra_sdb_params={}
+      extra_sdb_params["ConsistentRead"]="true" if options[:consistent_read]
+      attributes=parse_attributes(attribute_descriptions,sdb_get_attributes(table_name,primary_key,extra_sdb_params))
       if attributes
         # #attributes[:primary_key]=primary_key #put_into_cache(table_name, primary_key, attributes)
         attribute_key_values={}
@@ -314,7 +317,7 @@ module NotRelational
       end
       result
     end
-    def sdb_get_attributes(table_name,primary_key)
+    def sdb_get_attributes(table_name,primary_key,extra_sdb_params={})
 
       domain_name=make_domain_name(table_name)
       repo_key=make_repo_key(table_name,primary_key)
@@ -322,7 +325,7 @@ module NotRelational
       20.times do |i|
         begin
           with_time_logging("get_attributes"){
-            return @sdb.get_attributes(domain_name, repo_key)
+            return @sdb.get_attributes(domain_name, repo_key,extra_sdb_params)
           }
 
         rescue Exception => e
@@ -358,14 +361,14 @@ module NotRelational
     #
     #    end
 
-    def sdb_query_with_attributes(table_name,query,max,token=nil)
+    def sdb_query_with_attributes(table_name,query,max,token=nil,extra_sdb_params={})
 
       @logger.debug( "SDB query_with_attributes:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
       20.times do |i|
         begin
           with_time_logging("query_with_attributes") {
             
-            return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token)
+            return @sdb.query_with_attributes(make_domain_name(table_name),query,max,token,extra_sdb_params)
           }
         rescue Exception => e
           if e.message =="The specified domain does not exist."
@@ -387,7 +390,7 @@ module NotRelational
 
     def extend_query(query,new_clause)
       if query.length>0
-        query << " intersection "
+        query << " AND "
       end
 
       query << new_clause
@@ -417,12 +420,12 @@ module NotRelational
 
       end
       if !@use_seperate_domain_per_model
-        extend_query(query," ['metadata%%table_name' = '#{table_name}']")
+        extend_query(query," `metadata%%table_name` = '#{table_name}'")
 
       end
       if options
         if options.has_key?(:query)
-          extend_query(query,"["+options[:query]+"]")
+          extend_query(query,options[:query])
         end
         if params
           params.each do |key,value|
@@ -430,49 +433,51 @@ module NotRelational
             if attribute_descriptions.has_key?(key)
               if value==:NOT_NULL
                 got_something=true
-                extend_query(query," ['#{key}' starts-with '']")
+                extend_query(query," `#{key}`  is not null ")
               end
               if value==:NULL or value==nil
                 got_something=true
-                extend_query(query," not ['#{key}' starts-with '']")
+                extend_query(query," `#{key}` is null ")
               end
               if value.respond_to?(:less_than) && value.less_than
                 got_something=true
-                extend_query(query," ['#{key}' < '#{escape_quotes(attribute_descriptions[key].format_for_sdb_single( value.less_than))}']")
+                extend_query(query," `#{key}` < '#{escape_quotes(attribute_descriptions[key].format_for_sdb_single( value.less_than))}'")
               end
               if value.respond_to?(:greater_than) && value.greater_than
                 got_something=true
-                extend_query(query," ['#{key}' > '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single( value.greater_than))}']")
+                extend_query(query," `#{key}` > '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single( value.greater_than))}'")
               end
               if value.respond_to?(:less_than_or_equal_to) && value.less_than_or_equal_to
                 got_something=true
-                extend_query(query,"['#{key}' <= '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single( value.less_than_or_equal_to))}']")
+                extend_query(query,"`#{key}` <= '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single( value.less_than_or_equal_to))}'")
               end
               if value.respond_to?(:greater_than_or_equal_to) && value.greater_than_or_equal_to
                 got_something=true
-                extend_query(query," ['#{key}' >= '#{escape_quotes(attribute_descriptions[key].format_for_sdb_single( value.greater_than_or_equal_to))}']")
+                extend_query(query," `#{key}` >= '#{escape_quotes(attribute_descriptions[key].format_for_sdb_single( value.greater_than_or_equal_to))}'")
               end
               if !got_something
-                extend_query(query," ['#{key}' = '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single(value))}']")
+                extend_query(query," `#{key}` = '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single(value))}'")
               end
             else
               # #it must be formatted already.  likely an index
-              extend_query(query,"['#{key}' = '#{escape_quotes value}']")
+              extend_query(query,"`#{key}` = '#{escape_quotes value}'")
             end
           end
         end
-        if options.has_key?(:order_by) && options[:order_by]
-          clause=" ['#{options[:order_by]}' starts-with ''] sort '#{options[:order_by]}' "
-          if options.has_key?(:order) and ( options[:order]==:descending or options[:order]==:desc)
-            clause << " desc "
-          end
-          extend_query(query,clause)
-        end
+
         if options.has_key?(:conditions) and !options[:conditions].is_a?(Hash)
           options[:conditions].each do |condition|
 
-            extend_query(query,"["+condition.to_sdb_query()+"]")
+            extend_query(query,condition.to_sdb_query())
           end
+        end
+        if options.has_key?(:order_by) && options[:order_by]
+          clause=" `#{options[:order_by]}` is not null order by `#{options[:order_by]}` "
+          
+          if options.has_key?(:order) and ( options[:order]==:descending or options[:order]==:desc)
+            clause << " desc "
+          end
+          extend_query( query ,clause)
         end
 
       end

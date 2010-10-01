@@ -15,7 +15,7 @@ class StartsWithCondition
        return domain_model[attribute_description.name].index(value)==0
    end
    def to_sdb_query
-     return "'#{self.attribute_description.name}' starts-with '#{self.attribute_description.format_for_sdb(self.value)}'"
+     return "`#{self.attribute_description.name}` like  '#{self.attribute_description.format_for_sdb(self.value)}%'"
    end
    def to_s
      "#{self.attribute_description.name} starts with #{value}"

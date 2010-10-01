@@ -10,8 +10,8 @@ class NilTest < Test::Unit::TestCase
 
     NotRelational::Repository.clear_session_cache
     NotRelational::Repository.pause
-
-    found=Comment.find(target.id)
+    
+    found=Comment.find(target.id,:consistent_read=>true)
     assert_not_nil(found)
     assert_equal("my title",found.title)
     assert_equal("my content",found.content)
@@ -20,9 +20,8 @@ class NilTest < Test::Unit::TestCase
     found.save!
 
     NotRelational::Repository.clear_session_cache
-    NotRelational::Repository.pause
 
-    found=Comment.find(target.id)
+    found=Comment.find(target.id,:consistent_read=>true)
     assert_not_nil(found)
     assert_nil(found.title)
     assert_nil(found.content)
