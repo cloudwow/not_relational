@@ -52,8 +52,15 @@ module NotRelational
       @storage ||=MemoryStorage.new
       @storage.clear
     end
-    
-    def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil)
+
+    def enforce_expected(target,expected)
+      expected.each do |description,value|
+        unless target[description.name]==value
+          raise new AwsSdb::ConnectionError("409 expected condition check failed")
+        end
+      end
+    end
+    def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil,extra_options={})
       key=repository_id || make_repo_key(table_name,primary_key);
       record=@records[key]
       if !record
@@ -61,7 +68,10 @@ module NotRelational
         @records[key]=record
         
       end
-      
+
+      if extra_options.has_key?(:expected)
+        enforce_expected(record,extra_options[:expected])
+      end
       attributes.each do |description,value|
         name=description# 
         name=description.name if description.respond_to?(:name)

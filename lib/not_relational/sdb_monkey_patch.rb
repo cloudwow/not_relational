@@ -121,6 +121,24 @@ module AwsSdb
     end
 
 
-    
+    def put_attributes(domain, item, attributes, replace = true,extra_params = {})
+      params = {
+        'Action' => 'PutAttributes',
+        'DomainName' => domain.to_s,
+        'ItemName' => item.to_s
+      }.merge(extra_params)
+      count = 0
+      attributes.each do | key, values |
+        ([] << values).flatten.each do |value|
+          params["Attribute.#{count}.Name"] = key.to_s
+          params["Attribute.#{count}.Value"] = value.to_s
+          params["Attribute.#{count}.Replace"] = replace
+          count += 1
+        end
+      end
+      call(:put, params)
+      nil
+    end
+
   end
 end

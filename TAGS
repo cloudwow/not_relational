@@ -39,14 +39,14 @@ module NotRelationalNotRelational4,50
   class ConfigurationConfiguration5,71
     def self.singletonsingleton19,454
     def initialize()initialize24,564
-    def assert_configuredassert_configured59,2078
-    def loggerlogger76,2508
-    def  cryptocrypto84,2649
-    def cipher_passwordcipher_password94,2960
-    def cipher_saltcipher_salt97,3022
-    def config_file_pathconfig_file_path100,3076
-    def config_section_nameconfig_section_name118,3667
-    def find_config_sectionfind_config_section130,4044
+    def assert_configuredassert_configured61,2264
+    def loggerlogger78,2694
+    def  cryptocrypto86,2835
+    def cipher_passwordcipher_password96,3146
+    def cipher_saltcipher_salt99,3208
+    def config_file_pathconfig_file_path102,3262
+    def config_section_nameconfig_section_name120,3853
+    def find_config_sectionfind_config_section132,4230
 
 lib/not_relational/crypto.rb,250
 module NotRelationalNotRelational3,35
@@ -54,7 +54,7 @@ module NotRelationalNotRelational3,35
     def initialize(options={})initialize8,120
     def hex_to_binaryhex_to_binary22,424
     def encrypt(text,salt=nil)encrypt29,603
-    def decrypt(text,salt=nil)decrypt41,815
+    def decrypt(text,salt=nil)decrypt43,875
 
 lib/not_relational/domain_model.rb,4582
 class ObjectObject10,401
@@ -101,38 +101,38 @@ def flat_primary_key()flat_primary_key560,19418
 def primary_key_hashprimary_key_hash574,19674
 def primary_key=(value)primary_key=582,19844
 def method_missing(method_symbol, *arguments) #:nodoc:method_missing589,20017
-def index_valuesindex_values614,20522
-def set_all_cleanset_all_clean623,20660
-def set_attribute(name,xvalue)set_attribute636,21085
-def get_attribute(name)get_attribute643,21230
-def to_sto_s646,21284
-def to_xmlto_xml662,21616
-def destroy(options={})destroy679,22011
-def attributesattributes693,22334
-def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list704,22625
-def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list717,23001
-def save!(options={})save!727,23305
-def save(options={})save730,23347
-def dirty_attributes_value_hashdirty_attributes_value_hash746,23758
-def repository_id_for_updatesrepository_id_for_updates766,24266
-def table_nametable_name777,24748
-def DomainModel.table_nametable_name780,24798
-def repository(options=nil)repository791,25102
-  def repository(options={})repository804,25315
-  def find_by_index(values,more_options)find_by_index813,25491
-  def find(*arguments)find831,26105
-  def find_one(options={})find_one841,26386
-  def find_every(options={})find_every845,26471
-  def find_paged(token=nil,options={})find_paged855,26756
-  def find_list(primary_keys,options={})find_list866,27081
-  def destroy_all(options={})destroy_all875,27265
-  def query_ids(options={})query_ids879,27346
-  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate882,27458
-  def arrayify(x)arrayify887,27614
-  def find_single(id, options)find_single894,27698
-  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion915,28378
-  def all(options={})all935,28933
-def self.module_namemodule_name939,28996
+def index_valuesindex_values618,20635
+def set_all_cleanset_all_clean627,20773
+def set_attribute(name,xvalue)set_attribute640,21198
+def get_attribute(name)get_attribute647,21343
+def to_sto_s650,21397
+def to_xmlto_xml666,21729
+def destroy(options={})destroy683,22124
+def attributesattributes697,22447
+def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list708,22738
+def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list721,23114
+def save!(options={})save!731,23418
+def save(options={})save735,23461
+def dirty_attributes_value_hashdirty_attributes_value_hash752,23873
+def repository_id_for_updatesrepository_id_for_updates772,24381
+def table_nametable_name783,24863
+def DomainModel.table_nametable_name786,24913
+def repository(options=nil)repository797,25217
+  def repository(options={})repository810,25430
+  def find_by_index(values,more_options)find_by_index819,25606
+  def find(*arguments)find837,26220
+  def find_one(options={})find_one847,26501
+  def find_every(options={})find_every851,26586
+  def find_paged(token=nil,options={})find_paged861,26871
+  def find_list(primary_keys,options={})find_list872,27196
+  def destroy_all(options={})destroy_all881,27380
+  def query_ids(options={})query_ids885,27461
+  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate888,27573
+  def arrayify(x)arrayify893,27729
+  def find_single(id, options)find_single900,27813
+  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion921,28493
+  def all(options={})all941,29048
+def self.module_namemodule_name945,29111
 
 lib/not_relational/domain_model_cache_item.rb,170
 module NotRelationalNotRelational1,0
@@ -254,30 +254,29 @@ def copy(from_bucket,from_key,to_bucket,to_key,attributes=nil)copy47,975
   def clear_session_cacheclear_session_cache64,1273
   def end_session_cacheend_session_cache66,1305
 
-lib/not_relational/or_condition.rb,250
+lib/not_relational/or_condition.rb,260
 module NotRelationalNotRelational1,0
-class OrConditionOrCondition4,24
-  def initialize(child_conditions=[])initialize7,83
-  def add(child_condition)add11,173
-  def matches?(domain_model)matches?15,254
-  def to_sdb_queryto_sdb_query27,552
+  class OrConditionOrCondition4,25
+    def initialize(child_conditions=[])initialize7,86
+    def add(child_condition)add11,184
+    def matches?(domain_model)matches?15,273
+    def to_sdb_queryto_sdb_query27,548
 
-lib/not_relational/property_description.rb,821
+lib/not_relational/property_description.rb,760
 module NotRelationalNotRelational1,0
   class PropertyDescriptionPropertyDescription7,197
     def self.cryptocrypto16,470
     def initialize(name,initialize21,553
     def default_valuedefault_value37,1180
     def is_text?is_text?47,1403
-    def assert_valid_value(value)assert_valid_value51,1465
-    def assert_valid_value(value)assert_valid_value58,1630
-    def assert_valid_individual_value(value)assert_valid_individual_value71,1980
-    def raise_mismatch(value,expected)raise_mismatch85,2487
-    def format_for_sdb(value)format_for_sdb89,2636
-    def format_for_sdb_single(value)format_for_sdb_single98,2879
-    def format_for_storage(value)format_for_storage134,3866
-    def parse_from_sdb( value)parse_from_sdb142,4073
-    def parse_from_sdb_single( value)parse_from_sdb_single153,4354
+    def assert_valid_value(value)assert_valid_value54,1484
+    def assert_valid_individual_value(value)assert_valid_individual_value67,1834
+    def raise_mismatch(value,expected)raise_mismatch81,2341
+    def format_for_sdb(value)format_for_sdb85,2490
+    def format_for_sdb_single(value)format_for_sdb_single94,2733
+    def format_for_storage(value)format_for_storage130,3720
+    def parse_from_sdb( value)parse_from_sdb138,3927
+    def parse_from_sdb_single( value)parse_from_sdb_single149,4208
 
 lib/not_relational/query_string_auth_generator.rb,1411
 module NotRelationalNotRelational6,86
@@ -466,35 +465,42 @@ module NotRelationalNotRelational1,0
     def zero_pad_integer(value)zero_pad_integer151,3212
     def zero_pad_float(value)zero_pad_float162,3426
 
-lib/not_relational/sdb_monkey_patch.rb,158
+lib/not_relational/sdb_monkey_patch.rb,652
 module AwsSdbAwsSdb11,162
-  class ServiceService12,176
-     def query_with_attributes(domain, query, max = nil, token = nil)query_with_attributes13,192
+  class InvalidParameterError < RequestError ; endInvalidParameterError12,176
+  class InvalidWSDLVersionError < RequestError ; endInvalidWSDLVersionError13,227
+  class InvalidSortExpressionError < RequestError ; endInvalidSortExpressionError14,280
+  class ServiceService16,337
+    def query_with_attributes(domain, query, max = nil, token = nil,extra_params={})query_with_attributes19,359
+    def get_attributes(domain, item,extra_params={})get_attributes63,1687
+    def call(method, params)call82,2279
+    def put_attributes(domain, item, attributes, replace = true,extra_params = {})put_attributes124,4055
 
-lib/not_relational/sdb_repository.rb,1686
+lib/not_relational/sdb_repository.rb,1845
 module NotRelationalNotRelational3,63
   class SdbRepository  < RepositoryBaseSdbRepository12,364
     def initialize(initialize17,535
-    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil)save57,1897
-    def destroy(table_name, primary_key,repository_id=nil)destroy86,2930
-    def query(table_name,attribute_descriptions,options)query112,3672
-    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token118,3912
-    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text197,6743
-    def find_one(table_name, primary_key,attribute_descriptions)#, non_clob_attribute_names, clob_attribute_names)find_one205,6997
-    def create_domaincreate_domain235,8262
-    def pausepause251,8542
-    def  clearclear255,8582
-    def clear_session_cacheclear_session_cache262,8726
-    def make_domain_name(table_name)make_domain_name269,8798
-    def put_attributes(table_name,primary_key, formatted_attributes,repository_id)put_attributes277,8972
-    def with_time_logging(title)with_time_logging300,9717
-    def sdb_get_attributes(table_name,primary_key)sdb_get_attributes317,10077
-    def sdb_query_with_attributes(table_name,query,max,token=nil)sdb_query_with_attributes361,11386
-    def extend_query(query,new_clause)extend_query388,12148
-    def escape_quotes(value)escape_quotes395,12290
-    def build_query(table_name,attribute_descriptions,options={})build_query400,12492
-    def parse_attributes(attribute_descriptions,attributes)parse_attributes499,16276
-    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key520,16960
+    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil,options = {})save57,1897
+    def destroy(table_name, primary_key,repository_id=nil)destroy87,3002
+    def query(table_name,attribute_descriptions,options)query113,3744
+    def extract_extra_sdb_params(options)extract_extra_sdb_params118,3906
+    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token138,4678
+    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text218,7592
+    def find_one(table_name, primary_key,attribute_descriptions,options={})#, non_clob_attribute_names, clob_attribute_names)find_one226,7846
+    def create_domaincreate_domain258,9242
+    def pausepause274,9522
+    def  clearclear278,9562
+    def clear_session_cacheclear_session_cache285,9706
+    def make_domain_name(table_name)make_domain_name292,9778
+    def put_attributes(table_name,primary_key, formatted_attributes,repository_id,extra_sdb_options)put_attributes300,9952
+    def with_time_logging(title)with_time_logging323,10733
+    def sdb_get_attributes(table_name,primary_key,extra_sdb_params={})sdb_get_attributes340,11093
+    def sdb_query_with_attributes(table_name,query,max,token=nil,extra_sdb_params={})sdb_query_with_attributes384,12439
+    def extend_query(query,new_clause)extend_query411,13238
+    def escape_quotes(value)escape_quotes418,13371
+    def build_query(table_name,attribute_descriptions,options={})build_query423,13573
+    def parse_attributes(attribute_descriptions,attributes)parse_attributes524,17325
+    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key545,18009
 
 lib/not_relational/starts_with_condition.rb,263
 module NotRelationalNotRelational1,0
@@ -502,7 +508,7 @@ class StartsWithConditionStartsWithCondition4,24
   def initialize(attribute_description,value)initialize7,114
    def matches?(domain_model)matches?11,240
    def to_sdb_queryto_sdb_query17,452
-   def to_sto_s20,601
+   def to_sto_s20,596
 
 lib/not_relational/storage.rb,1283
 module NotRelationalNotRelational6,133
@@ -536,6 +542,10 @@ class TagCloudTagCloud5,36
   def tagstags45,1048
   def get_count(tag_name)get_count48,1085
    def get_magnitude(tag_name)get_magnitude51,1152
+
+lib/not_relational/test_consistency.rb,64
+class TestConsistencyTestConsistency1,0
+  def self.gogo3,23
 
 lib/not_relational/tracker_description.rb,284
 module NotRelationalNotRelational1,0
@@ -597,9 +607,9 @@ class BlurbWording < NotRelational::DomainModelBlurbWording6,79
 
 test/models/comment.rb,189
 class Comment < NotRelational::DomainModelComment4,56
-    def Comment.recentrecent18,405
-    def Comment.recent_by_user(user_name)recent_by_user21,524
-   def user_urluser_url24,697
+    def Comment.recentrecent18,401
+    def Comment.recent_by_user(user_name)recent_by_user21,520
+   def user_urluser_url24,693
 
 test/models/composite_key_thing.rb,156
 class CompositeKeyThing < NotRelational::DomainModelCompositeKeyThing1,0
@@ -868,6 +878,16 @@ class CompositeKeyTest < Test::Unit::TestCaseCompositeKeyTest3,73
   def test_delete_null_boolean_key_parttest_delete_null_boolean_key_part54,1302
   def test_delete_null_key_parttest_delete_null_key_part75,2050
   def test_select_with_arraytest_select_with_array102,2789
+
+test/unit_tests/conditional_update_test.rb,188
+module NotRelationalNotRelational5,92
+  class ConditionalUpdateTest < Test::Unit::TestCaseConditionalUpdateTest7,114
+    def test_update_when_date_niltest_update_when_date_nil10,169
+
+test/unit_tests/consistent_read_test.rb,162
+class ConsistentReadTest < Test::Unit::TestCaseConsistentReadTest4,74
+  def ConsistentReadTest.set_upset_up5,122
+  def test_write_readtest_write_read14,388
 
 test/unit_tests/crypto_test.rb,505
 module NotRelationalNotRelational5,92

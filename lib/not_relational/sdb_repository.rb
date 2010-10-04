@@ -54,8 +54,9 @@ module NotRelational
       @storage.start_session_cache
     end
     
-    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil)
+    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil,options = {})
 
+      extra_sdb_params= extract_extra_sdb_params(options)
       repository_id ||=make_repo_key(table_name,primary_key)
       @session_cache.save(table_name,primary_key,attributes,index_descriptions)
 
@@ -78,7 +79,7 @@ module NotRelational
         formatted_attributes['metadata%%table_name'] = table_name
 
       end
-      put_attributes(table_name,primary_key, formatted_attributes,repository_id )
+      put_attributes(table_name,primary_key, formatted_attributes,repository_id, extra_sdb_params)
       # put_into_cache(table_name, primary_key, formatted_attributes)
       
     end
@@ -113,12 +114,38 @@ module NotRelational
       result,token=query_with_token(table_name,attribute_descriptions,nil,options)
       result
     end
-    
+
+    def extract_extra_sdb_params(options,attribute_descriptions=nil)
+      extra_sdb_params={}
+      extra_sdb_params["ConsistentRead"]="true" if options[:consistent_read]
+      if options.has_key?(:expected)
+        expected_index=1
+        options[:expected].keys.each do |expected_key|
+          if attribute_descriptions
+            exp_sdb_value=attribute_descriptions[expected_key].format_for_sdb(options[:expected][expected_key])
+          else
+            exp_sdb_value=expected_key.format_for_sdb(options[:expected][expected_key])
+            expected_key=expected_key.name
+          end
+          extra_sdb_params["Expected.#{expected_index}.Name"]=expected_key
+
+          if exp_sdb_value==nil
+            
+            extra_sdb_params["Expected.#{expected_index}.Exists"]="false"
+          else
+            extra_sdb_params["Expected.#{expected_index}.Value"]=exp_sdb_value
+          end
+          expected_index+=1
+        end
+      end
+      extra_sdb_params
+
+    end
     # result will be an array of hashes. each hash is a set of attributes
     def query_with_token(table_name,attribute_descriptions,token,options={})
       token ||= options[:token]
-      extra_sdb_params={}
-      extra_sdb_params["ConsistentRead"]="true" if options[:consistent_read]
+      extra_sdb_params=extract_extra_sdb_params(options,attribute_descriptions)
+      
       if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
         session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
         if options[:limit]==session_cache_result.length
@@ -277,7 +304,7 @@ module NotRelational
       end
     end
 
-    def put_attributes(table_name,primary_key, formatted_attributes,repository_id)
+    def put_attributes(table_name,primary_key, formatted_attributes,repository_id,extra_sdb_options={})
       @logger.debug( "SDB put_attributes.  #{table_name} , sdb_id:#{repository_id}") if @logger
       @logger.debug( "\tattributes to put:  #{formatted_attributes.inspect}") if @logger
 
@@ -287,11 +314,15 @@ module NotRelational
         begin
           with_time_logging("put_attributes") {
 
-            @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_repo_key(table_name,primary_key) , formatted_attributes, true )
+            @sdb.put_attributes(make_domain_name(table_name),repository_id ||   make_repo_key(table_name,primary_key) , formatted_attributes, true ,extra_sdb_options)
           }
           return
 
         rescue Exception => e
+          if e.message.index("409")  || e.message.index("404")
+            #conditional put failed
+            raise e
+          end
           s= "#{e.message}\n#{e.backtrace}"
           @logger.warn(s) if @logger
           sleep(i*i)

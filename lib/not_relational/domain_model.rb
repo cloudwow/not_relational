@@ -161,23 +161,23 @@ module NotRelational
                                                                          @index_descriptions[:#{index_name}]=NotRelational::IndexDescription.new(:#{index_name},$columns_xxx,#{is_index_encrypted.to_s})
          end
       ")
-                                                                      
-       getter_params=[]
-       finder_code=""
-                                                                          
-       params=[]                                                    
+      
+      getter_params=[]
+      finder_code=""
+      
+      params=[]                                                    
       columns.each do |column|
-         if column.respond_to?(:transform)   
-           finder_code<< "h[:#{column.name}]=#{column.name.to_s.downcase}\n"
-                            getter_params<< "@attribute_values[:#{column.source_column}]"
-                            
-                            params << "#{column.name.to_s.downcase}"
-                          else
-                            finder_code<< "h[:#{column}]=#{column.to_s.downcase}\n"
-                            getter_params<< "@attribute_values[:#{column}]"
-                            params << "#{column.to_s.downcase}"
-                            
-         end
+        if column.respond_to?(:transform)   
+          finder_code<< "h[:#{column.name}]=#{column.name.to_s.downcase}\n"
+          getter_params<< "@attribute_values[:#{column.source_column}]"
+          
+          params << "#{column.name.to_s.downcase}"
+        else
+          finder_code<< "h[:#{column}]=#{column.to_s.downcase}\n"
+          getter_params<< "@attribute_values[:#{column}]"
+          params << "#{column.to_s.downcase}"
+          
+        end
         
       end
       find_scope=":all"
@@ -191,18 +191,18 @@ module NotRelational
         end
 
         def self.calculate_#{index_name}(#{params.join(",")})
-           index_description=index_descriptions[:#{index_name}]
-           h={}
-           #{finder_code}
-           index_description.format_index_entry(@@attribute_descriptions,h)
-        end
-        def self.find_by_#{index_name}(#{params.join(",")},options={})
-           options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
-           options[:index]=:#{index_name}
-           options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
-           find(#{find_scope},options)
-        end
-        "
+                                         index_description=index_descriptions[:#{index_name}]
+                                                                              h={}
+                                                                              #{finder_code}
+                                                                              index_description.format_index_entry(@@attribute_descriptions,h)
+                                                                            end
+                                         def self.find_by_#{index_name}(#{params.join(",")},options={})
+                                                                        options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
+                                                                          options[:index]=:#{index_name}
+                                                                          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
+                                                                          find(#{find_scope},options)
+                                                                             end
+                                                                             "
       end #self.index
 
 
@@ -217,22 +217,22 @@ module NotRelational
       end
 
       def self.encrypt_me
-       class_eval "@is_encrypted=true"
-     end
-     def self.property(name,type=:string,options={})
-       @is_encrypted||=false
-       is_prop_encrypted=@is_encrypted
-       is_prop_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)
-       return if self.attribute_descriptions.has_key?(name)
-       
-       attribute_description=PropertyDescription.new(name,type,is_prop_encrypted,options)
-       self.attribute_descriptions[name] = attribute_description
-       @primary_key_attribute_names||=[]
-       if attribute_description.is_primary_key 
-         @primary_key_attribute_names << name
-         pk_code="[:#{@primary_key_attribute_names.join(",:")}]"
+        class_eval "@is_encrypted=true"
+      end
+      def self.property(name,type=:string,options={})
+        @is_encrypted||=false
+        is_prop_encrypted=@is_encrypted
+        is_prop_encrypted=options[:is_encrypted] if options.has_key?(:is_encrypted)
+        return if self.attribute_descriptions.has_key?(name)
+        
+        attribute_description=PropertyDescription.new(name,type,is_prop_encrypted,options)
+        self.attribute_descriptions[name] = attribute_description
+        @primary_key_attribute_names||=[]
+        if attribute_description.is_primary_key 
+          @primary_key_attribute_names << name
+          pk_code="[:#{@primary_key_attribute_names.join(",:")}]"
 
-         class_eval("
+          class_eval("
             def self.primary_key_attribute_names
               #{pk_code}
             end
@@ -253,31 +253,31 @@ module NotRelational
     
 	   def #{attribute_description.name}=(xvalue)
          set_attribute(:#{attribute_description.name},xvalue)
-       end
+                     end
 
-       def #{attribute_description.name}?
-          get_attribute(:#{attribute_description.name}) 
-       end
-     
-       def #{attribute_description.name}_is_dirty?
-          return @is_dirty[:#{attribute_description.name}] 
-       end
-     
-       def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
-          options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
-          find(#{scope},options)
-       end
-     ")
+     def #{attribute_description.name}?
+       get_attribute(:#{attribute_description.name}) 
+                   end
+   
+   def #{attribute_description.name}_is_dirty?
+     return @is_dirty[:#{attribute_description.name}] 
+                    end
+ 
+ def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})
+                                                options[:params]={:#{attribute_description.name}=>#{attribute_description.name.to_s.downcase}}
+                                                  find(#{scope},options)
+                                                     end
+                                                     ")
 
                                                  
       class_eval("
         def #{attribute_description.name}
           if @attribute_values[:#{attribute_description.name}] == :in_storage
-             @attribute_values[:#{attribute_description.name}] = self.repository.get_text(self.table_name,self.primary_key,:#{attribute_description.name},  self.repository_id_for_updates)
-          end
-          return @attribute_values[:#{attribute_description.name}] 
-        end
-      ")
+                               @attribute_values[:#{attribute_description.name}] = self.repository.get_text(self.table_name,self.primary_key,:#{attribute_description.name},  self.repository_id_for_updates)
+                                               end
+                               return @attribute_values[:#{attribute_description.name}] 
+                                                      end
+                               ")
 
     if type==:enum
       attribute_name=attribute_description.name.to_s
@@ -399,59 +399,59 @@ def self.many_to_many(domain_class,
       
 	end
     def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})
-        connector=#{module_name+through_class.to_s}.new
-        connector.set_map(#{fkey_array_code},DomainModel.arrayify(#{domain_class.to_s.downcase}.primary_key))
-        connector.set_map(#{reflecting_array_code},DomainModel.arrayify(self.primary_key))
-        connector.save
-    end
-                          
-   XXDONE
+                                              connector=#{module_name+through_class.to_s}.new
+                                              connector.set_map(#{fkey_array_code},DomainModel.arrayify(#{domain_class.to_s.downcase}.primary_key))
+                                                                connector.set_map(#{reflecting_array_code},DomainModel.arrayify(self.primary_key))
+                                                                                  connector.save
+                                                                                end
+                                                                
+                                                                XXDONE
                                                                 
                                                                 
-   end
+                                                              end
 
 
-  def DomainModel.transaction
-    @items_to_commit||=[]
-    @transaction_depth+=1
-     begin
-       yield
-     rescue # catch all
-       raise $! # rethrow
-     ensure
-       @transaction_depth-=1
-     end
-     if @@transaction_depth==0
-    @items_to_commit.uniq.each do |item |
-     item.save!
-     end
-       @items_to_commit=[]
-     end
+                                              def DomainModel.transaction
+                                                @items_to_commit||=[]
+                                                @transaction_depth+=1
+                                                begin
+                                                  yield
+                                                rescue # catch all
+                                                  raise $! # rethrow
+                                                ensure
+                                                  @transaction_depth-=1
+                                                end
+                                                if @@transaction_depth==0
+                                                  @items_to_commit.uniq.each do |item |
+                                                    item.save!
+                                                  end
+                                                  @items_to_commit=[]
+                                                end
                                                 
-   end
-   def DomainModel.sort_result(results,sort_by,order=:ascending)
-     non_null_results=[]
-     null_results=[]
-     results.each do |i|
-       sorter_value=i.get_attribute(sort_by)
-         if sorter_value
-           non_null_results<< i
-         else
-           null_results<< i
-         end
-     end
-     sorted_results=non_null_results.sort do |a,b|
-       a_val= a.get_sortable_attribute(sort_by)
-       b_val= b.get_sortable_attribute(sort_by)
-       a_val <=> b_val
-     end
-     if order!=:ascending
-       sorted_results.reverse!
-     end
-     sorted_results.concat( null_results)
-     sorted_results
-   end
-   def get_sortable_attribute(attr_name)
+                                              end
+                                              def DomainModel.sort_result(results,sort_by,order=:ascending)
+                                                non_null_results=[]
+                                                null_results=[]
+                                                results.each do |i|
+                                                  sorter_value=i.get_attribute(sort_by)
+                                                  if sorter_value
+                                                    non_null_results<< i
+                                                  else
+                                                    null_results<< i
+                                                  end
+                                                end
+                                                sorted_results=non_null_results.sort do |a,b|
+                                                  a_val= a.get_sortable_attribute(sort_by)
+                                                  b_val= b.get_sortable_attribute(sort_by)
+                                                  a_val <=> b_val
+                                                end
+                                                if order!=:ascending
+                                                  sorted_results.reverse!
+                                                end
+                                                sorted_results.concat( null_results)
+                                                sorted_results
+                                              end
+                                              def get_sortable_attribute(attr_name)
                                                 a_val= self.get_attribute(attr_name)
                                                 return 0 unless a_val
                                                 if a_val.class== Time
@@ -592,13 +592,13 @@ def method_missing(method_symbol, *arguments) #:nodoc:
   if method_name.length > 1
     
     last_char=method_name[-1..-1]
-  
+    
     without_last_char=method_name[0..-2].to_sym
-  
+    
 
     case last_char
-      when "="
-  
+    when "="
+      
       if @attribute_values.has_key?(without_last_char)
         @attribute_values[without_last_char] = arguments.first
       else
@@ -625,14 +625,14 @@ def index_values
   result
 end
 def set_all_clean
-#  @is_dirty=Hash.new(false)
+  #  @is_dirty=Hash.new(false)
   @predirt_attribute_values=HashWithIndifferentAccess.new
   @attribute_values.each do |attribute_name,value|
 
-      unless value == nil ||  value.is_a?(LazyLoadingText)
-        value=value.clone unless value.is_a?(TrueClass) || value.is_a?(Symbol) || value.is_a?(FalseClass)  || value.is_a?(Numeric)
-        @predirt_attribute_values[attribute_name]=value
-      end
+    unless value == nil ||  value.is_a?(LazyLoadingText)
+      value=value.clone unless value.is_a?(TrueClass) || value.is_a?(Symbol) || value.is_a?(FalseClass)  || value.is_a?(Numeric)
+      @predirt_attribute_values[attribute_name]=value
+    end
   end
 end
 
@@ -640,7 +640,7 @@ end
 def set_attribute(name,xvalue)
   self.class.attribute_descriptions[name].assert_valid_value(xvalue)
 
-     @attribute_values[name] = xvalue
+  @attribute_values[name] = xvalue
 
 end
 
@@ -731,6 +731,7 @@ end
 def save!(options={})
   save(options)
 end
+
 def save(options={})
   if !self.primary_key
     self.primary_key= NotRelational::UUID.generate(:compact)
@@ -741,11 +742,21 @@ def save(options={})
     @@items_to_commit<< self
     
   else
-
-    self.repository(options).save(self.table_name,primary_key,dirty_attributes_value_hash,self.class.index_descriptions,  repository_id_for_updates)
+    if options.has_key?(:expected)
+      options=options.merge(:expected => replace_keys_with_descriptions(options[:expected]))
+    end
+    self.repository(options).save(self.table_name,primary_key,dirty_attributes_value_hash,self.class.index_descriptions,  repository_id_for_updates,options)
     set_all_clean
   end
   
+end
+def replace_keys_with_descriptions(hash)
+  result={}
+  hash.keys.each do |k|
+    description=self.class.attribute_descriptions[k]
+    result[description]=hash[k]
+  end
+  result
 end
 def dirty_attributes_value_hash
   
