@@ -103,10 +103,17 @@ module AwsSdb
       @logger.debug("#{url}") if @logger
       response =
         Net::HTTP.new(uri.host, uri.port).send_request(method, uri.request_uri)
-      @logger.debug("#{response.code}\n#{response.body}") if @logger
-      raise(ConnectionError.new(response)) unless (200..400).include?(
-                                                                      response.code.to_i
-                                                                      )
+      unless (200..400).include?(
+                                 response.code.to_i
+                                 )
+        @logger.error("#{response.code}\n#{response.body}") if @logger
+        @logger.error("error during query: #{query}") if @logger
+        
+        raise(ConnectionError.new(response))
+      else
+              @logger.debug("#{response.code}\n#{response.body}") if @logger
+
+      end
       doc = REXML::Document.new(response.body)
       error = doc.get_elements('*/Errors/Error')[0]
       raise(

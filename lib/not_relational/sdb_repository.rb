@@ -319,8 +319,12 @@ module NotRelational
           return
 
         rescue Exception => e
-          if e.message.index("409")  || e.message.index("404")
+          if e.message.index("409")  || e.message.index("404") 
             #conditional put failed
+            raise e
+          end
+          if e.message.index("403") 
+            #forbidden?
             raise e
           end
           s= "#{e.message}\n#{e.backtrace}"
