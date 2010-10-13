@@ -63,7 +63,7 @@ class Album < NotRelational::DomainModel
     def  Album.create_group_album(user_name,group_id,title,description,is_private)
           
         album=Album.new
-        album.guid="#{NotRelational::UUID.generate.to_s}"
+        album.guid="#{UUID.generate.to_s}"
         album.title=title
         album.user_name=user_name
         album.group_id=group_id

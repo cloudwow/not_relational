@@ -1,5 +1,5 @@
 require "active_support"
-require File.dirname(__FILE__) +'/uuid.rb'
+require "uuid"
 require File.dirname(__FILE__) +'/property_description.rb'
 require File.dirname(__FILE__) +"/reference.rb"
 require File.dirname(__FILE__) +"/index_description.rb"
