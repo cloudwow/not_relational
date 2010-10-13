@@ -6,6 +6,7 @@ require File.dirname(__FILE__) +"/index_description.rb"
 require File.dirname(__FILE__) +"/lazy_loading_text.rb"
 require File.dirname(__FILE__) +"/repository_factory.rb"
 require 'active_support/core_ext/string/inflections.rb'
+require 'active_support/core_ext/hash/indifferent_access'
 
 class Object
   def nil_or_empty?
@@ -32,7 +33,7 @@ module NotRelational
                 @index_names
               end
               
-              @@attribute_descriptions||= HashWithIndifferentAccess.new
+              @@attribute_descriptions||= Hash.new.with_indifferent_access
               @@non_clob_attribute_names||=[]
               @@clob_attribute_names||=[]
               @@on_destroy_blocks||=[]
@@ -86,8 +87,8 @@ module NotRelational
     attr_accessor :computed_flattened_primary_key_at_load_time
     attr_accessor :sdb_primary_key_at_load_time
     def initialize(options={})
-      @predirt_attribute_values=HashWithIndifferentAccess.new
-      @attribute_values=HashWithIndifferentAccess.new
+      @predirt_attribute_values=Hash.new.with_indifferent_access
+      @attribute_values=Hash.new.with_indifferent_access
 
       copy_attributes(options)
 
@@ -626,7 +627,7 @@ def index_values
 end
 def set_all_clean
   #  @is_dirty=Hash.new(false)
-  @predirt_attribute_values=HashWithIndifferentAccess.new
+  @predirt_attribute_values=Hash.new.with_indifferent_access
   @attribute_values.each do |attribute_name,value|
 
     unless value == nil ||  value.is_a?(LazyLoadingText)
@@ -734,7 +735,7 @@ end
 
 def save(options={})
   if !self.primary_key
-    self.primary_key= NotRelational::UUID.generate(:compact)
+    self.primary_key= UUID.generate(:compact)
   end
   
   if @@transaction_depth>0

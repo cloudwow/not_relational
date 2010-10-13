@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'logger'
 require 'time'
 require 'cgi'
@@ -35,6 +36,7 @@ module AwsSdb
         params['NextToken'] =
           token unless token.nil? || token.empty?
         doc = call(:get, params)
+
         results = []
         REXML::XPath.each(doc, '//Item') do |item|
           item_attributes={}
@@ -53,7 +55,6 @@ module AwsSdb
         return results, REXML::XPath.first(doc, '//NextToken/text()').to_s
 
       rescue Exception => e
-        puts "****************** error during query ************\n#{query}\n**************************************"
         raise e
       end
       
@@ -69,6 +70,7 @@ module AwsSdb
                    'ItemName' => item.to_s
                  }.merge(extra_params)
                  )
+
       attributes = {}
       REXML::XPath.each(doc, "//Attribute") do |attr|
         key = REXML::XPath.first(attr, './Name/text()').to_s
@@ -106,15 +108,17 @@ module AwsSdb
       unless (200..400).include?(
                                  response.code.to_i
                                  )
-        @logger.error("#{response.code}\n#{response.body}") if @logger
-        @logger.error("error during query: #{query}") if @logger
+        @logger.warn("#{response.code}\n#{response.body}") if @logger
+        @logger.warn("error during query: #{query}") if @logger
         
         raise(ConnectionError.new(response))
       else
               @logger.debug("#{response.code}\n#{response.body}") if @logger
 
       end
-      doc = REXML::Document.new(response.body)
+      xml=response.body.clone
+      xml.force_encoding "UTF-8"
+      doc = REXML::Document.new(xml)
       error = doc.get_elements('*/Errors/Error')[0]
       raise(
             Module.class_eval(

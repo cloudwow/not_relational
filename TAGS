@@ -39,14 +39,14 @@ module NotRelationalNotRelational4,50
   class ConfigurationConfiguration5,71
     def self.singletonsingleton19,454
     def initialize()initialize24,564
-    def assert_configuredassert_configured61,2264
-    def loggerlogger78,2694
-    def  cryptocrypto86,2835
-    def cipher_passwordcipher_password96,3146
-    def cipher_saltcipher_salt99,3208
-    def config_file_pathconfig_file_path102,3262
-    def config_section_nameconfig_section_name120,3853
-    def find_config_sectionfind_config_section132,4230
+    def assert_configuredassert_configured60,2222
+    def loggerlogger77,2652
+    def  cryptocrypto85,2793
+    def cipher_passwordcipher_password95,3104
+    def cipher_saltcipher_salt98,3166
+    def config_file_pathconfig_file_path101,3220
+    def config_section_nameconfig_section_name119,3813
+    def find_config_sectionfind_config_section131,4185
 
 lib/not_relational/crypto.rb,250
 module NotRelationalNotRelational3,35
@@ -56,83 +56,84 @@ module NotRelationalNotRelational3,35
     def encrypt(text,salt=nil)encrypt29,603
     def decrypt(text,salt=nil)decrypt43,875
 
-lib/not_relational/domain_model.rb,4582
-class ObjectObject10,401
-  def nil_or_empty?nil_or_empty?11,414
-module NotRelationalNotRelational18,535
-  class DomainModelDomainModel21,607
-    def self.inherited(subclass)inherited24,650
-              def self.index_namesindex_names31,804
-              def self.on_destroy_blockson_destroy_blocks40,1101
-              def self.attribute_descriptionsattribute_descriptions44,1203
-              def self.non_clob_attribute_namesnon_clob_attribute_names48,1309
-              def self.clob_attribute_namesclob_attribute_names52,1419
-              def is_dirty(attribute_name)is_dirty56,1521
-              def self.exists?(primary_key)exists67,2139
-    def initialize(options={})initialize88,2586
-    def copy_attributes(hash)copy_attributes98,2904
-    def self.primary_key_attribute_namesprimary_key_attribute_names123,3541
-    def idid128,3634
-    def set_map(keys,values)set_map132,3752
-    def self.index_namesindex_names143,3921
-    def self.index(index_name,columns,options={})index147,3964
-        def self.calculate_#{index_name}(#{params.join(",")})calculate_193,5858
-        def self.find_by_#{index_name}(#{params.join(",")},options={})find_by_199,6114
-      def self.index_descriptionsindex_descriptions211,6526
-      def self.is_encrypted?is_encrypted215,6605
-      def self.encrypt_meencrypt_me219,6675
-     def self.property(name,type=:string,options={})property222,6749
-            def self.primary_key_attribute_namesprimary_key_attribute_names236,7399
-       def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})find_by_266,8206
-        def  is_#{attribute_name}_#{enum.to_s.downcase}?is_287,9107
-        def  is_#{attribute_name}_#{enum.to_s.downcase}=(val)is_291,9230
-  def self.belongs_to(domain_class,foreign_key_attribute=nil,accesser_attribute_name=nil,options={})belongs_to304,9548
-def self.many_to_many(domain_class,many_to_many357,11175
-    def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})connect_401,12887
-  def DomainModel.transactiontransaction414,13428
-   def DomainModel.sort_result(results,sort_by,order=:ascending)sort_result432,13824
-   def get_sortable_attribute(attr_name)get_sortable_attribute454,14440
-                                              def self.has_many(domain_class,has_many463,14992
-      def create_child_#{domain_class.to_s.downcase}(options=nil)create_child_504,17601
-def self.AttributeDescription(name)AttributeDescription545,19019
-def self.ColumnDescription(name)ColumnDescription548,19097
-def primary_keyprimary_key551,19169
-def flat_primary_key()flat_primary_key560,19418
-def primary_key_hashprimary_key_hash574,19674
-def primary_key=(value)primary_key=582,19844
-def method_missing(method_symbol, *arguments) #:nodoc:method_missing589,20017
-def index_valuesindex_values618,20635
-def set_all_cleanset_all_clean627,20773
-def set_attribute(name,xvalue)set_attribute640,21198
-def get_attribute(name)get_attribute647,21343
-def to_sto_s650,21397
-def to_xmlto_xml666,21729
-def destroy(options={})destroy683,22124
-def attributesattributes697,22447
-def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list708,22738
-def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list721,23114
-def save!(options={})save!731,23418
-def save(options={})save735,23461
-def dirty_attributes_value_hashdirty_attributes_value_hash752,23873
-def repository_id_for_updatesrepository_id_for_updates772,24381
-def table_nametable_name783,24863
-def DomainModel.table_nametable_name786,24913
-def repository(options=nil)repository797,25217
-  def repository(options={})repository810,25430
-  def find_by_index(values,more_options)find_by_index819,25606
-  def find(*arguments)find837,26220
-  def find_one(options={})find_one847,26501
-  def find_every(options={})find_every851,26586
-  def find_paged(token=nil,options={})find_paged861,26871
-  def find_list(primary_keys,options={})find_list872,27196
-  def destroy_all(options={})destroy_all881,27380
-  def query_ids(options={})query_ids885,27461
-  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate888,27573
-  def arrayify(x)arrayify893,27729
-  def find_single(id, options)find_single900,27813
-  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion921,28493
-  def all(options={})all941,29048
-def self.module_namemodule_name945,29111
+lib/not_relational/domain_model.rb,4824
+class ObjectObject11,459
+  def nil_or_empty?nil_or_empty?12,472
+module NotRelationalNotRelational19,593
+  class DomainModelDomainModel22,665
+    def self.inherited(subclass)inherited25,708
+              def self.index_namesindex_names32,862
+              def self.on_destroy_blockson_destroy_blocks41,1162
+              def self.attribute_descriptionsattribute_descriptions45,1264
+              def self.non_clob_attribute_namesnon_clob_attribute_names49,1370
+              def self.clob_attribute_namesclob_attribute_names53,1480
+              def is_dirty(attribute_name)is_dirty57,1582
+              def self.exists?(primary_key)exists68,2200
+    def initialize(options={})initialize89,2647
+    def copy_attributes(hash)copy_attributes99,2971
+    def self.primary_key_attribute_namesprimary_key_attribute_names124,3608
+    def idid129,3701
+    def set_map(keys,values)set_map133,3819
+    def self.index_namesindex_names144,3988
+    def self.index(index_name,columns,options={})index148,4031
+        def self.calculate_#{index_name}(#{params.join(",")})calculate_194,5643
+                                         def self.find_by_#{index_name}(#{params.join(",")},options={})find_by_200,6198
+      def self.index_descriptionsindex_descriptions212,7031
+      def self.is_encrypted?is_encrypted216,7110
+      def self.encrypt_meencrypt_me220,7180
+      def self.property(name,type=:string,options={})property223,7256
+            def self.primary_key_attribute_namesprimary_key_attribute_names237,7919
+ def self.find_by_#{attribute_description.name}(#{attribute_description.name.to_s.downcase},options={})find_by_267,8745
+        def  is_#{attribute_name}_#{enum.to_s.downcase}?is_288,9959
+        def  is_#{attribute_name}_#{enum.to_s.downcase}=(val)is_292,10082
+  def self.belongs_to(domain_class,foreign_key_attribute=nil,accesser_attribute_name=nil,options={})belongs_to305,10400
+def self.many_to_many(domain_class,many_to_many358,12027
+    def connect_#{domain_class.to_s.downcase}(#{domain_class.to_s.downcase})connect_402,13739
+                                              def DomainModel.transactiontransaction415,14720
+                                              def DomainModel.sort_result(results,sort_by,order=:ascending)sort_result433,15859
+                                              def get_sortable_attribute(attr_name)get_sortable_attribute455,17411
+                                              def self.has_many(domain_class,has_many464,18006
+      def create_child_#{domain_class.to_s.downcase}(options=nil)create_child_505,20615
+def self.AttributeDescription(name)AttributeDescription546,22033
+def self.ColumnDescription(name)ColumnDescription549,22111
+def primary_keyprimary_key552,22183
+def flat_primary_key()flat_primary_key561,22432
+def primary_key_hashprimary_key_hash575,22688
+def primary_key=(value)primary_key=583,22858
+def method_missing(method_symbol, *arguments) #:nodoc:method_missing590,23031
+def index_valuesindex_values619,23655
+def set_all_cleanset_all_clean628,23793
+def set_attribute(name,xvalue)set_attribute641,24215
+def get_attribute(name)get_attribute648,24357
+def to_sto_s651,24411
+def to_xmlto_xml667,24743
+def destroy(options={})destroy684,25138
+def attributesattributes698,25461
+def find_tracked_list(tracking_attribute,other_class,reflecting_attribute)find_tracked_list709,25752
+def add_to_tracked_list(tracking_attribute,other_class,reflecting_attribute,value)add_to_tracked_list722,26128
+def save!(options={})save!732,26432
+def save(options={})save736,26475
+def replace_keys_with_descriptions(hash)replace_keys_with_descriptions754,27014
+def dirty_attributes_value_hashdirty_attributes_value_hash762,27195
+def repository_id_for_updatesrepository_id_for_updates782,27703
+def table_nametable_name793,28185
+def DomainModel.table_nametable_name796,28235
+def repository(options=nil)repository807,28539
+  def repository(options={})repository820,28752
+  def find_by_index(values,more_options)find_by_index829,28928
+  def find(*arguments)find847,29542
+  def find_one(options={})find_one857,29823
+  def find_every(options={})find_every861,29908
+  def find_paged(token=nil,options={})find_paged871,30193
+  def find_list(primary_keys,options={})find_list882,30518
+  def destroy_all(options={})destroy_all891,30702
+  def query_ids(options={})query_ids895,30783
+  def istantiate(sdb_attributes,repository,repository_id=nil)istantiate898,30895
+  def arrayify(x)arrayify903,31051
+  def find_single(id, options)find_single910,31135
+  def find_recent_with_exponential_expansion(time_column,how_many,options={})find_recent_with_exponential_expansion931,31815
+  def all(options={})all951,32370
+def self.module_namemodule_name955,32433
 
 lib/not_relational/domain_model_cache_item.rb,170
 module NotRelationalNotRelational1,0
@@ -145,6 +146,12 @@ class EqualsConditionEqualsCondition4,24
   def initialize(attribute_description,value)initialize7,110
    def matches?(domain_model)matches?11,236
    def to_sdb_queryto_sdb_query14,335
+
+lib/not_relational/errors.rb,215
+  module NotRelationalNotRelational1,0
+    class Error < RuntimeError ; endError2,23
+    class ConsistencyError < ErrorConsistencyError7,64
+      def initialize(message="",inner_exception=nil)initialize8,99
 
 lib/not_relational/geo.rb,346
 module NotRelationalNotRelational2,50
@@ -216,25 +223,26 @@ module NotRelationalNotRelational1,0
     def flatten_key(key)flatten_key72,1849
     def make_cache_key(table_name,primary_key)make_cache_key83,2127
 
-lib/not_relational/memory_repository.rb,1220
+lib/not_relational/memory_repository.rb,1304
 module NotRelationalNotRelational1,0
   class MemoryRepository < RepositoryBaseMemoryRepository5,78
     def initialize(initialize19,474
     def pausepause39,1063
     def clear_session_cacheclear_session_cache42,1086
     def clearclear47,1212
-    def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil)save56,1384
-    def save_into_index(table_name,record,index_name,index_value)save_into_index84,2236
-    def retrieve_from_index(table_name,index_name,index_value)retrieve_from_index101,2834
-    def query_ids(table_name,attribute_descriptions,options)query_ids108,3071
-    def query(table_name,attribute_descriptions,options)query125,3491
-    def find_one(table_name, primary_key,attribute_descriptions)#,find_one262,6906
-    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text269,7125
-    def destroy(table_name, primary_key,repository_id=nil)destroy279,7435
-    def remove_from_indices(table_name,primary_key)remove_from_indices290,7720
-    def flatten_key(key)flatten_key311,8256
-    def make_repo_key(table_name,primary_key)make_repo_key323,8535
-    def make_storage_key(table_name,primary_key,clob_name)make_storage_key329,8693
+    def enforce_expected(target,expected)enforce_expected56,1380
+    def save(table_name, primary_key, attributes,index_descriptions=nil,repository_id=nil,extra_options={})save63,1628
+    def save_into_index(table_name,record,index_name,index_value)save_into_index94,2602
+    def retrieve_from_index(table_name,index_name,index_value)retrieve_from_index111,3200
+    def query_ids(table_name,attribute_descriptions,options)query_ids118,3437
+    def query(table_name,attribute_descriptions,options)query135,3857
+    def find_one(table_name, primary_key,attribute_descriptions)#,find_one272,7272
+    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text279,7491
+    def destroy(table_name, primary_key,repository_id=nil)destroy289,7801
+    def remove_from_indices(table_name,primary_key)remove_from_indices300,8086
+    def flatten_key(key)flatten_key321,8622
+    def make_repo_key(table_name,primary_key)make_repo_key333,8901
+    def make_storage_key(table_name,primary_key,clob_name)make_storage_key339,9059
 
 lib/not_relational/memory_storage.rb,749
 module NotRelationalNotRelational1,0
@@ -379,128 +387,165 @@ def save(table_name, primary_key, attributes,index_descriptions)save24,457
     def get_text(table_name,primary_key,clob_name)get_text41,921
     def destroy(table_name, primary_key)destroy43,980
 
-lib/not_relational/s3.rb,3778
-module NotRelationalNotRelational10,154
-    class Net::HTTP::Delete < Net::HTTPRequestNet14,242
-  module S3S322,522
-    def S3.canonical_string(method, bucket="", path="", path_args={}, headers={}, expires=nil)canonical_string31,860
-    def S3.encode(aws_secret_access_key, str, urlencode=false)encode90,2834
-    def S3.path_args_hash_to_string(path_args={})path_args_hash_to_string104,3226
-    class AWSAuthConnectionAWSAuthConnection122,3853
-      def initialize(aws_access_key_id,initialize125,3918
-      def create_bucket(bucket, headers={})create_bucket144,4613
-      def list_bucket(bucket, options={}, headers={})list_bucket149,4808
-      def delete_bucket(bucket, headers={})delete_bucket158,5060
-      def escape_key(key)escape_key161,5191
-      def put(bucket, key, object, headers={})put167,5397
-      def copy(source_bucket, source_key, destination_bucket,destination_key, headers={})copy174,5667
-      def get_head(bucket, key, headers={})get_head180,6007
-      def get_content_type(bucket, key, headers={})get_content_type183,6151
-      def get(bucket, key, headers={})get195,6495
-      def delete(bucket, key, headers={})delete199,6636
-      def get_bucket_logging(bucket, headers={})get_bucket_logging203,6780
-      def put_bucket_logging(bucket, logging_xml_doc, headers={})put_bucket_logging207,6933
-      def get_bucket_acl(bucket, headers={})get_bucket_acl211,7117
-      def get_acl(bucket, key, headers={})get_acl217,7332
-      def put_bucket_acl(bucket, acl_xml_doc, headers={})put_bucket_acl221,7489
-      def put_acl(bucket, key, acl_xml_doc, headers={})put_acl227,7739
-      def list_all_my_buckets(headers={})list_all_my_buckets233,7981
-      def make_request(method, bucket='', key='', path_args={}, headers={}, data='', metadata={})make_request238,8134
-      def method_to_request_class(method)method_to_request_class288,9868
-      def set_aws_auth_header(request, aws_access_key_id, aws_secret_access_key, bucket='', key='', path_args={})set_aws_auth_header304,10301
-      def set_headers(request, headers, prefix='')set_headers321,11125
-    class S3ObjectS3Object330,11286
-      def initialize(data, metadata={})initialize333,11361
-    module CallingFormatCallingFormat339,11511
-      def CallingFormat.build_url_base(protocol, server, port, bucket, format)build_url_base346,11863
-    class OwnerOwner361,12360
-    class ListEntryListEntry366,12443
-    class ListPropertiesListProperties375,12646
-    class CommonPrefixEntryCommonPrefixEntry385,12890
-    class ListBucketParserListBucketParser391,13086
-      def initializeinitialize396,13206
-      def tag_start(name, attributes)tag_start400,13252
-      def tag_end(name)tag_end413,13678
-      def text(text)text456,15339
-      def xmldecl(version, encoding, standalone)xmldecl460,15398
-      def resetreset465,15511
-    class BucketBucket475,15717
-    class ListAllMyBucketsParserListAllMyBucketsParser480,15804
-      def initializeinitialize483,15865
-      def tag_start(name, attributes)tag_start487,15911
-      def tag_end(name)tag_end494,16085
-      def text(text)text505,16376
-      def xmldecl(version, encoding, standalone)xmldecl509,16435
-      def resetreset514,16548
-    class ResponseResponse522,16677
-      def initialize(response)initialize524,16729
-    class GetResponse < ResponseGetResponse529,16813
-      def initialize(response)initialize531,16872
-      def get_aws_metadata(response)get_aws_metadata539,17137
-    class ListBucketResponse < ResponseListBucketResponse550,17385
-      def initialize(response)initialize555,17524
-    class ListAllMyBucketsResponse < ResponseListAllMyBucketsResponse569,17928
-      def initialize(response)initialize571,18001
+lib/not_relational/s3-driver.rb,0
 
-lib/not_relational/sdb_formatter.rb,1084
-module NotRelationalNotRelational1,0
-  module SdbFormatterSdbFormatter4,25
-    def parse_date(value)parse_date9,148
-    def parse_boolean(value)parse_boolean21,405
-    def parse_integer(value)parse_integer29,560
-    def parse_enum(value)parse_enum34,660
-    def parse_float(value)parse_float39,774
-    def parse_property_bag(value)parse_property_bag44,865
-    def parse_unsigned_integer(value)parse_unsigned_integer50,970
-    def parse_text(value)parse_text54,1072
-    def format_date(value)format_date79,1678
-    def format_boolean(value)format_boolean83,1784
-    def format_integer(value)format_integer87,1893
-    def format_string(value)format_string102,2237
-    def format_text(value)format_text112,2409
-    def format_float(value)format_float123,2703
-    def format_enum(value)format_enum129,2824
-    def format_unsigned_integer(value)format_unsigned_integer135,2933
-    def format_property_bag(value)format_property_bag142,3063
-    def zero_pad_integer(value)zero_pad_integer151,3212
-    def zero_pad_float(value)zero_pad_float162,3426
+lib/not_relational/s3.rb,5789
+  class Net::HTTP::Delete < Net::HTTPRequestNet23,749
+module S3S335,1220
+    module BucketLocation BucketLocation43,1477
+  def S3.canonical_string(method, bucket="", path="", path_args={}, headers={}, expires=nil)canonical_string49,1599
+  def S3.encode(aws_secret_access_key, str, urlencode=false)encode115,3649
+  def S3.path_args_hash_to_string(path_args={})path_args_hash_to_string130,4028
+  class AWSAuthConnectionAWSAuthConnection147,4650
+    def initialize(aws_access_key_id, aws_secret_access_key, is_secure=false,initialize150,4715
+    def create_bucket(bucket, headers={})create_bucket161,5140
+    def create_located_bucket(bucket, location=BucketLocation::DEFAULT, headers={})create_located_bucket165,5263
+    def check_bucket_exists(bucket)check_bucket_exists172,5616
+    def list_bucket(bucket, options={}, headers={})list_bucket184,5955
+    def delete_bucket(bucket, headers={})delete_bucket193,6193
+    def put(bucket, key, object, headers={})put197,6319
+    def get(bucket, key, headers={})get206,6617
+    def delete(bucket, key, headers={})delete210,6752
+    def get_bucket_logging(bucket, headers={})get_bucket_logging214,6890
+    def put_bucket_logging(bucket, logging_xml_doc, headers={})put_bucket_logging218,7037
+    def get_bucket_acl(bucket, headers={})get_bucket_acl222,7215
+    def get_acl(bucket, key, headers={})get_acl228,7420
+    def put_bucket_acl(bucket, acl_xml_doc, headers={})put_bucket_acl232,7571
+    def put_acl(bucket, key, acl_xml_doc, headers={})put_acl238,7811
+    def get_bucket_location(bucket)get_bucket_location244,8043
+    def list_all_my_buckets(headers={})list_all_my_buckets248,8180
+    def make_request(method, bucket='', key='', path_args={}, headers={}, data='', metadata={})make_request253,8325
+    def method_to_request_class(method)method_to_request_class320,10467
+    def set_aws_auth_header(request, aws_access_key_id, aws_secret_access_key, bucket='', key='', path_args={})set_aws_auth_header336,10870
+    def set_headers(request, headers, prefix='')set_headers353,11667
+  class QueryStringAuthGeneratorQueryStringAuthGenerator365,12058
+    def initialize(aws_access_key_id, aws_secret_access_key, is_secure=true, initialize378,12369
+    def expires=(value)expires=394,13022
+    def expires_in=(value)expires_in=401,13235
+    def create_bucket(bucket, headers={})create_bucket406,13318
+    def list_bucket(bucket, options={}, headers={})list_bucket411,13491
+    def delete_bucket(bucket, headers={})delete_bucket419,13704
+    def put(bucket, key, object=nil, headers={})put426,14030
+    def get(bucket, key, headers={})get431,14252
+    def delete(bucket, key, headers={})delete435,14370
+    def get_bucket_logging(bucket, headers={})get_bucket_logging439,14494
+    def put_bucket_logging(bucket, logging_xml_doc, headers={})put_bucket_logging443,14624
+    def get_acl(bucket, key='', headers={})get_acl447,14771
+    def get_bucket_acl(bucket, headers={})get_bucket_acl451,14908
+    def put_acl(bucket, key, acl_xml_doc, headers={})put_acl457,15107
+    def put_bucket_acl(bucket, acl_xml_doc, headers={})put_bucket_acl461,15254
+    def list_all_my_buckets(headers={})list_all_my_buckets465,15374
+    def generate_url(method, bucket="", key="", path_args={}, headers={})generate_url473,15582
+    def merge_meta(headers, object)merge_meta497,16431
+  class S3ObjectS3Object508,16709
+    def initialize(data, metadata={})initialize511,16778
+  module CallingFormat CallingFormat517,16918
+    def CallingFormat.build_url_base(protocol, server, port, bucket, format)build_url_base525,17261
+  class OwnerOwner540,17731
+  class ListEntryListEntry545,17806
+  class ListPropertiesListProperties554,17993
+  class CommonPrefixEntryCommonPrefixEntry564,18219
+  class ListBucketParserListBucketParser570,18405
+    def initializeinitialize575,18517
+    def tag_start(name, attributes)tag_start579,18557
+    def tag_end(name)tag_end592,18965
+    def text(text)text635,20445
+    def xmldecl(version, encoding, standalone)xmldecl639,20498
+    def resetreset644,20603
+  class ListAllMyBucketsParserListAllMyBucketsParser654,20791
+    def initializeinitialize657,20848
+    def tag_start(name, attributes)tag_start661,20888
+    def tag_end(name)tag_end668,21050
+    def text(text)text680,21339
+    def xmldecl(version, encoding, standalone)xmldecl684,21392
+    def resetreset689,21497
+  class ErrorResponseParserErrorResponseParser697,21612
+    def self.parse(msg)parse700,21663
+    def initializeinitialize706,21801
+    def tag_start(name, attributes)tag_start711,21868
+    def tag_end(name)tag_end730,22258
+    def text(text)text737,22361
+    def xmldecl(version, encoding, standalone)xmldecl741,22432
+  class LocationParserLocationParser746,22509
+    def self.parse(msg)parse749,22559
+    def initializeinitialize755,22703
+    def tag_start(name, attributes)tag_start760,22774
+    def tag_end(name)tag_end772,23058
+    def text(text)text779,23175
+    def xmldecl(version, encoding, standalone)xmldecl783,23264
+  class ResponseResponse788,23341
+    def initialize(response)initialize790,23389
+    def messagemessage794,23463
+  class BucketBucket803,23631
+  class GetResponse < ResponseGetResponse808,23710
+    def initialize(response)initialize810,23765
+    def get_aws_metadata(response)get_aws_metadata818,24016
+  class ListBucketResponse < ResponseListBucketResponse829,24244
+    def initialize(response)initialize834,24375
+  class ListAllMyBucketsResponse < ResponseListAllMyBucketsResponse848,24753
+    def initialize(response)initialize850,24822
+  class LocationResponse < ResponseLocationResponse862,25110
+    def initialize(response)initialize865,25173
+
+lib/not_relational/sdb_formatter.rb,1086
+module NotRelationalNotRelational3,19
+  module SdbFormatterSdbFormatter6,44
+    def parse_date(value)parse_date11,167
+    def parse_boolean(value)parse_boolean23,424
+    def parse_integer(value)parse_integer31,579
+    def parse_enum(value)parse_enum36,679
+    def parse_float(value)parse_float41,793
+    def parse_property_bag(value)parse_property_bag46,884
+    def parse_unsigned_integer(value)parse_unsigned_integer52,989
+    def parse_text(value)parse_text56,1091
+    def format_date(value)format_date82,1736
+    def format_boolean(value)format_boolean86,1842
+    def format_integer(value)format_integer90,1951
+    def format_string(value)format_string105,2295
+    def format_text(value)format_text115,2467
+    def format_float(value)format_float126,2760
+    def format_enum(value)format_enum132,2881
+    def format_unsigned_integer(value)format_unsigned_integer138,2990
+    def format_property_bag(value)format_property_bag145,3120
+    def zero_pad_integer(value)zero_pad_integer154,3269
+    def zero_pad_float(value)zero_pad_float165,3483
 
 lib/not_relational/sdb_monkey_patch.rb,652
-module AwsSdbAwsSdb11,162
-  class InvalidParameterError < RequestError ; endInvalidParameterError12,176
-  class InvalidWSDLVersionError < RequestError ; endInvalidWSDLVersionError13,227
-  class InvalidSortExpressionError < RequestError ; endInvalidSortExpressionError14,280
-  class ServiceService16,337
-    def query_with_attributes(domain, query, max = nil, token = nil,extra_params={})query_with_attributes19,359
-    def get_attributes(domain, item,extra_params={})get_attributes63,1687
-    def call(method, params)call82,2279
-    def put_attributes(domain, item, attributes, replace = true,extra_params = {})put_attributes124,4055
+module AwsSdbAwsSdb12,180
+  class InvalidParameterError < RequestError ; endInvalidParameterError13,194
+  class InvalidWSDLVersionError < RequestError ; endInvalidWSDLVersionError14,245
+  class InvalidSortExpressionError < RequestError ; endInvalidSortExpressionError15,298
+  class ServiceService17,355
+    def query_with_attributes(domain, query, max = nil, token = nil,extra_params={})query_with_attributes20,377
+    def get_attributes(domain, item,extra_params={})get_attributes64,1590
+    def call(method, params)call84,2183
+    def put_attributes(domain, item, attributes, replace = true,extra_params = {})put_attributes135,4119
 
-lib/not_relational/sdb_repository.rb,1845
-module NotRelationalNotRelational3,63
-  class SdbRepository  < RepositoryBaseSdbRepository12,364
-    def initialize(initialize17,535
-    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil,options = {})save57,1897
-    def destroy(table_name, primary_key,repository_id=nil)destroy87,3002
-    def query(table_name,attribute_descriptions,options)query113,3744
-    def extract_extra_sdb_params(options)extract_extra_sdb_params118,3906
-    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token138,4678
-    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text218,7592
-    def find_one(table_name, primary_key,attribute_descriptions,options={})#, non_clob_attribute_names, clob_attribute_names)find_one226,7846
-    def create_domaincreate_domain258,9242
-    def pausepause274,9522
-    def  clearclear278,9562
-    def clear_session_cacheclear_session_cache285,9706
-    def make_domain_name(table_name)make_domain_name292,9778
-    def put_attributes(table_name,primary_key, formatted_attributes,repository_id,extra_sdb_options)put_attributes300,9952
-    def with_time_logging(title)with_time_logging323,10733
-    def sdb_get_attributes(table_name,primary_key,extra_sdb_params={})sdb_get_attributes340,11093
-    def sdb_query_with_attributes(table_name,query,max,token=nil,extra_sdb_params={})sdb_query_with_attributes384,12439
-    def extend_query(query,new_clause)extend_query411,13238
-    def escape_quotes(value)escape_quotes418,13371
-    def build_query(table_name,attribute_descriptions,options={})build_query423,13573
-    def parse_attributes(attribute_descriptions,attributes)parse_attributes524,17325
-    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key545,18009
+lib/not_relational/sdb_repository.rb,1878
+module NotRelationalNotRelational5,82
+  class SdbRepository  < RepositoryBaseSdbRepository14,383
+    def initialize(initialize19,554
+    def save(table_name, primary_key, attributes,index_descriptions,repository_id=nil,options = {})save59,1953
+    def destroy(table_name, primary_key,repository_id=nil)destroy89,3058
+    def query(table_name,attribute_descriptions,options)query115,3800
+    def extract_extra_sdb_params(options,attribute_descriptions=nil)extract_extra_sdb_params120,3962
+    def query_with_token(table_name,attribute_descriptions,token,options={})query_with_token147,5018
+    def get_text(table_name,primary_key,clob_name,repository_id=nil)get_text227,7955
+    def find_one(table_name, primary_key,attribute_descriptions,options={})#, non_clob_attribute_names, clob_attribute_names)find_one235,8209
+    def create_domaincreate_domain267,9605
+    def pausepause283,9885
+    def  clearclear287,9925
+    def clear_session_cacheclear_session_cache294,10069
+    def make_domain_name(table_name)make_domain_name301,10141
+    def put_attributes(table_name,primary_key, formatted_attributes,repository_id,extra_sdb_options={})put_attributes309,10315
+    def with_time_logging(title)with_time_logging340,11360
+    def sdb_get_attributes(table_name,primary_key,extra_sdb_params={})sdb_get_attributes357,11720
+    def sdb_query_with_attributes(table_name,query,max,token=nil,extra_sdb_params={})sdb_query_with_attributes401,13066
+    def extend_query(query,new_clause)extend_query428,13865
+    def escape_quotes(value)escape_quotes435,13998
+    def build_query(table_name,attribute_descriptions,options={})build_query440,14200
+    def parse_attributes(attribute_descriptions,attributes)parse_attributes541,17952
+    def make_storage_key_from_cache_key(table_name,cache_key,clob_name)make_storage_key_from_cache_key562,18636
 
 lib/not_relational/starts_with_condition.rb,263
 module NotRelationalNotRelational1,0
@@ -510,30 +555,30 @@ class StartsWithConditionStartsWithCondition4,24
    def to_sdb_queryto_sdb_query17,452
    def to_sto_s20,596
 
-lib/not_relational/storage.rb,1283
-module NotRelationalNotRelational6,133
-  class StorageStorage8,159
-    def initialize( aws_key_id,initialize20,437
-    def start_session_cachestart_session_cache45,1259
-    def clear_session_cacheclear_session_cache48,1337
-    def end_session_cacheend_session_cache51,1415
-    def real_s3real_s354,1477
-    def real_s3_query_authreal_s3_query_auth63,1746
-    def renew_s3_connectionrenew_s3_connection69,1997
-    def encode_key(bucket,key)encode_key74,2073
-    def real_s3_get(bucket,key)real_s3_get81,2272
-    def create_bucket(bucket,headers={})create_bucket110,2969
-    def real_s3_put(bucket,key,object,attributes)real_s3_put113,3065
-    def delete(bucket,key)delete145,3955
-    def get(bucket,key)get157,4246
-    def put(bucket,key,object,attributes={})put194,5207
-    def list_bucket(bucket,prefix=nil) list_bucket228,6416
-    def create_public_url(bucket,key) create_public_url234,6570
-    def create_direct_url(bucket,key,time_to_live_minutes=60) create_direct_url238,6681
-    def create_list_bucket_url(bucket,time_to_live_minutes=60) create_list_bucket_url244,6867
-    def get_content_type(bucket,key)get_content_type250,7058
-    def copy(old_bucket,old_key,new_bucket,new_key,options)copy254,7158
-    def clear()clear261,7393
+lib/not_relational/storage.rb,1284
+module NotRelationalNotRelational8,154
+  class StorageStorage10,180
+    def initialize( aws_key_id,initialize22,458
+    def start_session_cachestart_session_cache47,1280
+    def clear_session_cacheclear_session_cache50,1358
+    def end_session_cacheend_session_cache53,1436
+    def real_s3real_s356,1498
+    def real_s3_query_authreal_s3_query_auth66,1852
+    def renew_s3_connectionrenew_s3_connection73,2254
+    def encode_key(bucket,key)encode_key78,2330
+    def real_s3_get(bucket,key)real_s3_get85,2529
+    def create_bucket(bucket,headers={})create_bucket116,3322
+    def real_s3_put(bucket,key,object,attributes)real_s3_put119,3418
+    def delete(bucket,key)delete151,4313
+    def get(bucket,key)get163,4604
+    def put(bucket,key,object,attributes={})put200,5565
+    def list_bucket(bucket,prefix=nil) list_bucket234,6774
+    def create_public_url(bucket,key) create_public_url240,6928
+    def create_direct_url(bucket,key,time_to_live_minutes=60) create_direct_url244,7039
+    def create_list_bucket_url(bucket,time_to_live_minutes=60) create_list_bucket_url250,7225
+    def get_content_type(bucket,key)get_content_type256,7416
+    def copy(old_bucket,old_key,new_bucket,new_key,options)copy260,7516
+    def clear()clear267,7751
 
 lib/not_relational/tag_cloud.rb,242
 class TagCloudTagCloud5,36
@@ -554,19 +599,7 @@ class TrackerDescription < PropertyDescriptionTrackerDescription3,22
   def format_for_sdb(value)format_for_sdb18,407
   def parse_from_sdb( value)parse_from_sdb21,459
 
-lib/not_relational/uuid.rb,497
-module NotRelationalNotRelational61,2003
-class UUIDUUID63,2025
-  def self.modemode106,3137
-  def self.generate(format = :default)generate114,3274
-  def self.state_file(mode = 0644)state_file128,3755
-  def initializeinitialize157,4482
-  def generate(format = :default)generate178,5050
-  def next_sequencenext_sequence225,6497
-  def inspectinspect245,6852
-  def open_lock(mode)open_lock254,7059
-  def read_state(io)read_state267,7311
-  def write_state(io)write_state277,7509
+lib/not_relational/uuid.rb,0
 
 lib/not_relational.rb,0
 
@@ -1003,6 +1036,10 @@ test/unit_tests/sort_test.rb,132
 class SortTest < Test::Unit::TestCaseSortTest3,73
   def SortTest.set_upset_up4,111
   def test_float_sorttest_float_sort11,217
+
+test/unit_tests/storage_test.rb,100
+class StorageTest < Test::Unit::TestCaseStorageTest3,73
+  def test_put_smalltest_put_small5,115
 
 test/unit_tests/tag_test.rb,151
 class TagTest < Test::Unit::TestCaseTagTest3,73

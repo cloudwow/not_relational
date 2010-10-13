@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module NotRelational
   
 
@@ -52,7 +54,8 @@ module NotRelational
       return value.to_i
     end
     def parse_text(value)
-      
+
+      value.force_encoding "UTF-8"  if value
       if value && value.length>=TEXT_IS_HERE.length
         prefix=value[0..TEXT_IS_HERE.length-1]
         
@@ -115,7 +118,7 @@ module NotRelational
         return TEXT_IS_NIL
       end
       
-      if value.length>1024
+      if value.length>500
         return TEXT_IN_STORAGE
       end
       TEXT_IS_HERE+  value

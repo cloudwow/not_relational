@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'memcache'
 require File.dirname(__FILE__) +"/s3.rb"
 require File.dirname(__FILE__) +"/query_string_auth_generator.rb"
@@ -56,13 +58,15 @@ module NotRelational
         raise "this is a memcache only storage.  there is no s3"
       end
       unless @conn
-        @conn = S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,@tokens,false)
+#        @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,@tokens,false)
+         @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,false)
       end 
       return @conn
     end
     def real_s3_query_auth
       unless @query_conn
-        @query_conn = S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,@tokens,false,S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
+#        @query_conn = ::S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,@tokens,false,::S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
+        @query_conn = ::S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,false,::S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
       end 
       return @query_conn
     end
@@ -96,9 +100,11 @@ module NotRelational
           
           renew_s3_connection
 
-        rescue=> e
+        rescue Exception => e
 
+          return nil if e.message.index "404"#404=not found
           s= "#{e.message}\n#{e.backtrace}"
+          puts "$$$"+s
           @logger.error(s)
           @logger.info "retrying s3 get #{i.to_s}"
           raise e if self.fail_fast
@@ -119,7 +125,7 @@ module NotRelational
       last_error=nil
       4.times do |i|
         begin
-          x= real_s3.put(bucket,key,S3::S3Object.new(object),attributes)
+          x= real_s3.put(bucket,key,::S3::S3Object.new(object),attributes)
           
           last_error=nil
           break
@@ -138,7 +144,7 @@ module NotRelational
       end
       if x.http_response.code!="200"
         @logger.error(x.http_response.inspect)
-        raise "bucket #{bucket} key #{key} response #{x.http_response.code}"
+        raise "bucket #{bucket} key #{key} response #{x.http_response.to_yaml}"
       end
       
     end

@@ -20,6 +20,7 @@ begin
                "lib/not_relational/*"
               ]
     gem.add_dependency( "aws-sdb")
+    gem.add_dependency( "uuid")
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

@@ -20,6 +20,7 @@ class NilTest < Test::Unit::TestCase
     found.save!
 
     NotRelational::Repository.clear_session_cache
+    NotRelational::Repository.pause
 
     found=Comment.find(target.id,:consistent_read=>true)
     assert_not_nil(found)

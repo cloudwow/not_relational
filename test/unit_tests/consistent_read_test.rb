@@ -37,7 +37,10 @@ class ConsistentReadTest < Test::Unit::TestCase
       assert_equal("aaa_blurb_#{i}",found[i].blurb)
       found[i].destroy
     end
-
+    NotRelational::RepositoryFactory.instance.clear_session_cache
+    
+    found=UserEvent.find(:all,:order_by => :login,:consistent_read => true)
+    
     assert_equal(0,found.length)
 
   end

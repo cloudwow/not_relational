@@ -48,11 +48,10 @@ module NotRelational
         @cipher_password = not_relational_config['cipher_password']
         @cipher_salt = not_relational_config['cipher_salt']
 
-        @log_level = Logger::WARN
         @log_level =eval( "Logger::"+not_relational_config["log_level"]) if not_relational_config["log_level"]
         #override with NR specific log level
         @log_level =eval( "Logger::"+not_relational_config["not_relational_log_level"]) if not_relational_config["not_relational_log_level"]
-        
+
       end
     end
 
@@ -101,8 +100,8 @@ module NotRelational
     end
     def config_file_path
       unless @config_file_path
-        if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
-          @config_file_path =  File.join("#{RAILS_ROOT}","config","database.yml")
+        if Object.const_defined?(:Rails)  and ENV.has_key?('RAILS_ENV')
+          @config_file_path =  File.join("#{::Rails.root.to_s}","config","database.yml")
         else
           if File.exists?("database.yml")
 
@@ -119,7 +118,7 @@ module NotRelational
     end
     def config_section_name
       unless @config_section_name
-        if Object.const_defined?(:RAILS_ROOT)  and ENV.has_key?('RAILS_ENV')
+        if Object.const_defined?(:Rails)  and ENV.has_key?('RAILS_ENV')
           @config_section_name =ENV['RAILS_ENV']+"_not_relational"
 
         else

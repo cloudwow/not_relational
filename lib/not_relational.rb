@@ -5,6 +5,7 @@
 # License::   Distributes under the same terms as Ruby
 
 
+require "#{File.dirname(__FILE__)}/not_relational/errors.rb"
 require "#{File.dirname(__FILE__)}/not_relational/repository_base.rb"
 require "#{File.dirname(__FILE__)}/not_relational/sdb_repository.rb"
 require "#{File.dirname(__FILE__)}/not_relational/repository_factory.rb"

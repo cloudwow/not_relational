@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # THis class implements access to SDB 222.
 # =I am the walrus=
 module NotRelational
@@ -33,7 +35,7 @@ module NotRelational
       end
       
       @quiet_logger=Logger.new(STDERR)
-      @quiet_logger.level=Logger::WARN	
+      @quiet_logger.level=Logger::ERROR
       
       @base_domain_name = base_domain_name
       @blob_bucket = @storage_bucket = clob_bucket
@@ -47,7 +49,7 @@ module NotRelational
       @use_cache=options[:use_cache] if options.has_key?(:use_cache)
 
 
-      @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers)
+      @storage ||= Storage.new(aws_key_id,aws_secret_key,memcache_servers,[],:fail_fast => options[:fail_fast])
       @sdb=AwsSdb::Service.new(:access_key_id=>aws_key_id,:secret_access_key=>aws_secret_key,:url=>"http://sdb.amazonaws.com",:logger => @quiet_logger)
       @session_cache=MemoryRepository.new
       @query_cache={}
@@ -321,7 +323,7 @@ module NotRelational
         rescue Exception => e
           if e.message.index("409")  || e.message.index("404") 
             #conditional put failed
-            raise e
+            raise ConsistencyError.new(e.message,e)
           end
           if e.message.index("403") 
             #forbidden?

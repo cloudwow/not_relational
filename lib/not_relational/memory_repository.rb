@@ -56,7 +56,7 @@ module NotRelational
     def enforce_expected(target,expected)
       expected.each do |description,value|
         unless target[description.name]==value
-          raise new AwsSdb::ConnectionError("409 expected condition check failed")
+          raise ConsistencyError.new("#{description.name}!=#{value ? value : "nil"}")
         end
       end
     end
