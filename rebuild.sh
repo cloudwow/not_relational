@@ -1,1 +1,1 @@
- rake test && rake build && rake install -no-ri -no-rdoc
+ rake test && rake build && gem install -no-ri -no-rdoc pkg/*.gem

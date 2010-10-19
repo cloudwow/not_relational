@@ -654,7 +654,7 @@ def to_s
     if value.respond_to?(:flatten)
       result<< "\t#{key}: ["
       value.each do |sub_value|
-        result<< "'#{h sub_value.to_s}'"
+        result<< "'#{sub_value.to_s}'"
       end
       result << "]\n"
     else
