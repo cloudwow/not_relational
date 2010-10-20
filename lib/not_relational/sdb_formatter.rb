@@ -118,7 +118,7 @@ module NotRelational
         return TEXT_IS_NIL
       end
       
-      if value.length>500
+      if value.bytesize>1000
         return TEXT_IN_STORAGE
       end
       TEXT_IS_HERE+  value
