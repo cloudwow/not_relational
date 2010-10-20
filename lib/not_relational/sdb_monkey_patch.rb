@@ -55,6 +55,8 @@ module AwsSdb
         return results, REXML::XPath.first(doc, '//NextToken/text()').to_s
 
       rescue Exception => e
+        @logger.error("SDB Error #{e.message} during query #{full_query}")
+
         raise e
       end
       
