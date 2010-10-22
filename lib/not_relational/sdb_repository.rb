@@ -435,7 +435,7 @@ module NotRelational
     def escape_quotes(value)
       return nil unless value
       #escape slashes too, working with  bizarre ruby need to double escape in gsub
-      value.gsub("\\","\\\\\\\\").gsub( "'","\\'")
+      value.gsub("\\","\\\\\\\\").gsub( "'","''")
     end
     def build_query(table_name,attribute_descriptions,options={})
 
@@ -496,7 +496,7 @@ module NotRelational
                 extend_query(query," `#{key}` = '#{escape_quotes( attribute_descriptions[key].format_for_sdb_single(value))}'")
               end
             else
-              # #it must be formatted already.  likely an index
+              #puts "it must be formatted already.  likely an index"
               extend_query(query,"`#{key}` = '#{escape_quotes value}'")
             end
           end

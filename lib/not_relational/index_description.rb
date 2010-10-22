@@ -23,7 +23,6 @@ class IndexDescription < PropertyDescription
         end
         result << "&"
       end
-      
       result
   end
   def format_for_sdb(value)

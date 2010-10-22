@@ -859,7 +859,6 @@ class << self
     find_every(options).first
   end
   def find_every(options={})
-
     results=[]
     untyped_results=self.repository.query(self.table_name,attribute_descriptions,options)
     untyped_results.each do |item_attributes|
