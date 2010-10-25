@@ -401,7 +401,8 @@ module NotRelational
     def sdb_query_with_attributes(table_name,query,max,token=nil,extra_sdb_params={})
 
       @logger.debug( "SDB query_with_attributes:#{table_name}(#{max}) : #{query}   #{token}"  ) if @logger
-      20.times do |i|
+      max_tries=5
+      max_tries.times do |i|
         begin
           with_time_logging("query_with_attributes") {
             
@@ -412,6 +413,7 @@ module NotRelational
             raise "The SDB domain '#{make_domain_name(table_name)}' does not exist."
             
           else
+            raise e if i==(max_tries-1)
             s= "#{e.message}\n#{e.backtrace}"
             @logger.error(s) if @logger
 
@@ -421,7 +423,7 @@ module NotRelational
 
         end
       end
-
+      
     end
 
 
