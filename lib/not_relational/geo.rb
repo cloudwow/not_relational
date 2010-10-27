@@ -5,6 +5,25 @@ module NotRelational
 
     def self.included(target_class)
       target_class.extend(ClassMethods)
+
+      #coordinate
+      target_class.property :latitude,:float
+      target_class.property :longitude,:float
+
+      #bounding box
+      target_class.property :top_latitude,:float
+      target_class.property :bottom_latitude,:float
+      target_class.property :left_longitude,:float
+      target_class.property :right_longitude,:float
+
+      #spae filling address ala google map tiles
+      target_class.property :address
+    end
+    def caclulate_center
+      self.latitude=self.top_latitude-self.bottom_latitude
+      left=self.left_longitude
+      left-=360.0 if left > self.right_longitude
+      self.longitude=self.right_longitude-left
     end
     def location
       return NotRelational::Location.new(latitude,longitude)

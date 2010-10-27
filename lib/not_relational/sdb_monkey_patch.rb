@@ -13,6 +13,7 @@ module AwsSdb
   class InvalidParameterError < RequestError ; end
   class InvalidWSDLVersionError < RequestError ; end
   class InvalidSortExpressionError < RequestError ; end
+  class InvalidLiteralError < RequestError ; end
 
   class Service
 

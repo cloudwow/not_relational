@@ -4,12 +4,31 @@ class DirtyTest < Test::Unit::TestCase
 
   def test_dirty_collection
     target=Mediaitem.new
+
+
     assert(!target.is_dirty(:metadata))
     target.metadata << "blah"
     assert(target.is_dirty(:metadata))
     
   end
 
+  def test_dirty
+    target=Node.new(:publicRead => true)
+    target.save
+    assert(!target.dirty?)
+    
+    target.latestContent =  "blah"
+
+    assert(target.dirty?)
+    target.save!
+    assert(!target.dirty?)
+
+    #set to same value
+    target.latestContent =  "blah"
+
+    assert(!target.dirty?)
+    
+  end
   def test_dirty_on_off
 
     target=Node.new(:publicRead => true)

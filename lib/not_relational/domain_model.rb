@@ -637,6 +637,13 @@ def set_all_clean
   end
 end
 
+def dirty?
+  self.class.attribute_descriptions.values.each do |description|
+    return true if is_dirty(description.name)
+  end
+  false
+end
+
 
 def set_attribute(name,xvalue)
   self.class.attribute_descriptions[name].assert_valid_value(xvalue)
