@@ -33,8 +33,11 @@ class Group < NotRelational::DomainModel
     
   def Group.create_group(name,short_description,description,tags,is_public,creator_login)
 
+      puts "LOOKING...  !!!!!!!!!!!!!!!!"
+    
     group=Group.find_by_normalized_name(name)
     if !group
+      puts "NOT FOUND !!!!!!!!!!!!!!!!"
       group=Group.new
       group.name=name
       group.description=description

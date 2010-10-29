@@ -88,7 +88,8 @@ class PlaceTest < Test::Unit::TestCase
     node_album=Album.new
     node_album.guid=node.album_guid
     node_album.save
-    
+    NotRelational::RepositoryFactory.instance.pause()
+
     found=node.Album
     assert(found!=nil)
     assert_equal(node_album.id,found.id)

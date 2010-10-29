@@ -28,12 +28,16 @@ class GroupTest < Test::Unit::TestCase
     Album.find(:all).each do |node|
       node.destroy
     end
+        NotRelational::RepositoryFactory.instance.clear_session_cache()
     
   end
   
   def test_create_group
-    GroupTest.set_up
+
+        NotRelational::RepositoryFactory.instance.pause()
+GroupTest.set_up
     group1=Group.create_group("testgroupqw", "my group short desc", "description long desc", "tags my test", true, 'joe')
+    NotRelational::RepositoryFactory.instance.pause()
     group2=Group.create_group("testgroupqw", "my group short desc", "description long desc", "tags my test", true, 'joe')
     #second groups hould be same group
     assert_equal(group1.id,group2.id)
@@ -168,7 +172,7 @@ class GroupTest < Test::Unit::TestCase
       event.group_id=group.id
       event.event_time=Time.now.+i*50
       event.save
-      events<<event
+      events << event
     end
     NotRelational::RepositoryFactory.instance.pause()
     found=group.recent_events

@@ -8,7 +8,7 @@ module NotRelational
   require "not_relational/storage.rb"
   require File.dirname(__FILE__) +"/memory_repository.rb"
   require File.dirname(__FILE__) +"/domain_model_cache_item.rb"
-
+  
   require File.dirname(__FILE__) +"/sdb_monkey_patch.rb"
   # THis class implements access to SDB.
   class SdbRepository  < RepositoryBase
@@ -60,11 +60,13 @@ module NotRelational
 
       extra_sdb_params= extract_extra_sdb_params(options)
       repository_id ||=make_repo_key(table_name,primary_key)
-      @session_cache.save(table_name,primary_key,attributes,index_descriptions)
+#      puts "SESSION CACHE PUT X:  #{table_name}: #{repository_id}"
+
+      @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted=>nil),index_descriptions)
 
       formatted_attributes={}
       attributes.each do |description,value|
-
+        
         formatted_attributes[description.name]=description.format_for_sdb(value)
 
         storage_value = description.format_for_storage(value)
@@ -89,7 +91,9 @@ module NotRelational
     def destroy(table_name, primary_key,repository_id=nil)
       @logger.debug  "Destroying #{table_name}.[#{primary_key}]"
       repository_id||=make_repo_key(table_name,primary_key)
-      @session_cache.destroy(table_name,primary_key)
+#      puts "SESSION CACHE DESTROY:  #{table_name}: #{repository_id}"
+      #      @session_cache.destroy(table_name,repository_id)
+      @session_cache.save(table_name,repository_id,{:xxx_deleted=>true})
 
       #################
       20.times do |i|
@@ -148,12 +152,13 @@ module NotRelational
       token ||= options[:token]
       extra_sdb_params=extract_extra_sdb_params(options,attribute_descriptions)
       
-      if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
-        session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
-        if options[:limit]==session_cache_result.length
-          return session_cache_result,nil
-        end
-      end
+#commenting this because cache uses repo keys instead of primary keys
+      # if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
+      #   session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
+      #   if options[:limit]==session_cache_result.length
+      #     return session_cache_result,nil
+      #   end
+      # end
       the_query=build_query(table_name, attribute_descriptions, options)
 
       max=1000000
@@ -171,8 +176,12 @@ module NotRelational
         if cached_primary_keys
           result=[]
           cached_primary_keys.each do |key|
+#                  puts "SESSION CACHE GET:  #{table_name}: #{key}"
+
             rec=@session_cache.find_one(table_name,key,attribute_descriptions)
-            result << rec
+            unless rec[:xxx_deleted] ==true
+              result << rec
+            end
           end
         end
       end
@@ -203,21 +212,22 @@ module NotRelational
         end
 
         result=[]
-        primary_keys=[]
+        repository_ids=[]
         sdb_result.each{|sdb_row|
-          primary_key=sdb_row[0]
+          repository_id=sdb_row[0]
           sdb_attributes =sdb_row[1]
-          @logger.debug  "FOUND #{table_name}.[#{primary_key}]"
+          @logger.debug  "FOUND #{table_name}.[#{repository_id}]"
 
           attributes =parse_attributes(attribute_descriptions,sdb_attributes)
-          attributes["@@REPOSITORY_ID"]=primary_key
-          @session_cache.save(table_name,primary_key,attributes)
-          primary_keys << primary_key
+          attributes["@@REPOSITORY_ID"]=repository_id
+#          puts "SESSION CACHE PUT Q:  #{table_name}: #{repository_id}"
+          @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted=>nil))
+          repository_ids << repository_id
           if attributes
             result << attributes
           end
         }
-        @query_cache[query_cache_key]=primary_keys if query_cache_key
+        @query_cache[query_cache_key]=repository_ids if query_cache_key
       end
       if options[:limit] && result.length>options[:limit]
         result=result[0..(options[:limit]-1)]
@@ -233,11 +243,20 @@ module NotRelational
 
 
     def find_one(table_name, primary_key,attribute_descriptions,options={})#, non_clob_attribute_names, clob_attribute_names)
+
+      repository_id = options[:repository_id] ||   make_repo_key(table_name,primary_key)
+      
+#      puts "session get #: #{table_name}: #{repository_id}"
       session_cache_result=@session_cache.find_one(
                                                    table_name,
-                                                   primary_key,
+                                                   repository_id,
                                                    attribute_descriptions)
-      return session_cache_result if session_cache_result
+
+      if session_cache_result
+        return nil if session_cache_result[:xxx_deleted]==true
+        session_cache_result.delete(:xxx_deleted)
+        return  session_cache_result
+      end
       #    if @use_cache
       #      yaml=@storage.get(@storage_bucket,make_repo_key(table_name,primary_key))
       #      if yaml
@@ -254,9 +273,8 @@ module NotRelational
       if attributes
         # #attributes[:primary_key]=primary_key #put_into_cache(table_name, primary_key, attributes)
         attribute_key_values={}
-        attributes.each do |name,value|
-        end
-        @session_cache.save(table_name,primary_key,attributes)
+#        puts "session put #: #{table_name}: #{repository_id}"
+        @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted => nil))
 
       end
       

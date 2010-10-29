@@ -15,6 +15,7 @@ class DirtyTest < Test::Unit::TestCase
   def test_dirty
     target=Node.new(:publicRead => true)
     target.save
+    
     assert(!target.dirty?)
     
     target.latestContent =  "blah"
