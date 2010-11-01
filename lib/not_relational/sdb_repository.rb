@@ -96,7 +96,7 @@ module NotRelational
       @session_cache.save(table_name,repository_id,{:xxx_deleted=>true})
 
       #################
-      20.times do |i|
+      4.times do |i|
         begin
           with_time_logging("delete_attributes") {
 
@@ -283,7 +283,7 @@ module NotRelational
     end
 
     def create_domain
-      20.times do |i|
+      4.times do |i|
         begin
           @sdb.create_domain(@base_domain_name)
           return
@@ -330,7 +330,7 @@ module NotRelational
 
       return if formatted_attributes.length==0
 
-      20.times do |i|
+      4.times do |i|
         begin
           with_time_logging("put_attributes") {
 
@@ -377,7 +377,7 @@ module NotRelational
       domain_name=make_domain_name(table_name)
       repo_key=make_repo_key(table_name,primary_key)
       @logger.debug( "SDB get_attributes.  domain:#{domain_name} , sdb_id:#{repo_key}") if @logger
-      20.times do |i|
+      4.times do |i|
         begin
           with_time_logging("get_attributes"){
             return @sdb.get_attributes(domain_name, repo_key,extra_sdb_params)
