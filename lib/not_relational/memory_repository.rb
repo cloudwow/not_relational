@@ -131,6 +131,10 @@ module NotRelational
       end
       result
     end
+
+    def count(table_name,attribute_descriptions,options)
+      return query(table_name,attribute_descriptions,options).length
+    end
     
     def query(table_name,attribute_descriptions,options)
 

@@ -17,7 +17,46 @@ module AwsSdb
 
   class Service
 
-    
+
+    def count(domain, query)
+
+      full_query="select count(*) from #{domain} "
+      if query && !query.empty?
+        full_query<< " where #{query}"
+      end
+
+      params = {
+        'Action' => 'Select',
+        'SelectExpression' => full_query
+      }
+
+      begin
+        doc = call(:get, params)
+
+
+        results = []
+        REXML::XPath.each(doc, '//Item') do |item|
+          item_attributes={}
+          item_name = REXML::XPath.first(item, './Name/text()').to_s
+          
+          
+          REXML::XPath.each(item, "./Attribute") do |attr|
+            
+            key = REXML::XPath.first(attr, './Name/text()').to_s
+            value = REXML::XPath.first(attr, './Value/text()').to_s
+            return value.to_i if key=="Count"
+          end
+          
+        end
+        raise "WTF.  count query did not reutrn a count"
+      rescue Exception => e
+        @logger.error("SDB Error #{e.message} during query #{full_query}")
+
+        raise e
+      end
+      
+     
+    end
     def query_with_attributes(domain, query, max = nil, token = nil,extra_params={})
       full_query="select * from #{domain} "
       if query && !query.empty?

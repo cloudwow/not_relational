@@ -894,6 +894,11 @@ class << self
     return result
   end
 
+  def count(params=nil)
+    return self.repository.count(self.table_name,attribute_descriptions,:params => params)
+
+  end
+  
   def destroy_all(options={})
     find(:all,options).each{|x|x.destroy}
   end

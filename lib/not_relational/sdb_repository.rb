@@ -60,7 +60,7 @@ module NotRelational
 
       extra_sdb_params= extract_extra_sdb_params(options)
       repository_id ||=make_repo_key(table_name,primary_key)
-#      puts "SESSION CACHE PUT X:  #{table_name}: #{repository_id}"
+      #      puts "SESSION CACHE PUT X:  #{table_name}: #{repository_id}"
 
       @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted=>nil),index_descriptions)
 
@@ -91,7 +91,7 @@ module NotRelational
     def destroy(table_name, primary_key,repository_id=nil)
       @logger.debug  "Destroying #{table_name}.[#{primary_key}]"
       repository_id||=make_repo_key(table_name,primary_key)
-#      puts "SESSION CACHE DESTROY:  #{table_name}: #{repository_id}"
+      #      puts "SESSION CACHE DESTROY:  #{table_name}: #{repository_id}"
       #      @session_cache.destroy(table_name,repository_id)
       @session_cache.save(table_name,repository_id,{:xxx_deleted=>true})
 
@@ -115,6 +115,34 @@ module NotRelational
 
       ################
       # #TODO destroy text
+    end
+    def count(table_name,attribute_descriptions,options)
+      the_query=build_query(table_name, attribute_descriptions, options)
+
+      @logger.debug( "SDB count:#{table_name}: #{the_query}"  ) if @logger
+      max_tries=5
+      max_tries.times do |i|
+        begin
+          with_time_logging("count") {
+            
+            return @sdb.count(make_domain_name(table_name),the_query)
+          }
+        rescue Exception => e
+          if e.message =="The specified domain does not exist."
+            raise "The SDB domain '#{make_domain_name(table_name)}' does not exist."
+            
+          else
+            raise e if i==(max_tries-1)
+            s= "#{e.message}\n#{e.backtrace}"
+            @logger.error(s) if @logger
+
+            sleep(i*i)
+          end
+        ensure
+
+        end
+      end
+
     end
     def query(table_name,attribute_descriptions,options)
       result,token=query_with_token(table_name,attribute_descriptions,nil,options)
@@ -152,7 +180,7 @@ module NotRelational
       token ||= options[:token]
       extra_sdb_params=extract_extra_sdb_params(options,attribute_descriptions)
       
-#commenting this because cache uses repo keys instead of primary keys
+      #commenting this because cache uses repo keys instead of primary keys
       # if options.has_key?(:limit) and !options.has_key?(:order_by) and token==nil
       #   session_cache_result=@session_cache.query(table_name,attribute_descriptions,options)
       #   if options[:limit]==session_cache_result.length
@@ -176,7 +204,7 @@ module NotRelational
         if cached_primary_keys
           result=[]
           cached_primary_keys.each do |key|
-#                  puts "SESSION CACHE GET:  #{table_name}: #{key}"
+            #                  puts "SESSION CACHE GET:  #{table_name}: #{key}"
 
             rec=@session_cache.find_one(table_name,key,attribute_descriptions)
             unless rec[:xxx_deleted] ==true
@@ -220,7 +248,7 @@ module NotRelational
 
           attributes =parse_attributes(attribute_descriptions,sdb_attributes)
           attributes["@@REPOSITORY_ID"]=repository_id
-#          puts "SESSION CACHE PUT Q:  #{table_name}: #{repository_id}"
+          #          puts "SESSION CACHE PUT Q:  #{table_name}: #{repository_id}"
           @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted=>nil))
           repository_ids << repository_id
           if attributes
@@ -246,7 +274,7 @@ module NotRelational
 
       repository_id = options[:repository_id] ||   make_repo_key(table_name,primary_key)
       
-#      puts "session get #: #{table_name}: #{repository_id}"
+      #      puts "session get #: #{table_name}: #{repository_id}"
       session_cache_result=@session_cache.find_one(
                                                    table_name,
                                                    repository_id,
@@ -273,7 +301,7 @@ module NotRelational
       if attributes
         # #attributes[:primary_key]=primary_key #put_into_cache(table_name, primary_key, attributes)
         attribute_key_values={}
-#        puts "session put #: #{table_name}: #{repository_id}"
+        #        puts "session put #: #{table_name}: #{repository_id}"
         @session_cache.save(table_name,repository_id,attributes.merge(:xxx_deleted => nil))
 
       end
