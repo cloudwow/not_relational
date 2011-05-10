@@ -1,6 +1,6 @@
 module NotRelational
 
-
+#seems to be in disuse
 class Reference
     attr_accessor :target_class 
     attr_accessor :primary_key 

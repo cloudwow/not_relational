@@ -1,9 +1,12 @@
+require 'ya2yaml'
+require File.dirname(__FILE__) +'/sdb_formatter.rb'
+require File.dirname(__FILE__) +'/crypto.rb'
+require File.dirname(__FILE__) +'/configuration.rb'
+
 module NotRelational
 
-  require 'ya2yaml'
-  require File.dirname(__FILE__) +'/sdb_formatter.rb'
-  require File.dirname(__FILE__) +'/crypto.rb'
-  require File.dirname(__FILE__) +'/configuration.rb'
+  #internal class used by DomainModel and Repositories
+  #describes on data property
   class PropertyDescription
     include SdbFormatter
     attr_accessor :name 

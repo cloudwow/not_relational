@@ -15,6 +15,7 @@ module AwsSdb
   class InvalidSortExpressionError < RequestError ; end
   class InvalidLiteralError < RequestError ; end
 
+  #patches up aws-sdb gem to work with newer sdb methods
   class Service
 
 

@@ -2,6 +2,7 @@ module NotRelational
 
   require File.dirname(__FILE__) +"/memory_storage.rb"
 
+  #experimental class, not usable
   class MemcacheRepository
     attr_accessor :use_cache #this here just so interface matches sdb repo
     attr_accessor :storage

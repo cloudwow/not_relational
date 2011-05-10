@@ -1,6 +1,7 @@
 require "not_relational/starts_with_condition.rb"
 module NotRelational
 
+  #include this in a domain model for some geographical attributes and utilities
   module Locatable
 
     def self.included(target_class)

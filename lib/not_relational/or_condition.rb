@@ -1,6 +1,7 @@
 module NotRelational
   
-
+#        orCondition=OrCondition.new(address_params)       
+#        MyDomainModelClass.find(:all,:limit => 24,:order_by => order_by,:order => order,:conditions=>[orCondition])
   class OrCondition
     attr_accessor :child_conditions
     

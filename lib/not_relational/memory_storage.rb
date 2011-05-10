@@ -1,6 +1,6 @@
 module NotRelational
 
-
+# used in place of s3 storage for tests and dev work (because it's much faster and doesn't need network)
 class MemoryStorage
 
   attr_reader :read_count
@@ -33,21 +33,21 @@ class MemoryStorage
         
   end
   def put(bucket,key,object,attributes=nil)
-        @write_count+=1
+              @write_count+=1
 
     @stuff[bucket+"sdsdw555"+key]=object
     @attributes[bucket+"sdsdw555"+key]=attributes if attributes    
   end
   def get_content_type(bucket,key)
         @read_count+=1
-
-    return @attributes[bucket+"sdsdw555"+key]['Content-Type'] if @attributes.has_key?(bucket+"sdsdw555"+key)
-    return nil
+    raise "get_content_type called for non-existing item #{bucket}/#{key}" unless  @attributes.has_key?(bucket+"sdsdw555"+key)
+    return @attributes[bucket+"sdsdw555"+key]['Content-Type'] 
   end
 def copy(from_bucket,from_key,to_bucket,to_key,attributes=nil)
       @write_count+=1
 
   o=get(from_bucket,from_key)
+  raise "can't copy null from #{from_bucket}/#{from_key}" unless o
   put(to_bucket,to_key,o,attributes)
 
 end

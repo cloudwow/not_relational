@@ -2,6 +2,7 @@
 # and open the template in the editor.
 
 module NotRelational
+#experimental class.  not usable
   class BerkeleyRepository
     def initialize(
         domain_name= nil,

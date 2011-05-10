@@ -1,5 +1,10 @@
 module NotRelational
 
+  #used in queries to limit the results to a certain range
+  # Example:
+  #     MyDomainClass.find(:all,:order_by=>"tag_name",
+  #                :params =>{
+  #                    :group_with_media=>AttributeRange.new(:greater_than_or_equal_to=>calculate_group_with_media(group_id,"")}   )
   class AttributeRange
     attr_accessor :less_than
     attr_accessor :greater_than

@@ -3,6 +3,7 @@ require "not_relational/configuration.rb"
 require "not_relational/memory_repository.rb"
 
 module NotRelational
+  #loads the configuration and creates the singleton repository
   class RepositoryFactory
     def self.clear
       @repository=nil

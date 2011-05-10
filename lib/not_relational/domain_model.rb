@@ -19,6 +19,9 @@ end
 module NotRelational
   autoload :Inflector, 'active_support/inflector'
 
+  #big ugly class that implements DSL for derived classes
+  #all domain model/ data access classes should derive from this class
+  #and then use the dsl specify data attributes, keys, and indexes 
   class DomainModel
 
     @@subclasses = {}
@@ -192,17 +195,18 @@ module NotRelational
         end
 
         def self.calculate_#{index_name}(#{params.join(",")})
-                                         index_description=index_descriptions[:#{index_name}]
-                                                                              h={}
-                                                                              #{finder_code}
-                                                                              index_description.format_index_entry(@@attribute_descriptions,h)
-                                                                            end
-                                         def self.find_by_#{index_name}(#{params.join(",")},options={})
-                                                                        options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
-                                                                          options[:index]=:#{index_name}
-                                                                          options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
-                                                                          find(#{find_scope},options)
-                                                                             end
+            index_description=index_descriptions[:#{index_name}]
+            raise(\"index_desciptions[:#{index_name}] does not exist\") unless index_description
+            h={}
+            #{finder_code}
+            index_description.format_index_entry(@@attribute_descriptions,h)
+        end
+        def self.find_by_#{index_name}(#{params.join(",")},options={})
+            options[:params]={:#{index_name}=>self.calculate_#{index_name}(#{params.join(",")})}
+            options[:index]=:#{index_name}
+            options[:index_value]=self.calculate_#{index_name}(#{params.join(",")})
+            find(#{find_scope},options)
+        end
                                                                              "
       end #self.index
 

@@ -1,4 +1,6 @@
 module NotRelational
+  #optional base class for  repositories
+  # provies a few utilities
   class RepositoryBase
     def blob_bucket
       return @blob_bucket || ""

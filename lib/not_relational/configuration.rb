@@ -2,6 +2,8 @@ require "openssl"
 require "logger"
 require "yaml"
 module NotRelational
+
+  #stores configuration data loaded from yaml file
   class Configuration
     
     attr_reader :repository_class

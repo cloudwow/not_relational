@@ -1,4 +1,5 @@
 module NotRelational
+  #kinda sorta Singleton access
   module Repository
     
     def self.repository_instance

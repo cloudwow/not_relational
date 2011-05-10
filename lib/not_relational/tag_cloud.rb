@@ -1,7 +1,5 @@
-# TagCloud.rb
-# July 6, 2007
-#
-
+#help with tag clouds
+#see group.rb and user.rb test models for examples
 class TagCloud
   def calculate_max_min
        @max=nil

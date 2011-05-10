@@ -6,7 +6,9 @@ require File.dirname(__FILE__) +"/query_string_auth_generator.rb"
 
 
 module NotRelational
-  
+
+  #place for storing blobs by key.  typically means S3
+  #there is some functionality for memcached as well but that code may be in disprepair
   class Storage
     
     @conn=nil
@@ -58,16 +60,13 @@ module NotRelational
         raise "this is a memcache only storage.  there is no s3"
       end
       unless @conn
-#        @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,@tokens,false)
-         @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,false)
+        #        @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,@tokens,false)
+        @conn = ::S3::AWSAuthConnection.new(@aws_key_id, @aws_secret_key,false)
       end 
       return @conn
     end
     def real_s3_query_auth
-      unless @query_conn
-#        @query_conn = ::S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,@tokens,false,::S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
-        @query_conn = ::S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,false,::S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
-      end 
+      @query_conn ||= ::S3::QueryStringAuthGenerator.new(@aws_key_id, @aws_secret_key,false,::S3::DEFAULT_HOST, 80,S3::CallingFormat::SUBDOMAIN)
       return @query_conn
     end
     def renew_s3_connection
@@ -161,7 +160,7 @@ module NotRelational
       
     end
     def get(bucket,key)
-#      puts "storage get: #{key}"
+      #      puts "storage get: #{key}"
       value   =nil
       value=@session_cache.get(bucket,key) if @session_cache
       return value if value
@@ -199,7 +198,7 @@ module NotRelational
     end
     def put(bucket,key,object,attributes={})
 
-#      puts "Storage put: #{key}, #{object.to_s[0..8]}"
+      #      puts "Storage put: #{key}, #{object.to_s[0..8]}"
       real_s3_put(bucket,key,object,attributes)
       @session_cache.put(bucket,key,object,attributes) if @session_cache
 

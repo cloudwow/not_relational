@@ -2,6 +2,8 @@ module NotRelational
 
   require File.dirname(__FILE__) +"/memory_storage.rb"
 
+  # used in place of sdb repository for tests and dev work (because it's much faster and doesn't need network)
+  # also used for caching
   class MemoryRepository < RepositoryBase
     #these attributes neccesary for repo interface
     attr_accessor :use_cache

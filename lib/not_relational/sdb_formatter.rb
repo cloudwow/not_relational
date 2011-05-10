@@ -2,7 +2,9 @@
 
 module NotRelational
   
-
+  #sdb attributes are all strings
+  #sdb collation is always string sorting
+  #converts data int o a string that will sort correctly in an SDB query
   module SdbFormatter
     TEXT_IN_STORAGE= "storage:"
     TEXT_IS_NIL=     "nil    :"

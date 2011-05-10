@@ -1,4 +1,6 @@
 module NotRelational
+  #geographical location (latitiude, longitude) with some helpers
+  #used by the geo module
   class Location
     
 
