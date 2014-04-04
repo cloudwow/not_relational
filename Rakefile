@@ -24,7 +24,7 @@ begin
     gem.add_dependency( "memcache-client")
     gem.add_dependency( "activesupport")
     gem.add_dependency( "ya2yaml")
-    gem.add_dependency( "uuid")
+
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
@@ -32,7 +32,7 @@ rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
-require 'rake/rdoctask'
+require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = 'not_relational'
